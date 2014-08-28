@@ -36,6 +36,8 @@ define('OSS_SET_BUCKET_ACL_SUCCESS','设置Bucket ACL成功');
 define('OSS_SET_BUCKET_ACL_FAILED','设置Bucket ACL失败');
 define('OSS_ACL_INVALID','ACL不在允许范围,目前仅允许(private,public-read,public-read-write三种权限)');
 define('OSS_BUCKET_IS_NOT_ALLOWED_EMPTY', 'Bucket不允许为空');
+define('OSS_TARGET_BUCKET_IS_NOT_ALLOWED_EMPTY', 'TargetBucket不允许为空');
+define('OSS_INDEX_DOCUMENT_IS_NOT_ALLOWED_EMPTY', 'IndexDocument不允许为空');
 
 /*%****************************************************************************************%*/
 //OSS object操作相关

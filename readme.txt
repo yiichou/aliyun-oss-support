@@ -1,4 +1,4 @@
-﻿=== 阿里云附件 ===
+=== 阿里云附件 ===
 Contributors: 马文建(Wenjian Ma)
 Donate link: http://mawenjian.net/977.html
 Tags: attachment, aliyun, manager, images, thumbnail
@@ -52,4 +52,4 @@ Q：不是已经有一款类似的插件了吗，为什么要做重复工作？ 
 
 == Screenshots ==
 
-![截图](screenshot.jpg "截图")
+![截图](screenshot.png "截图")

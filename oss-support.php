@@ -1,36 +1,46 @@
 <?php
 /**
- * @package 阿里云附件
- * @version 1.0
+ * Plugin Name: 阿里云附件
+ * Plugin URI: "http://mawenjian.net/p/977.html"
+ * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
+ * Author: 马文建(Wenjian Ma) & iChou
+ * Version: 1.1
+ * Author URI: http://mawenjian.net/
  */
-/*
-Plugin Name: 阿里云附件
-Plugin URI: "http://mawenjian.net/p/977.html"
-Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
-Author: 马文建(Wenjian Ma)
-Version: 1.0
-Author URI: http://mawenjian.net/
-*/
 
-
-if ( !defined('WP_PLUGIN_URL') )
-	define( 'WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins' );                           //  plugin url
-
-define('OSS_BASENAME', plugin_basename(__FILE__));
-define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
-define('OSS_FILENAME', str_replace(DFM_BASEFOLDER.'/', '', plugin_basename(__FILE__)));
-
-// 初始化选项
-register_activation_hook(__FILE__, 'oss_set_options');
 
 /**
- * 初始化选项
+ * iChou升级说明
+ * Update URI: http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban
+ * Author: Ivan Chou (ichou.cn)
+ *
+ * 1.升级 ali-OSS-SDK 到 1.1.6 版本
+ * 2.支持给 OSS 绑定的独立域名
+ * 3.支持自定 OSS 上文件存放目录 （不影响本地存储，中途若修改请手动移动 OSS 上文件，否则可能链接不到之前的资源）
+ * 4.修正原插件 bug 若干
+ *
  */
+
+require_once('sdk.class.php');
+if ( !defined('WP_PLUGIN_URL') )
+	define( 'WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins' );
+
+//  plugin url
+define('OSS_BASENAME', plugin_basename(__FILE__));
+define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
+define('OSS_FILENAME', str_replace(OSS_BASEFOLDER.'/', '', plugin_basename(__FILE__)));
+
+// 初始化
+register_activation_hook(__FILE__, 'oss_set_options');
+
+// 初始化选项
 function oss_set_options() {
     $options = array(
         'bucket' => "",
         'ak' => "",
     	'sk' => "",
+        'path' => "",
+        'cname' => "",
     );
     
     add_option('oss_options', $options, '', 'yes');
@@ -44,7 +54,7 @@ function oss_admin_warnings() {
 	if ( !$oss_options['bucket'] && !isset($_POST['submit']) ) {
 		function oss_warning() {
 			echo "
-			<div id='oss-warning' class='updated fade'><p><strong>".__('Bcs is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your OSS Bucket </a> for it to work.'), "options-general.php?page=" . OSS_BASEFOLDER . "/oss-support.php")."</p></div>
+			<div id='oss-warning' class='updated fade'><p><strong>".__('OSS is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your OSS Bucket </a> for it to work.'), "options-general.php?page=" . OSS_BASEFOLDER . "/oss-support.php")."</p></div>
 			";
 		}
 		add_action('admin_notices', 'oss_warning');
@@ -55,13 +65,15 @@ oss_admin_warnings();
 
 //上传函数
 function _file_upload( $object , $file , $opt = array()){
-	require_once('sdk.class.php');
-	
+		
 	//获取WP配置信息
 	$oss_options = get_option('oss_options', TRUE);
     $oss_bucket = attribute_escape($oss_options['bucket']);
 	$oss_ak = attribute_escape($oss_options['ak']);
 	$oss_sk = attribute_escape($oss_options['sk']);
+
+    if ($oss_options['path'] != "")
+        $object = $oss_options['path'].$object;
 
 	//实例化存储对象
 	if(!is_object($aliyun_oss))
@@ -147,9 +159,7 @@ function upload_images($metadata)
  * @return void
  */
 function delete_remote_file($file)
-{	
-	require_once('sdk.class.php');
-	
+{		
 	//获取WP配置信息
 	$oss_options = get_option('oss_options', TRUE);
     $oss_bucket = attribute_escape($oss_options['bucket']);
@@ -170,6 +180,9 @@ function delete_remote_file($file)
 	$del_file = ltrim( str_replace('./','',$del_file), '/');
 	if( $upload_path != '' )
 		$del_file = $upload_path .'/'. $del_file;
+
+    if ($oss_options['path'] != "")
+        $del_file = $oss_options['path'].$del_file;
 	
 	//实例化存储对象
 	if(!is_object($aliyun_oss))
@@ -201,6 +214,19 @@ function oss_add_setting_page() {
 
 add_action('admin_menu', 'oss_add_setting_page');
 
+//设置 upload_url_path 地址     by:ichou 08-27-2014
+function oss_setting_url( $uploads ) {
+    $oss_options = get_option('oss_options', TRUE);
+
+    if ($oss_options['cname'] != "") {
+        $baseurl = rtrim($oss_options['cname'], '/') .'/'. rtrim($oss_options['path'], '/');
+        $uploads['baseurl'] = $baseurl;
+        return $uploads;
+    }
+}
+
+add_filter( 'upload_dir', 'oss_setting_url' );
+
 function oss_setting_page() {
 
 	$options = array();
@@ -213,6 +239,12 @@ function oss_setting_page() {
 	if($_POST['sk']) {
 		$options['sk'] = trim(stripslashes($_POST['sk']));
 	}
+    if($_POST['path']) {
+        $options['path'] = rtrim(trim(stripslashes($_POST['path'])), '/').'/';
+    }
+    if($_POST['cname']) {
+        $options['cname'] = trim(stripslashes($_POST['cname']));
+    }
 	if($_POST['nolocalsaving']) {
 		$options['nolocalsaving'] = (isset($_POST['nolocalsaving']))?'true':'false';
 	}
@@ -231,6 +263,8 @@ function oss_setting_page() {
     $oss_bucket = attribute_escape($oss_options['bucket']);
     $oss_ak = attribute_escape($oss_options['ak']);
     $oss_sk = attribute_escape($oss_options['sk']);
+    $oss_path = attribute_escape($oss_options['path']);
+    $oss_cname = attribute_escape($oss_options['cname']);
 	
 	$oss_nolocalsaving = attribute_escape($oss_options['nolocalsaving']);
 	($oss_nolocalsaving == 'true') ? ($oss_nolocalsaving = true) : ($oss_nolocalsaving = false);
@@ -251,6 +285,17 @@ function oss_setting_page() {
         <fieldset>
             <legend>Secret Key</legend>
             <input type="text" name="sk" value="<?php echo $oss_sk;?>" placeholder=""/>
+            <P> </P>
+        </fieldset>
+        <fieldset>
+            <legend>Save path on OSS</legend>
+            <input type="text" name="path" value="<?php echo $oss_path;?>" placeholder=""/>
+            <P></P>
+        </fieldset>
+        <fieldset>
+            <legend>OSS-Url</legend>
+            <input type="text" name="cname" value="<?php echo $oss_cname;?>" placeholder=""/>
+            <P>OSS 的可访问URL 支持已绑定到 OSS 的独立域名</P>
         </fieldset>
         <fieldset>
             <legend>不在本地保留备份：</legend>

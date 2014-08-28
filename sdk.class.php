@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * OSS(Open Storage Services) PHP SDK v1.1.5
+ * OSS(Open Storage Services) PHP SDK v1.1.6
  */
 //设置默认时区
 date_default_timezone_set('Asia/Shanghai');
@@ -28,7 +28,7 @@ if(file_exists(OSS_API_PATH.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.ALI_L
 
 //定义软件名称，版本号等信息
 define('OSS_NAME','oss-sdk-php');
-define('OSS_VERSION','1.1.5');
+define('OSS_VERSION','1.1.6');
 define('OSS_BUILD','201210121010245');
 define('OSS_AUTHOR', 'xiaobing.meng@alibaba-inc.com');
 
@@ -70,7 +70,7 @@ class ALIOSS{
 	 * OSS服务地址
 	 */
 	const DEFAULT_OSS_HOST = 'oss.aliyuncs.com';
-
+	//const DEFAULT_OSS_HOST = '10.230.201.90';
 	/**
 	 * 软件名称
 	 */
@@ -152,7 +152,7 @@ class ALIOSS{
 	const OSS_HTTP_HEAD = 'HEAD';
 	const OSS_HTTP_POST = 'POST';
 	const OSS_HTTP_DELETE = 'DELETE';
-
+    const OSS_HTTP_OPTIONS = 'OPTIONS';
 
 	/*%******************************************************************************************%*/
 	//其他常量
@@ -188,6 +188,16 @@ class ALIOSS{
 	self::OSS_ACL_TYPE_PUBLIC_READ_WRITE
 	);
 
+    const OSS_CORS_ALLOWED_ORIGIN='AllowedOrigin';
+    const OSS_CORS_ALLOWED_METHOD='AllowedMethod';
+    const OSS_CORS_ALLOWED_HEADER='AllowedHeader';
+    const OSS_CORS_EXPOSE_HEADER='ExposeHeader';
+    const OSS_CORS_MAX_AGE_SECONDS='MaxAgeSeconds';
+    
+    
+    const OSS_OPTIONS_ORIGIN = 'Origin';
+    const OSS_OPTIONS_REQUEST_METHOD = 'Access-Control-Request-Method';
+    const OSS_OPTIONS_REQUEST_HEADERS = 'Access-Control-Request-Headers';
 
 	/*%******************************************************************************************%*/
 	// PROPERTIES
@@ -259,7 +269,7 @@ class ALIOSS{
 	 * @author	xiaobing.meng@alibaba-inc.com
 	 * @since	2011-11-08
 	 */
-	public function __construct($access_id = NULL,$access_key = NULL, $hostname = NULL  ){
+	public function __construct($access_id = NULL, $access_key = NULL, $hostname = NULL  ){
 		//验证access_id,access_key
 		if(!$access_id && !defined('OSS_ACCESS_ID')){
 				throw new OSS_Exception(NOT_SET_OSS_ACCESS_ID);
@@ -336,7 +346,7 @@ class ALIOSS{
 	 * @since 2012-06-11
 	 * @return void
 	 */
-	public function set_host_name($hostname,$port = null){
+	public function set_host_name($hostname, $port = null){
 		$this->hostname = $hostname;
 		
 		if($port){
@@ -434,7 +444,8 @@ class ALIOSS{
 		);
 
 		if(isset ( $options [self::OSS_OBJECT] ) && '/' !== $options [self::OSS_OBJECT]){
-			$signable_resource = '/'.str_replace('%2F', '/', rawurlencode($options[self::OSS_OBJECT]));
+			//$options[self::OSS_OBJECT] = $this->replace_invalid_xml_char($options[self::OSS_OBJECT]);
+			$signable_resource = '/'.str_replace(array('%2F','%25'),array('/','%'), rawurlencode($options[self::OSS_OBJECT]));
 		}
 
 		if(isset($options[self::OSS_QUERY_STRING])){
@@ -611,7 +622,7 @@ class ALIOSS{
 		$msg .= "RESPONSE HEADERS:----------------------------------------------\n".serialize($response_header)."\n";
 		
 		$data =  new ResponseCore ( $response_header , $request->get_response_body (), $request->get_response_code () );
-		
+	
 		if((integer)$request->get_response_code() === 400 /*Bad Request*/ || (integer)$request->get_response_code() === 500 /*Internal Error*/ || (integer)$request->get_response_code() === 503 /*Service Unavailable*/){	
 		   if($this->redirects <= $this->max_retries ){
 		   		//设置休眠
@@ -636,7 +647,7 @@ class ALIOSS{
 	//Service Operation
 
 	/**
-	 * Get Buket list
+	 * Get Bucket list
 	 * @param array $options (Optional)
 	 * @throws OSS_Exception
 	 * @author xiaobing.meng@alibaba-inc.com
@@ -652,7 +663,7 @@ class ALIOSS{
 		}
 
 		$options[self::OSS_BUCKET] = '';
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = '/';
 		$response = $this->auth ( $options );
 
@@ -672,7 +683,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function create_bucket($bucket,$acl = self::OSS_ACL_TYPE_PRIVATE, $options = NULL){
+	public function create_bucket($bucket, $acl = self::OSS_ACL_TYPE_PRIVATE, $options = NULL){
 		//$options
 		$this->validate_options($options);
 
@@ -684,7 +695,7 @@ class ALIOSS{
 		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'PUT';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
 		$options[self::OSS_OBJECT] = '/';
 		$options[self::OSS_HEADERS] = array(self::OSS_ACL => $acl);
 		$response = $this->auth ( $options );
@@ -700,7 +711,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function delete_bucket($bucket,$options = NULL){
+	public function delete_bucket($bucket, $options = NULL){
 		//$options
 		$this->validate_options($options);
 
@@ -712,7 +723,7 @@ class ALIOSS{
 		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'DELETE';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_DELETE;
 		$options[self::OSS_OBJECT] = '/';
 		$response = $this->auth ( $options );
 
@@ -728,7 +739,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function get_bucket_acl($bucket ,$options = NULL){
+	public function get_bucket_acl($bucket, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -740,7 +751,7 @@ class ALIOSS{
 		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = '/';
 		$options[self::OSS_SUB_RESOURCE] = 'acl';
 		$response = $this->auth ( $options );
@@ -749,7 +760,7 @@ class ALIOSS{
 	}
 
 	/**
-	 * Set bucket'ACL
+	 * Set Bucket'ACL
 	 * @param string $bucket (Required)
 	 * @param string $acl  (Required)
 	 * @param array $options (Optional)
@@ -758,7 +769,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function set_bucket_acl($bucket ,$acl , $options = NULL){
+	public function set_bucket_acl($bucket, $acl, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -770,15 +781,351 @@ class ALIOSS{
 		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'PUT';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
 		$options[self::OSS_OBJECT] = '/';
 		$options[self::OSS_HEADERS] = array(self::OSS_ACL => $acl);
 		$response = $this->auth ( $options );
 
 		return $response;
 	}
+	
+     /**
+	 * Get Bucket's Logging
+	 * @param string $bucket (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function get_bucket_logging($bucket, $options = NULL){
+		//options
+		$this->validate_options($options);
 
+		if(!$options){
+			$options = array();
+		}
 
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'logging';
+		$response = $this->auth ($options);
+
+		return $response;
+	}
+
+     /**
+	 * Set Bucket's Logging
+	 * @param string $bucket (Required)
+	 * @param string $target_bucket  (Required)
+	 * @param string $target_prefix  (Optional)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function set_bucket_logging($bucket, $target_bucket, $target_prefix, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+		$this->is_empty($target_bucket,OSS_TARGET_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'logging';
+		$options[self::OSS_CONTENT_TYPE] = 'application/xml';
+
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><BucketLoggingStatus></BucketLoggingStatus>');
+		$logging_enabled_part=$xml->addChild('LoggingEnabled');
+		$logging_enabled_part->addChild('TargetBucket', $target_bucket);
+		$logging_enabled_part->addChild('TargetPrefix', $target_prefix);
+
+		$options[self::OSS_CONTENT] = $xml->asXML();		
+		echo	$xml->asXML();
+		return $this->auth($options);
+	}
+	
+     /**
+	 * Delete Bucket's Logging
+	 * @param string $bucket (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function delete_bucket_logging($bucket, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_DELETE;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'logging';
+		$response = $this->auth ($options);
+
+		return $response;
+	}
+	
+     /**
+	 * Set Bucket's Website
+	 * @param string $bucket (Required)
+	 * @param string $index_document  (Required)
+	 * @param string $error_document  (Optional)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function set_bucket_website($bucket, $index_document, $error_document, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+		$this->is_empty($index_document,OSS_INDEX_DOCUMENT_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'website';
+		$options[self::OSS_CONTENT_TYPE] = 'application/xml';
+
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><WebsiteConfiguration></WebsiteConfiguration>');
+		$index_document_part=$xml->addChild('IndexDocument');
+		$error_document_part=$xml->addChild('ErrorDocument');
+		
+		$index_document_part->addChild('Suffix', $index_document);
+		$error_document_part->addChild('Key', $error_document);
+
+		$options[self::OSS_CONTENT] = $xml->asXML();		
+		echo	$xml->asXML();
+		return $this->auth($options);
+	}
+	
+     /**
+	 * Get Bucket's Website
+	 * @param string $bucket (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function get_bucket_website($bucket, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'website';
+		$response = $this->auth ($options);
+
+		return $response;
+	}
+	
+     /**
+	 * Delete Bucket's Website
+	 * @param string $bucket (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function delete_bucket_website($bucket, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_DELETE;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'website';
+		$response = $this->auth ($options);
+
+		return $response;
+	}
+	
+     /**
+	 * Set Bucket's Cors
+	 * @param string $bucket (Required)
+	 * @param array $cors_rules  (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function set_bucket_cors($bucket, $cors_rules, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'cors';
+		$options[self::OSS_CONTENT_TYPE] = 'application/xml';
+
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><CORSConfiguration></CORSConfiguration>');
+		
+		foreach ($cors_rules as $cors_rule){
+			$cors_rule_part = $xml->addChild('CORSRule');
+			
+			foreach ($cors_rule[self::OSS_CORS_ALLOWED_ORIGIN] as $value){	
+				$cors_rule_part->addChild(self::OSS_CORS_ALLOWED_ORIGIN, $value);
+			}
+			
+			foreach ($cors_rule[self::OSS_CORS_ALLOWED_HEADER] as $value){	
+				$cors_rule_part->addChild(self::OSS_CORS_ALLOWED_HEADER, $value);
+			}
+			
+			foreach ($cors_rule[self::OSS_CORS_ALLOWED_METHOD] as $value){	
+				$cors_rule_part->addChild(self::OSS_CORS_ALLOWED_METHOD, $value);
+			}
+			
+			foreach ($cors_rule[self::OSS_CORS_EXPOSE_HEADER] as $value){	
+				$cors_rule_part->addChild(self::OSS_CORS_EXPOSE_HEADER, $value);
+			}
+			
+			$cors_rule_part->addChild(self::OSS_CORS_MAX_AGE_SECONDS, $cors_rule[self::OSS_CORS_MAX_AGE_SECONDS]);
+		}	
+
+		$options[self::OSS_CONTENT] = $xml->asXML();		
+		return $this->auth($options);
+	}
+     /**
+	 * Get Bucket's Cors
+	 * @param string $bucket (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function get_bucket_cors($bucket, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'cors';
+		$response = $this->auth ($options);
+
+		return $response;
+	}
+	
+     /**
+	 * Delete Bucket's Cors
+	 * @param string $bucket (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author lijie.ma@alibaba-inc.com
+	 * @since 2014-05-04
+	 * @return ResponseCore
+	 */
+	public function delete_bucket_cors($bucket, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_DELETE;
+		$options[self::OSS_OBJECT] = '/';
+		$options[self::OSS_SUB_RESOURCE] = 'cors';
+		$response = $this->auth ($options);
+
+		return $response;
+	}
+	
+     /**
+	 * Options Object
+	 * @param string $bucket (Required)
+	 * @param array $options_request  (Required)
+	 * @param array $options (Optional)
+	 * @throws OSS_Exception
+	 * @author xiaobing.meng@alibaba-inc.com
+	 * @since 2011-11-14
+	 * @return ResponseCore
+	 */
+	public function options_object($bucket, $object, $origin, $request_method, $request_headers, $options = NULL){
+		//options
+		$this->validate_options($options);
+
+		if(!$options){
+			$options = array();
+		}
+
+		//bucket
+		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
+
+		$options[self::OSS_BUCKET] = $bucket;
+		$options[self::OSS_METHOD] = self::OSS_HTTP_OPTIONS;
+		$options[self::OSS_OBJECT] = $object;
+		$options[self::OSS_HEADERS] = array(self::OSS_OPTIONS_ORIGIN => $origin, self::OSS_OPTIONS_REQUEST_HEADERS => $request_headers, self::OSS_OPTIONS_REQUEST_METHOD => $request_method);
+		$response = $this->auth ( $options );
+
+		return $response;
+	}
 	/*%******************************************************************************************************%*/
 	//Object Operation
 
@@ -799,7 +1146,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function list_object($bucket,$options = NULL){
+	public function list_object($bucket, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -811,7 +1158,7 @@ class ALIOSS{
 		$this->is_empty($bucket,OSS_BUCKET_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = '/';
 		$options[self::OSS_HEADERS] = array(
 		self::OSS_DELIMITER => isset($options[self::OSS_DELIMITER])?$options[self::OSS_DELIMITER]:'/',
@@ -835,7 +1182,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function create_object_dir($bucket,$object,$options = NULL){
+	public function create_object_dir($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -850,7 +1197,7 @@ class ALIOSS{
 		$this->is_empty($object,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'PUT';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
 		$options[self::OSS_OBJECT] = $object.'/';   //虚拟目录需要以'/结尾'
 		$options[self::OSS_CONTENT_LENGTH] = array(self::OSS_CONTENT_LENGTH => 0);
 
@@ -870,7 +1217,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function upload_file_by_content($bucket,$object,$options = NULL){
+	public function upload_file_by_content($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -895,7 +1242,7 @@ class ALIOSS{
 		$content_type = MimeTypes::get_mimetype(strtolower($extension));
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'PUT';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
 		$options[self::OSS_OBJECT] = $object;
 		
 		if(!isset($options[self::OSS_LENGTH])){
@@ -923,7 +1270,7 @@ class ALIOSS{
 	 * @since 2012-02-28
 	 * @return ResponseCore
 	 */
-	public function upload_file_by_file($bucket,$object,$file,$options = NULL){
+	public function upload_file_by_file($bucket, $object, $file, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -979,7 +1326,7 @@ class ALIOSS{
 	 * @since 2011-12-21
 	 * @return ResponseCore
 	 */
-	public function copy_object($from_bucket,$from_object,$to_bucket,$to_object,$options = NULL){
+	public function copy_object($from_bucket, $from_object, $to_bucket, $to_object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1000,7 +1347,7 @@ class ALIOSS{
 		$this->is_empty($to_object,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $to_bucket;
-		$options[self::OSS_METHOD] = 'PUT';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_PUT;
 		$options[self::OSS_OBJECT] = $to_object;
 		$options[self::OSS_HEADERS] = array(self::OSS_OBJECT_COPY_SOURCE => '/'.$from_bucket.'/'.$from_object);
 
@@ -1018,7 +1365,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function get_object_meta($bucket,$object,$options = NULL){
+	public function get_object_meta($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1033,7 +1380,7 @@ class ALIOSS{
 		$this->is_empty($object,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'HEAD';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_HEAD;
 		$options[self::OSS_OBJECT] = $object;
 
 		$response = $this->auth ( $options );
@@ -1050,7 +1397,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function delete_object($bucket,$object,$options = NULL){
+	public function delete_object($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1065,7 +1412,7 @@ class ALIOSS{
 		$this->is_empty($object,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'DELETE';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_DELETE;
 		$options[self::OSS_OBJECT] = $object;
 
 		$response = $this->auth ( $options );
@@ -1082,7 +1429,7 @@ class ALIOSS{
 	 * @since 2012-03-09
 	 * @return ResponseCore
 	 */
-	public function delete_objects($bucket,$objects,$options = null){
+	public function delete_objects($bucket, $objects, $options = null){
 		//options
 		$this->validate_options($options);
 
@@ -1139,7 +1486,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function get_object($bucket,$object,$options = NULL){
+	public function get_object($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1158,7 +1505,7 @@ class ALIOSS{
 		}
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = $object;
 		
 		if(isset($options['lastmodified'])){
@@ -1188,7 +1535,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return boolean
 	 */
-	public function is_object_exist($bucket,$object,$options = NULL){
+	public function is_object_exist($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1203,7 +1550,7 @@ class ALIOSS{
 		$this->is_empty($object,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = $object;
 
 		$response = $this->get_object_meta($bucket, $object,$options);
@@ -1256,7 +1603,7 @@ class ALIOSS{
 	 * @param array $options (Optional) Key-Value数组，其中可以包括以下的key
 	 * @return ResponseCore
 	 */
-	public function initiate_multipart_upload($bucket,$object,$options = NULL){
+	public function initiate_multipart_upload($bucket, $object, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1629,7 +1976,7 @@ class ALIOSS{
 	 * @since 2012-03-05
 	 * @return ResponseCore 
 	 */
-	public function create_mtu_object_by_dir($bucket,$dir,$recursive = false,$exclude = ".|..|.svn",$options = null){
+	public function create_mtu_object_by_dir($bucket, $dir, $recursive = false, $exclude = ".|..|.svn", $options = null){
 		//options
 		$this->validate_options($options);
 
@@ -1763,7 +2110,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function create_object_group($bucket,$object_group  ,$object_arry,$options = NULL){
+	public function create_object_group($bucket, $object_group, $object_arry, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1774,7 +2121,7 @@ class ALIOSS{
 		$this->is_empty($object_group,OSS_OBJECT_GROUP_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'POST';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_POST;
 		$options[self::OSS_OBJECT] = $object_group;
 		$options[self::OSS_CONTENT_TYPE] = 'txt/xml';  //重设Content-Type
 		$options[self::OSS_SUB_RESOURCE] = 'group';	   //设置?group
@@ -1794,7 +2141,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function get_object_group($bucket,$object_group,$options = NULL){
+	public function get_object_group($bucket, $object_group, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1805,7 +2152,7 @@ class ALIOSS{
 		$this->is_empty($object_group,OSS_OBJECT_GROUP_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = $object_group;
 		//$options[self::OSS_OBJECT_GROUP] = true;	   //设置?group
 		//$options[self::OSS_CONTENT_TYPE] = 'txt/xml';  //重设Content-Type
@@ -1825,7 +2172,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function get_object_group_index($bucket,$object_group,$options = NULL){
+	public function get_object_group_index($bucket, $object_group, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1836,7 +2183,7 @@ class ALIOSS{
 		$this->is_empty($object_group,OSS_OBJECT_GROUP_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'GET';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_GET;
 		$options[self::OSS_OBJECT] = $object_group;
 		$options[self::OSS_CONTENT_TYPE] = 'application/xml';  //重设Content-Type
 		//$options[self::OSS_OBJECT_GROUP] = true;	   //设置?group
@@ -1856,7 +2203,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function get_object_group_meta($bucket,$object_group,$options = NULL){
+	public function get_object_group_meta($bucket, $object_group, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1871,7 +2218,7 @@ class ALIOSS{
 		$this->is_empty($object_group,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'HEAD';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_HEAD;
 		$options[self::OSS_OBJECT] = $object_group;
 		$options[self::OSS_CONTENT_TYPE] = 'application/xml';  //重设Content-Type
 		//$options[self::OSS_SUB_RESOURCE] = 'group';	   //设置?group
@@ -1891,7 +2238,7 @@ class ALIOSS{
 	 * @since 2011-11-14
 	 * @return ResponseCore
 	 */
-	public function delete_object_group($bucket,$object_group,$options = NULL){
+	public function delete_object_group($bucket, $object_group, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -1906,7 +2253,7 @@ class ALIOSS{
 		$this->is_empty($object_group,OSS_OBJECT_IS_NOT_ALLOWED_EMPTY);
 
 		$options[self::OSS_BUCKET] = $bucket;
-		$options[self::OSS_METHOD] = 'DELETE';
+		$options[self::OSS_METHOD] = self::OSS_HTTP_DELETE;
 		$options[self::OSS_OBJECT] = $object_group;
 
 		$response = $this->auth ( $options );
@@ -1928,7 +2275,7 @@ class ALIOSS{
 	 * @since 2011-12-21
 	 * @return string
 	 */
-	public function get_sign_url($bucket,$object,$timeout = 60,$options = NULL){
+	public function get_sign_url($bucket, $object, $timeout = 60, $options = NULL){
 		//options
 		$this->validate_options($options);
 
@@ -2041,6 +2388,25 @@ class ALIOSS{
 	}
 	
 	/**
+	 * 替换控制字符，诸如&#26; 替换为%1A
+	 * @param unknown $invalid_xml_chars
+	 */
+	public function replace_invalid_xml_char($subject){
+		$search = array(
+			'&#01;','&#02;','&#03;','&#04;','&#05;','&#06;','&#07;','&#08;','&#09;','&#10;','&#11;','&#12;','&#13;',
+			'&#14;','&#15;','&#16;','&#17;','&#18;','&#19;','&#20;','&#21;','&#22;','&#23;','&#24;','&#25;','&#26;',
+			'&#27;','&#28;','&#29;','&#30;','&#31;','&#127;'
+		);
+		$replace = array(
+			'%01','%02','%03','%04','%05','%06','%07','%08','%09','%0A','%0B','%0C','%0D',
+			'%0E','%0F','%10','%11','%12','%13','%14','%15','%16','%17','%18','%19','%1A',
+			'%1B','%1C','%1D','%1E','%1F','%7F'
+		);
+		
+		return str_replace($search, $replace, $subject);
+	}
+	
+	/**
 	 * 检测是否含有中文
 	 * @param string $subject
 	 * @author xiaobing.meng@alibaba-inc.com
@@ -2084,7 +2450,7 @@ class ALIOSS{
 	 * @since 2012-06-04
 	 * @return boolean 
 	 */	
-	private function check_char($str,$gbk = true){ 
+	private function check_char($str, $gbk = true){ 
 	    for($i=0; $i<strlen($str); $i++) {
 	        $v = ord( $str[$i] );
 	        if( $v > 127){
@@ -2111,7 +2477,7 @@ class ALIOSS{
 	 * @since 2012-03-05
 	 * @return array
 	 */
-	private  function read_dir($dir,$exclude = ".|..|.svn",$recursive = false){
+	private  function read_dir($dir, $exclude = ".|..|.svn", $recursive = false){
 		static $file_list_array = array();
 		
 		$exclude_array = explode("|", $exclude);
@@ -2147,7 +2513,7 @@ class ALIOSS{
 	 * @since 2011-12-27
 	 * @return string
 	 */
-	private function make_object_group_xml($bucket,$object_array){
+	private function make_object_group_xml($bucket, $object_array){
 		$xml = '';
 		$xml .= '<CreateFileGroup>';
 
@@ -2189,7 +2555,7 @@ class ALIOSS{
 	 * @return boolean
 	 */
 	private function validate_bucket($bucket){
-		$pattern = '/^[a-z0-9][a-z0-9]{2,62}$/';
+		$pattern = '/^[a-z0-9][a-z0-9-]{2,62}$/';
 		if (! preg_match ( $pattern, $bucket )) {
 			return false;
 		}
