@@ -3,7 +3,7 @@
  * Plugin Name: 阿里云附件
  * Plugin URI: "http://mawenjian.net/p/977.html"
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
- * Author: 马文建(Wenjian Ma) & iChou
+ * Author: 马文建(Wenjian Ma) & ichou
  * Version: 1.1
  * Author URI: http://mawenjian.net/
  */
@@ -11,8 +11,6 @@
 
 /**
  * iChou升级说明
- * Update URI: http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban
- * Author: Ivan Chou (ichou.cn)
  *
  * 1.升级 ali-OSS-SDK 到 1.1.6 版本
  * 2.支持给 OSS 绑定的独立域名
@@ -48,14 +46,12 @@ function oss_set_options() {
 
 
 function oss_admin_warnings() {
-    $oss_options = get_option('oss_options', TRUE);
+    $oss_options = get_option('oss_options');
 
-    $oss_bucket = attribute_escape($oss_options['bucket']);
-	if ( !$oss_options['bucket'] && !isset($_POST['submit']) ) {
+    $oss_bucket = isset($oss_options['bucket']) ? esc_attr($oss_options['bucket']) : null;
+	if ( !$oss_bucket && !isset($_POST['submit']) ) {
 		function oss_warning() {
-			echo "
-			<div id='oss-warning' class='updated fade'><p><strong>".__('OSS is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your OSS Bucket </a> for it to work.'), "options-general.php?page=" . OSS_BASEFOLDER . "/oss-support.php")."</p></div>
-			";
+			echo "<div id='oss-warning' class='updated fade'><p><strong>".__('OSS is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your OSS Bucket </a> for it to work.'), "options-general.php?page=" . OSS_BASEFOLDER . "/oss-support.php")."</p></div>";
 		}
 		add_action('admin_notices', 'oss_warning');
 		return;
@@ -68,9 +64,9 @@ function _file_upload( $object , $file , $opt = array()){
 		
 	//获取WP配置信息
 	$oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = attribute_escape($oss_options['bucket']);
-	$oss_ak = attribute_escape($oss_options['ak']);
-	$oss_sk = attribute_escape($oss_options['sk']);
+    $oss_bucket = esc_attr($oss_options['bucket']);
+	$oss_ak = esc_attr($oss_options['ak']);
+	$oss_sk = esc_attr($oss_options['sk']);
 
     if ($oss_options['path'] != "")
         $object = $oss_options['path'].$object;
@@ -112,7 +108,7 @@ function upload_images($metadata)
 	//获取上传路径
 	$wp_upload_dir = wp_upload_dir();
 	$oss_options = get_option('oss_options', TRUE);
-	$oss_nolocalsaving = (attribute_escape($oss_options['nolocalsaving'])=='true') ? true : false;
+	$oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
 	$upload_path = get_option('upload_path');
 	if($upload_path == '.' ){
@@ -162,9 +158,9 @@ function delete_remote_file($file)
 {		
 	//获取WP配置信息
 	$oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = attribute_escape($oss_options['bucket']);
-	$oss_ak = attribute_escape($oss_options['ak']);
-	$oss_sk = attribute_escape($oss_options['sk']);
+    $oss_bucket = esc_attr($oss_options['bucket']);
+	$oss_ak = esc_attr($oss_options['ak']);
+	$oss_sk = esc_attr($oss_options['sk']);
 	
 	//获取保存路径
 	$upload_path = get_option('upload_path');
@@ -209,7 +205,7 @@ function oss_plugin_action_links( $links, $file ) {
 add_filter( 'plugin_action_links', 'oss_plugin_action_links', 10, 2 );
 
 function oss_add_setting_page() {
-    add_options_page('OSS Setting', 'OSS Setting', 8, __FILE__, 'oss_setting_page');
+    add_options_page('OSS Setting', 'OSS Setting', 'manage_options', __FILE__, 'oss_setting_page');
 }
 
 add_action('admin_menu', 'oss_add_setting_page');
@@ -230,24 +226,24 @@ add_filter( 'upload_dir', 'oss_setting_url' );
 function oss_setting_page() {
 
 	$options = array();
-	if($_POST['bucket']) {
+	if(isset($_POST['bucket'])) {
 		$options['bucket'] = trim(stripslashes($_POST['bucket']));
 	}
-	if($_POST['ak']) {
+	if(isset($_POST['ak'])) {
 		$options['ak'] = trim(stripslashes($_POST['ak']));
 	}
-	if($_POST['sk']) {
+	if(isset($_POST['sk'])) {
 		$options['sk'] = trim(stripslashes($_POST['sk']));
 	}
-    if($_POST['path']) {
+    if(isset($_POST['path'])) {
         $options['path'] = rtrim(trim(stripslashes($_POST['path'])), '/').'/';
     }
-    if($_POST['cname']) {
+    if(isset($_POST['cname'])) {
         $options['cname'] = trim(stripslashes($_POST['cname']));
     }
-	if($_POST['nolocalsaving']) {
-		$options['nolocalsaving'] = (isset($_POST['nolocalsaving']))?'true':'false';
-	}
+    if(isset($_POST['nolocalsaving'])) {
+        $options['nolocalsaving'] = 'true';
+    }
 
 	if($options !== array() ){
 	
@@ -258,15 +254,15 @@ function oss_setting_page() {
 <?php
     }
 
-    $oss_options = get_option('oss_options', TRUE);
+    $oss_options = get_option('oss_options');
 
-    $oss_bucket = attribute_escape($oss_options['bucket']);
-    $oss_ak = attribute_escape($oss_options['ak']);
-    $oss_sk = attribute_escape($oss_options['sk']);
-    $oss_path = attribute_escape($oss_options['path']);
-    $oss_cname = attribute_escape($oss_options['cname']);
+    $oss_bucket = isset($oss_options['bucket']) ? esc_attr($oss_options['bucket']) : null;
+    $oss_ak = isset($oss_options['ak']) ? esc_attr($oss_options['ak']) : null;
+    $oss_sk = isset($oss_options['sk']) ? esc_attr($oss_options['sk']) : null;
+    $oss_path = isset($oss_options['path']) ? esc_attr($oss_options['path']) : null;
+    $oss_cname = isset($oss_options['cname']) ? esc_attr($oss_options['cname']) : null;
 	
-	$oss_nolocalsaving = attribute_escape($oss_options['nolocalsaving']);
+	$oss_nolocalsaving = isset($oss_options['nolocalsaving']) ? esc_attr($oss_options['nolocalsaving']) : null;
 	($oss_nolocalsaving == 'true') ? ($oss_nolocalsaving = true) : ($oss_nolocalsaving = false);
 ?>
 <div class="wrap" style="margin: 10px;">
