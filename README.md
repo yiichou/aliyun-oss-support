@@ -18,11 +18,12 @@
 2. 设置中可直接配置访问路径 Url，支持已绑定到 OSS 的独立域名
 3. 支持自定义 OSS 上文件的存放目录 （不影响本地存储，中途若修改请手动移动 OSS 上文件，否则可能链接不到之前的资源）
 4. 修正原插件 bug 若干
+5. 优化代码 （移除所有 Notice 级报错）
 
 ###TODO:
 原作者的代码在 github 上托管了一份，是不是应该联系原作者进行更新
 
 ###插件下载：
-[OSS-Support.zip](http://ichou.cn/files/53fea643b1fc2dbd4a00000a)
+[OSS-Support.zip](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)
 
 [发布地址](http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban)

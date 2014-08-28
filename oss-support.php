@@ -11,11 +11,14 @@
 
 /**
  * iChou升级说明
+ * Update URI: http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban
+ * Author: Ivan Chou (ichou.cn)
  *
  * 1.升级 ali-OSS-SDK 到 1.1.6 版本
  * 2.支持给 OSS 绑定的独立域名
  * 3.支持自定 OSS 上文件存放目录 （不影响本地存储，中途若修改请手动移动 OSS 上文件，否则可能链接不到之前的资源）
  * 4.修正原插件 bug 若干
+ * 5.优化代码 （移除所有 Notice 级报错）
  *
  */
 
