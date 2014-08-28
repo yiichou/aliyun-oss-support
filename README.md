@@ -24,4 +24,5 @@
 
 ###插件下载：
 [OSS-Support.zip](http://ichou.cn/files/53fea643b1fc2dbd4a00000a)
-[发布地址](http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban/edit)
+
+[发布地址](http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban)
