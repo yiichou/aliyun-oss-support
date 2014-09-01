@@ -35,8 +35,6 @@
  *
  */
 
-require_once('sdk.class.php');
-
 //  plugin url
 define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
 
@@ -86,9 +84,11 @@ function upload_orign_2_oss($file)
 {
     $wp_uploads = wp_upload_dir();
     $oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = esc_attr($oss_options['bucket']);
-    $oss_ak = esc_attr($oss_options['ak']);
-    $oss_sk = esc_attr($oss_options['sk']);
+    $config = array(
+        'id'     => esc_attr($oss_options['ak']),
+        'key'    => esc_attr($oss_options['sk']),
+        'bucket' => esc_attr($oss_options['bucket'])
+    );
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
@@ -96,10 +96,9 @@ function upload_orign_2_oss($file)
     $object = ltrim($oss_upload_path . '/' .ltrim($object, '/'), '/');
 
     if(!is_object($aliyun_oss))
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk);
+        $aliyun_oss = Alibaba::Storage($config);
 
-    $opt['Expires'] = 'access plus 1 years';
-    $aliyun_oss->upload_file_by_file( $oss_bucket, $object, $file['file'], $opt );
+    $aliyun_oss->saveFile( $object, $file['file'] );
 
     if($oss_nolocalsaving && false === strpos($file['type'], 'image')){
         _delete_local_file($file['file']);
@@ -120,15 +119,16 @@ function upload_thumb_2_oss($metadata)
 {
     $wp_uploads = wp_upload_dir();
     $oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = esc_attr($oss_options['bucket']);
-    $oss_ak = esc_attr($oss_options['ak']);
-    $oss_sk = esc_attr($oss_options['sk']);
+    $config = array(
+        'id'     => esc_attr($oss_options['ak']),
+        'key'    => esc_attr($oss_options['sk']),
+        'bucket' => esc_attr($oss_options['bucket'])
+    );
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
     if(!is_object($aliyun_oss) && $oss_options['img_url'] == "")
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk);
-    $opt['Expires'] = 'access plus 1 years';
+        $aliyun_oss = Alibaba::Storage($config);
 
     if (isset($metadata['sizes']) && count($metadata['sizes']) > 0) {
         foreach ($metadata['sizes'] as $val) {
@@ -136,7 +136,7 @@ function upload_thumb_2_oss($metadata)
             $file = $wp_uploads['path'].'/'.$val['file'];
 
             if($oss_options['img_url'] == "")
-                $aliyun_oss->upload_file_by_file( $oss_bucket, $object, $file, $opt );
+                $aliyun_oss->saveFile( $object, $file );
 
             if($oss_nolocalsaving)
                 _delete_local_file($file);
@@ -163,20 +163,22 @@ function delete_remote_file($file)
     if(!false == strpos($file, '@!'))
         return $file;
 
-    $oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = esc_attr($oss_options['bucket']);
-    $oss_ak = esc_attr($oss_options['ak']);
-    $oss_sk = esc_attr($oss_options['sk']);
-    $oss_upload_path = trim($oss_options['path'],'/');
     $wp_uploads = wp_upload_dir();
+    $oss_options = get_option('oss_options', TRUE);
+    $config = array(
+        'id'     => esc_attr($oss_options['ak']),
+        'key'    => esc_attr($oss_options['sk']),
+        'bucket' => esc_attr($oss_options['bucket'])
+    );
+    $oss_upload_path = trim($oss_options['path'],'/');
 
     $del_file = str_replace($wp_uploads['basedir'], '', $file);
     $del_file = ltrim($oss_upload_path . '/' .ltrim($del_file, '/'), '/');
 
     if(!is_object($aliyun_oss))
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk);
+        $aliyun_oss = Alibaba::Storage($config);
 
-    $aliyun_oss->delete_object( $oss_bucket, $del_file);
+    $aliyun_oss->delete($del_file);
 
     return $file;
 }
