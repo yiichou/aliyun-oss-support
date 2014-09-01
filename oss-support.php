@@ -29,6 +29,7 @@
  *
  *   ==== ver: 2.0 ====
  * Author: Ivan Chou (ichou.cn)
+ * Update URI: http://www.ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress
  * 1.完全重构
  * 2.支持 Aliyun OSS 的图片服务
  * 3.改变钩子嵌入机制，支持所有附件（以前的版本只有图片，而且启用时其他附件完全不可用了，坑！！）

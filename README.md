@@ -1,5 +1,7 @@
 ## 基于阿里云OSS的WordPress远程附件支持插件——阿里云附件(Aliyun Support)(修订版)
 
+插件发布地址及说明：http://www.ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress
+
 原插件地址：http://mawenjian.net/p/977.html
 
 由于原插件作者没有持续更新，已经无法使用（或无法兼容最新版本环境），故对此进行一些小修正
@@ -14,6 +16,7 @@ ____________________
 2. 支持 Aliyun OSS 的图片服务
 3. 改变钩子嵌入机制，支持所有附件（以前的版本只上传图片，而且启用时其他附件完全不可用了，坑！！）
 4. 添加卸载、不残留
+5. 支持 Aliyun ACE （ 切换到 ACE 分支 ）
 
 
 ____________________
@@ -40,4 +43,4 @@ ____________________
 ### 插件下载：
 [OSS-Support.zip](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)
 
-[发布地址](http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban)
+[发布地址](http://www.ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress)
