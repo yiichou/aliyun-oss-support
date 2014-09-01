@@ -1,6 +1,6 @@
 ## 基于阿里云OSS的WordPress远程附件支持插件——阿里云附件(Aliyun Support)(修订版)
 
-插件发布地址及说明：http://www.ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress
+插件发布地址及说明：http://ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress
 
 原插件地址：http://mawenjian.net/p/977.html
 
@@ -43,4 +43,4 @@ ____________________
 ### 插件下载：
 [OSS-Support.zip](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)
 
-[发布地址](http://www.ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress)
+[发布地址](http://ichou.cn/posts/aliyun-oss-support-plugin-for-wordpress)
