@@ -64,8 +64,6 @@ ____________________
 ### 插件下载：
 [OSS-Support.zip](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)
 
-阿里云 ACE 适用版本 
-
-[OSS-Support-ACE.zip](https://github.com/IvanChou/aliyun-oss-support/archive/Aliyun-ACE.zip)
+[OSS-Support-ACE.zip](https://github.com/IvanChou/aliyun-oss-support/archive/Aliyun-ACE.zip) - 阿里云 ACE 适用版本 
 
 [发布地址](http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress)
