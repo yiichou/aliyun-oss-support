@@ -1,38 +1,18 @@
 <?php
 /**
- * Plugin Name: 阿里云附件
- * Plugin URI: "http://mawenjian.net/p/977.html"
+ * Plugin Name: 阿里云附件V2 4 ACE
+ * Plugin URI: "http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress"
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: Ivan Chou
- * Author URI: http://ichou.cn/
- * Original Author: 马文建(Wenjian Ma)
- * Version: 2.0
+ * Author URI: http://yii.im/
+ * Version: 2.1.1
+ * Updated_at: 2014-12-25
  */
-
-
 /**
- *   ==== ver: 1.0 ====
+ *   ==== Original Ver info ====
  * Plugin URI: "http://mawenjian.net/p/977.html"
  * Author: 马文建(Wenjian Ma)
  * Author URI: http://mawenjian.net/
- *
- *   ==== ver: 1.1 ====
- * iChou升级说明
- * Update URI: http://ichou.cn/posts/ji-yu-a-li-yun-ossde-wordpressyuan-cheng-fu-jian-zhi-chi-cha-jian-a-li-yun-fu-jian-aliyun-support-xiu-ding-ban
- * Author: Ivan Chou (ichou.cn)
- *
- * 1.升级 ali-OSS-SDK 到 1.1.6 版本
- * 2.支持给 OSS 绑定的独立域名
- * 3.支持自定 OSS 上文件存放目录 （不影响本地存储，中途若修改请手动移动 OSS 上文件，否则可能链接不到之前的资源）
- * 4.修正原插件 bug 若干
- * 5.优化代码 （移除所有 Notice 级报错）
- *
- *   ==== ver: 2.0 ====
- * Author: Ivan Chou (ichou.cn)
- * 1.完全重构
- * 2.支持 Aliyun OSS 的图片服务
- * 3.改变钩子嵌入机制，支持所有附件（以前的版本只有图片，而且启用时其他附件完全不可用了，坑！！）
- *
  */
 
 //  plugin url
@@ -241,17 +221,17 @@ if(!$oss_options['img_url'] == "")
 function modefiy_img_url($url, $post_id) {
     $wp_uploads = wp_upload_dir();
     $oss_options = get_option('oss_options', TRUE);
-
     if(wp_attachment_is_image($post_id)){
-        $img_baseurl = rtrim($oss_options['img_url'], '/') .'/'. rtrim($oss_options['path'], '/');
+        $img_baseurl = rtrim($oss_options['img_url'], '/');
+        if(rtrim($oss_options['path'], '/') != ""){
+            $img_baseurl = $img_baseurl .'/'. rtrim($oss_options['path'], '/');
+        }
         $url = str_replace(rtrim($wp_uploads['baseurl'], '/'), $img_baseurl, $url);
     }
     return $url;
 }
 if(!$oss_options['img_url'] == "")
     add_filter('wp_get_attachment_url', 'modefiy_img_url', 30, 2);
-
-
 /**
  * 设置 upload_url_path，使用外部存储OSS
  *
@@ -260,9 +240,11 @@ if(!$oss_options['img_url'] == "")
  */
 function reset_upload_url_path( $uploads ) {
     $oss_options = get_option('oss_options', TRUE);
-
     if ($oss_options['static_url'] != "") {
-        $baseurl = rtrim($oss_options['static_url'], '/') .'/'. rtrim($oss_options['path'], '/');
+        $baseurl = rtrim($oss_options['static_url'], '/');
+        if(rtrim($oss_options['path'], '/') != ""){
+            $baseurl = $baseurl .'/'. rtrim($oss_options['path'], '/');
+        }
         $uploads['baseurl'] = $baseurl;
     }
     return $uploads;
@@ -301,7 +283,7 @@ function oss_setting_page() {
         $options['sk'] = trim(stripslashes($_POST['sk']));
     }
     if(isset($_POST['path'])) {
-        $options['path'] = rtrim(trim(stripslashes($_POST['path'])), '/').'/';
+        $options['path'] = trim(trim(stripslashes($_POST['path'])), '/').'/';
     }
     if(isset($_POST['static_url'])) {
         $options['static_url'] = trim(stripslashes($_POST['static_url']));
@@ -357,7 +339,7 @@ function oss_setting_page() {
             <hr>
             <fieldset>
                 <legend>Save path on OSS</legend>
-                <input type="text" name="path" value="<?php echo $oss_path;?>" placeholder=""/>
+                <input type="text" name="path" value="<?php echo $oss_path;?>" placeholder="/"/>
                 <P>可以设置在 OSS 上存储的位置，如果你要存在根目录就留空，我真的没意见(ﾉ￣д￣)ﾉ</P>
             </fieldset>
             <fieldset>
