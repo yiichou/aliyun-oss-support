@@ -5,8 +5,8 @@
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: http://yii.im/
- * Version: 2.1.1
- * Updated_at: 2014-12-25
+ * Version: 2.1.2
+ * Updated_at: 2014-12-26
  */
 /**
  *   ==== Original Ver info ====
@@ -97,7 +97,12 @@ add_filter('wp_handle_upload', 'upload_orign_2_oss', 30);
  */
 function upload_thumb_2_oss($metadata)
 {
-    $wp_uploads = wp_upload_dir();
+    if ( preg_match('/\d{4}\/\d{2}/', $metadata['file'], $m) ) {
+        $wp_uploads = wp_upload_dir($m[0]);
+    } else {
+        return $metadata;
+    }
+    
     $oss_options = get_option('oss_options', TRUE);
     $config = array(
         'id'     => esc_attr($oss_options['ak']),
