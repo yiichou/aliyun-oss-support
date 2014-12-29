@@ -279,7 +279,10 @@ function oss_add_setting_page() {
 add_action('admin_menu', 'oss_add_setting_page');
 
 function oss_setting_page() {
+    
+    $oss_options = get_option('oss_options');
 
+    // Set(rewrite) the setting. 
     $options = array();
     if(isset($_POST['bucket'])) {
         $options['bucket'] = trim(stripslashes($_POST['bucket']));
@@ -288,7 +291,11 @@ function oss_setting_page() {
         $options['ak'] = trim(stripslashes($_POST['ak']));
     }
     if(isset($_POST['sk'])) {
-        $options['sk'] = trim(stripslashes($_POST['sk']));
+        if($_POST['sk'] === '') {
+            $options['sk'] = $oss_options['sk'];
+        } else {
+            $options['sk'] = trim(stripslashes($_POST['sk']));
+        }
     }
     if(isset($_POST['path'])) {
         $options['path'] = trim(trim(stripslashes($_POST['path'])), '/').'/';
@@ -306,14 +313,13 @@ function oss_setting_page() {
     if($options !== array() ){
 
         update_option('oss_options', $options);
-
+        $oss_options = $options;
         ?>
         <div class="updated"><p><strong>设置已保存！</strong></p></div>
     <?php
     }
 
-    $oss_options = get_option('oss_options');
-
+    // Show the setting. 
     $oss_bucket = isset($oss_options['bucket']) ? esc_attr($oss_options['bucket']) : null;
     $oss_ak = isset($oss_options['ak']) ? esc_attr($oss_options['ak']) : null;
     $oss_sk = isset($oss_options['sk']) ? esc_attr($oss_options['sk']) : null;
@@ -341,7 +347,11 @@ function oss_setting_page() {
             <br>
             <fieldset>
                 <legend>Secret Key</legend>
-                <input type="text" name="sk" value="<?php echo $oss_sk;?>" placeholder=""/>
+                <?php if ( ! empty($oss_sk)) : ?>
+                    <input type="text" name="sk" value="" placeholder="〄 你看不到我 ʅ(‾◡◝)"/> ←置空请填入空格
+                <?php else : ?>
+                    <input type="text" name="sk" value="<?php echo $oss_sk;?>" placeholder=""/>
+                <?php endif ?>
                 <p>访问 <a href="http://i.aliyun.com/access_key/" target="_blank">阿里云 密钥管理页面</a>，获取 AKSK</p>
             </fieldset>
             <hr>
