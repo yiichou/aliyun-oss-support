@@ -1287,8 +1287,8 @@ class OSS_Exception extends Exception {}
     //file
     $this->is_empty($file, OSS_FILE_PATH_IS_NOT_ALLOWED_EMPTY);
 		
-    if($this->chk_chinese($file)){
-      $file = iconv('utf-8','gbk',$file);
+    if($this->chk_chinese($file) && $this->is_gb2312($file)){
+      $file = iconv('gbk','utf-8',$file);
     }
 		
     $options[self::OSS_FILE_UPLOAD] = $file;
