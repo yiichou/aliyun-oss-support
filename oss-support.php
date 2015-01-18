@@ -1,13 +1,14 @@
 <?php
 /**
- * Plugin Name: 阿里云附件Ver2_4_ACE
+ * Plugin Name: 阿里云附件plus(ACE)
  * Plugin URI: "http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress"
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: http://yii.im/
- * Version: 2.1.2
- * Updated_at: 2014-12-26
+ * Version: 2.1.3
+ * Updated_at: 2015-01-19
  */
+ 
 /**
  *   ==== Original Ver info ====
  * Plugin URI: "http://mawenjian.net/p/977.html"
