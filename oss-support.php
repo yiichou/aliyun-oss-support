@@ -9,7 +9,7 @@
  * Updated_at: 2015-01-19
  */
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/sdk.class.php');
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/alioss.class.php');
 
 //  plugin url
 define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
@@ -61,11 +61,12 @@ function upload_orign_2_oss($file)
 {
     $wp_uploads = wp_upload_dir();
     $oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = esc_attr($oss_options['bucket']);
-    $oss_ak = esc_attr($oss_options['ak']);
-    $oss_sk = esc_attr($oss_options['sk']);
-    $end_point = $oss_options['end_point'];
-
+    $config = array(
+            'id'     => esc_attr($oss_options['ak']),
+            'key'    => esc_attr($oss_options['sk']),
+            'bucket' => esc_attr($oss_options['bucket']),
+            'end_point' => esc_attr($oss_options['end_point'])
+        );
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
@@ -73,10 +74,10 @@ function upload_orign_2_oss($file)
     $object = ltrim($oss_upload_path . '/' .ltrim($object, '/'), '/');
 
     if(!is_object($aliyun_oss))
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk, $end_point);
+        $aliyun_oss = Alibaba::Storage($config);
 
     $opt['Expires'] = 'access plus 1 years';
-    $aliyun_oss->upload_file_by_file( $oss_bucket, $object, $file['file'], $opt );
+    $aliyun_oss->saveFile( $object, $file['file'], $opt);
 
     if($oss_nolocalsaving && false === strpos($file['type'], 'image')){
         _delete_local_file($file['file']);
@@ -102,15 +103,17 @@ function upload_thumb_2_oss($metadata)
     }
     
     $oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = esc_attr($oss_options['bucket']);
-    $oss_ak = esc_attr($oss_options['ak']);
-    $oss_sk = esc_attr($oss_options['sk']);
-    $end_point = $oss_options['end_point'];
+    $config = array(
+            'id'     => esc_attr($oss_options['ak']),
+            'key'    => esc_attr($oss_options['sk']),
+            'bucket' => esc_attr($oss_options['bucket']),
+            'end_point' => esc_attr($oss_options['end_point'])
+        );
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
     if(!is_object($aliyun_oss) && $oss_options['img_url'] == "")
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk, $end_point);
+        $aliyun_oss = Alibaba::Storage($config);
     $opt['Expires'] = 'access plus 1 years';
 
     if (isset($metadata['sizes']) && count($metadata['sizes']) > 0) {
@@ -119,7 +122,7 @@ function upload_thumb_2_oss($metadata)
             $file = $wp_uploads['path'].'/'.$val['file'];
 
             if($oss_options['img_url'] == "")
-                $aliyun_oss->upload_file_by_file( $oss_bucket, $object, $file, $opt );
+                $aliyun_oss->saveFile( $object, $file, $opt);
 
             if($oss_nolocalsaving)
                 _delete_local_file($file);
@@ -147,10 +150,12 @@ function delete_remote_file($file)
         return $file;
 
     $oss_options = get_option('oss_options', TRUE);
-    $oss_bucket = esc_attr($oss_options['bucket']);
-    $oss_ak = esc_attr($oss_options['ak']);
-    $oss_sk = esc_attr($oss_options['sk']);
-    $end_point = $oss_options['end_point'];
+    $config = array(
+            'id'     => esc_attr($oss_options['ak']),
+            'key'    => esc_attr($oss_options['sk']),
+            'bucket' => esc_attr($oss_options['bucket']),
+            'end_point' => esc_attr($oss_options['end_point'])
+        );
     $oss_upload_path = trim($oss_options['path'],'/');
     $wp_uploads = wp_upload_dir();
 
@@ -158,9 +163,9 @@ function delete_remote_file($file)
     $del_file = ltrim($oss_upload_path . '/' .ltrim($del_file, '/'), '/');
 
     if(!is_object($aliyun_oss))
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk, $end_point);
+        $aliyun_oss = Alibaba::Storage($config);
 
-    $aliyun_oss->delete_object( $oss_bucket, $del_file);
+    $aliyun_oss->delete($del_file);
 
     return $file;
 }
@@ -355,10 +360,10 @@ function oss_setting_page() {
                 <?php endif ?>
                 <p>访问 <a href="http://i.aliyun.com/access_key/" target="_blank">阿里云 密钥管理页面</a>，获取 AKSK</p>
             </fieldset>
-            <br >
             <fieldset>
-                <legend>End Point</legend>
+                <legend>数据节点地址</legend>
                 <input type="text" name="end_point" value="<?php echo $end_point;?>" placeholder=""/>
+                <p>查看所有节点及地址 <a href="https://docs.aliyun.com/?spm=5176.7114037.1996646101.11.XMMlZa&pos=6#/pub/oss/product-documentation/domain-region" target="_blank">OSS数据中心地址</a></p>
             </fieldset>
             <hr>
             <fieldset>
