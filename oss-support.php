@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: 阿里云附件plus
+ * Plugin Name: 阿里云附件存储
  * Plugin URI: "http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress"
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: http://yii.im/
- * Version: 2.1.3
- * Updated_at: 2015-01-19
+ * Version: 2.3.1
+ * Updated_at: 2015-11-14
  */
 
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/alioss.class.php');
