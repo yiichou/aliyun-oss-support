@@ -9,15 +9,7 @@
  * Updated_at: 2015-01-19
  */
 
-
-/**
- *   ==== Original Ver info ====
- * Plugin URI: "http://mawenjian.net/p/977.html"
- * Author: 马文建(Wenjian Ma)
- * Author URI: http://mawenjian.net/
- */
-
-require_once('sdk.class.php');
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/sdk.class.php');
 
 //  plugin url
 define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
@@ -28,13 +20,14 @@ $oss_options = get_option('oss_options');
  * 初始化
  */
 function oss_set_options() {
-    $options = array(
-        'bucket' => "",
-        'ak' => "",
-    	'sk' => "",
-        'path' => "",
+    $options         = array(
+        'bucket'     => "",
+        'ak'         => "",
+        'sk'         => "",
+        'end_point'  => "",
+        'path'       => "",
         'static_url' => "",
-        'img_url' => ""
+        'img_url'    => ""
     );
     add_option('oss_options', $options, '', 'yes');
 }
@@ -71,6 +64,8 @@ function upload_orign_2_oss($file)
     $oss_bucket = esc_attr($oss_options['bucket']);
     $oss_ak = esc_attr($oss_options['ak']);
     $oss_sk = esc_attr($oss_options['sk']);
+    $end_point = $oss_options['end_point'];
+
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
@@ -78,7 +73,7 @@ function upload_orign_2_oss($file)
     $object = ltrim($oss_upload_path . '/' .ltrim($object, '/'), '/');
 
     if(!is_object($aliyun_oss))
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk);
+        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk, $end_point);
 
     $opt['Expires'] = 'access plus 1 years';
     $aliyun_oss->upload_file_by_file( $oss_bucket, $object, $file['file'], $opt );
@@ -110,11 +105,12 @@ function upload_thumb_2_oss($metadata)
     $oss_bucket = esc_attr($oss_options['bucket']);
     $oss_ak = esc_attr($oss_options['ak']);
     $oss_sk = esc_attr($oss_options['sk']);
+    $end_point = $oss_options['end_point'];
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
     if(!is_object($aliyun_oss) && $oss_options['img_url'] == "")
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk);
+        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk, $end_point);
     $opt['Expires'] = 'access plus 1 years';
 
     if (isset($metadata['sizes']) && count($metadata['sizes']) > 0) {
@@ -154,6 +150,7 @@ function delete_remote_file($file)
     $oss_bucket = esc_attr($oss_options['bucket']);
     $oss_ak = esc_attr($oss_options['ak']);
     $oss_sk = esc_attr($oss_options['sk']);
+    $end_point = $oss_options['end_point'];
     $oss_upload_path = trim($oss_options['path'],'/');
     $wp_uploads = wp_upload_dir();
 
@@ -161,7 +158,7 @@ function delete_remote_file($file)
     $del_file = ltrim($oss_upload_path . '/' .ltrim($del_file, '/'), '/');
 
     if(!is_object($aliyun_oss))
-        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk);
+        $aliyun_oss = new ALIOSS($oss_ak, $oss_sk, $end_point);
 
     $aliyun_oss->delete_object( $oss_bucket, $del_file);
 
@@ -290,6 +287,9 @@ function oss_setting_page() {
     if(isset($_POST['ak'])) {
         $options['ak'] = trim(stripslashes($_POST['ak']));
     }
+    if(isset($_POST['end_point'])) {
+        $options['end_point'] = trim(stripslashes($_POST['end_point']));
+    }
     if(isset($_POST['sk'])) {
         if($_POST['sk'] === '') {
             $options['sk'] = $oss_options['sk'];
@@ -324,6 +324,7 @@ function oss_setting_page() {
     $oss_ak = isset($oss_options['ak']) ? esc_attr($oss_options['ak']) : null;
     $oss_sk = isset($oss_options['sk']) ? esc_attr($oss_options['sk']) : null;
     $oss_path = isset($oss_options['path']) ? esc_attr($oss_options['path']) : null;
+    $end_point = isset($oss_options['end_point']) ? esc_attr($oss_options['end_point']) : null;
     $oss_static_url = isset($oss_options['static_url']) ? esc_attr($oss_options['static_url']) : null;
     $oss_img_url = isset($oss_options['img_url']) ? esc_attr($oss_options['img_url']) : null;
 
@@ -353,6 +354,11 @@ function oss_setting_page() {
                     <input type="text" name="sk" value="<?php echo $oss_sk;?>" placeholder=""/>
                 <?php endif ?>
                 <p>访问 <a href="http://i.aliyun.com/access_key/" target="_blank">阿里云 密钥管理页面</a>，获取 AKSK</p>
+            </fieldset>
+            <br >
+            <fieldset>
+                <legend>End Point</legend>
+                <input type="text" name="end_point" value="<?php echo $end_point;?>" placeholder=""/>
             </fieldset>
             <hr>
             <fieldset>
