@@ -9,7 +9,8 @@
  * Updated_at: 2015-11-14
  */
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/alioss.class.php');
+if (! class_exists(Alibaba))
+    require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/alioss.class.php');
 
 //  plugin url
 define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
@@ -59,6 +60,9 @@ oss_admin_warnings($oss_options);
  */
 function upload_orign_2_oss($file)
 {
+    if ($_GET["action"] == 'upload-plugin' || $_GET["action"] == 'upload-theme') 
+        return;
+
     $wp_uploads = wp_upload_dir();
     $oss_options = get_option('oss_options', TRUE);
     $config = array(
