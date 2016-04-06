@@ -12,6 +12,12 @@ ____________________
 
 http://bbs.aliyun.com/read/169542.html?spm=0.0.0.0.d6eYLP
 
+#### 由于 Wordpress 4.4.2 引入 sercet 技术优化多分辨率屏幕下的体验，会导致 sercet 中的资源取不到 OSS 图片服务的资源（所以如果不使用图片服务，没有这个问题），目前的解决方案：
+
+https://github.com/IvanChou/aliyun-oss-support/issues/9 （感谢 @hairui219 提供）
+
+另外，ACE 要中止服务了，下一个版本开始不再为兼容 ACE 特别处理了
+
 ### 版本号：2.3.2
 
 修正日期：2015-11-14
