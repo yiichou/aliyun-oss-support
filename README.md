@@ -12,6 +12,16 @@ ____________________
 
 http://bbs.aliyun.com/read/169542.html?spm=0.0.0.0.d6eYLP
 
+____________________
+
+#### 由于 Wordpress 4.4.2 引入 srcset 技术优化多分辨率屏幕下的体验，会导致 srcset 中的资源取不到 OSS 图片服务的资源（所以如果不使用图片服务，没有这个问题），目前的解决方案：
+
+https://github.com/IvanChou/aliyun-oss-support/issues/9 （感谢 @hairui219 提供）
+
+另外，ACE 要中止服务了，下一个版本开始不再为兼容 ACE 特别处理了
+
+____________________
+
 ### 版本号：2.3.2
 
 修正日期：2015-11-14
@@ -138,6 +148,6 @@ ____________________
 ### 插件下载：
 [OSS-Support.zip](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)
 
-[OSS-Support-ACE.zip](https://github.com/IvanChou/aliyun-oss-support/archive/Aliyun-ACE.zip) - 阿里云 ACE 适用版本 
+ACE版本 也是这个 ↑↑↑
 
 [发布地址](http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress)
