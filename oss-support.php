@@ -191,8 +191,6 @@ function delete_thumb_img($file)
     array_map('_delete_local_file', glob($file_t.'-*'));
     return $file;
 }
-if(!$oss_options['img_url'] == "")
-    add_action('wp_delete_file', 'delete_thumb_img', 99);
 
 /**
  * 修改从数据库中取出的图片信息，以使用 Aliyun 的图片服务
@@ -219,8 +217,6 @@ function modefiy_img_meta($data) {
 
     return $data;
 }
-if(!$oss_options['img_url'] == "")
-    add_filter('wp_get_attachment_metadata', 'modefiy_img_meta', 990);
 
 /**
  * 重置图片链接，使用独立的图片服务器。
@@ -242,8 +238,27 @@ function modefiy_img_url($url, $post_id) {
     }
     return $url;
 }
+
+/**
+ * 重置 srcset 图片链接，使用独立的图片服务器。
+ * 仅在开启图片服务时启用
+ *
+ * @param $sources
+ * @return mixed
+ */
+function modefiy_img_srcset_url($sources, $size_array, $image_src, $image_meta, $attachment_id) {
+    $oss_options = get_option('oss_options', TRUE);
+    foreach( $sources as $w => $img )
+        $sources[$w]['url'] = str_replace($oss_options['static_url'], $oss_options['img_url'], $img['url']);
+    return $sources;
+}
+
 if(!$oss_options['img_url'] == "")
+    add_action('wp_delete_file', 'delete_thumb_img', 99);
+    add_filter('wp_get_attachment_metadata', 'modefiy_img_meta', 990);
+    add_filter('wp_calculate_image_srcset_meta', 'modefiy_img_meta', 990);
     add_filter('wp_get_attachment_url', 'modefiy_img_url', 30, 2);
+    add_filter('wp_calculate_image_srcset', 'modefiy_img_srcset_url', 30, 2);
 
 /**
  * 设置 upload_url_path，使用外部存储OSS
