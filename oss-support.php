@@ -5,8 +5,8 @@
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: http://yii.im/
- * Version: 2.3.2
- * Updated_at: 2015-11-16
+ * Version: 2.4.0
+ * Updated_at: 2016-04-30
  */
 
 if (! class_exists(Alibaba))
@@ -382,7 +382,7 @@ function oss_setting_page() {
             <fieldset>
                 <legend>数据节点地址</legend>
                 <input type="text" name="end_point" value="<?php echo $end_point;?>" placeholder=""/>
-                <p>查看所有节点及地址 <a href="https://docs.aliyun.com/?spm=5176.7114037.1996646101.11.XMMlZa&pos=6#/pub/oss/product-documentation/domain-region" target="_blank">OSS数据中心地址</a></p>
+                <p>查看所有节点及地址 <a href="https://help.aliyun.com/document_detail/oss/user_guide/endpoint_region.html?spm=5176.product8314910_oss.4.12.QYDIDL" target="_blank">OSS数据中心地址</a></p>
             </fieldset>
             <hr>
             <fieldset>
