@@ -1,16 +1,15 @@
 <?php
 /**
  * Plugin Name: 阿里云附件存储
- * Plugin URI: "http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress"
+ * Plugin URI: "https://yii.im/post/aliyun-oss-support-plugin-for-wordpress"
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: Ivan Chou
- * Author URI: http://yii.im/
- * Version: 2.4.0
- * Updated_at: 2016-04-30
+ * Author URI: https://yii.im/
+ * Version: 2.4.1
+ * Updated_at: 2016-07-12
  */
 
-if (! class_exists(Alibaba))
-    require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/alioss.class.php');
+require(dirname(__FILE__).DIRECTORY_SEPARATOR.'SDK/alioss.class.php');
 
 //  plugin url
 define('OSS_BASEFOLDER', plugin_basename(dirname(__FILE__)));
@@ -61,7 +60,7 @@ oss_admin_warnings($oss_options);
 function upload_orign_2_oss($file)
 {
     if ($_GET["action"] == 'upload-plugin' || $_GET["action"] == 'upload-theme') 
-        return;
+        return $file;
 
     $wp_uploads = wp_upload_dir();
     $oss_options = get_option('oss_options', TRUE);
@@ -77,8 +76,7 @@ function upload_orign_2_oss($file)
     $object = str_replace($wp_uploads['basedir'], '', $file['file']);
     $object = ltrim($oss_upload_path . '/' .ltrim($object, '/'), '/');
 
-    if(!is_object($aliyun_oss))
-        $aliyun_oss = Alibaba::Storage($config);
+    $aliyun_oss = Alibaba::Storage($config);
 
     $opt['Expires'] = 'access plus 1 years';
     $aliyun_oss->saveFile( $object, $file['file'], $opt);
@@ -116,8 +114,6 @@ function upload_thumb_2_oss($metadata)
     $oss_upload_path = trim($oss_options['path'],'/');
     $oss_nolocalsaving = (esc_attr($oss_options['nolocalsaving'])=='true') ? true : false;
 
-    if(!is_object($aliyun_oss) && $oss_options['img_url'] == "")
-        $aliyun_oss = Alibaba::Storage($config);
     $opt['Expires'] = 'access plus 1 years';
 
     if (isset($metadata['sizes']) && count($metadata['sizes']) > 0) {
@@ -125,8 +121,10 @@ function upload_thumb_2_oss($metadata)
             $object = ltrim($oss_upload_path . '/' .trim($wp_uploads['subdir'], '/').'/'.ltrim($val['file'], '/'), '/');
             $file = $wp_uploads['path'].'/'.$val['file'];
 
-            if($oss_options['img_url'] == "")
+            if($oss_options['img_url'] == "") {
+                $aliyun_oss = Alibaba::Storage($config);
                 $aliyun_oss->saveFile( $object, $file, $opt);
+            }
 
             if($oss_nolocalsaving)
                 _delete_local_file($file);
@@ -150,7 +148,7 @@ add_filter('wp_generate_attachment_metadata', 'upload_thumb_2_oss', 60);
  */
 function delete_remote_file($file)
 {
-    if(!false == strpos($file, '@!'))
+    if(!false == strpos($file, '@'))
         return $file;
 
     $oss_options = get_option('oss_options', TRUE);
@@ -166,8 +164,7 @@ function delete_remote_file($file)
     $del_file = str_replace($wp_uploads['basedir'], '', $file);
     $del_file = ltrim($oss_upload_path . '/' .ltrim($del_file, '/'), '/');
 
-    if(!is_object($aliyun_oss))
-        $aliyun_oss = Alibaba::Storage($config);
+    $aliyun_oss = Alibaba::Storage($config);
 
     $aliyun_oss->delete($del_file);
 
@@ -184,7 +181,7 @@ add_action('wp_delete_file', 'delete_remote_file');
  */
 function delete_thumb_img($file)
 {
-    if(!false == strpos($file, '@!')) //todo
+    if(!false == strpos($file, '@'))
         return $file;
 
     $file_t = substr($file, 0, strrpos($file, '.'));
@@ -201,18 +198,10 @@ function delete_thumb_img($file)
  */
 function modefiy_img_meta($data) {
     $filename = basename($data['file']);
-
-    if(isset($data['sizes']['thumbnail'])) {
-        $data['sizes']['thumbnail']['file'] = $filename.'@!thumbnail';
-    }
-    if(isset($data['sizes']['post-thumbnail'])) {
-        $data['sizes']['post-thumbnail']['file'] = $filename.'@!post-thumbnail';
-    }
-    if(isset($data['sizes']['medium'])) {
-        $data['sizes']['medium']['file'] = $filename.'@!medium';
-    }
-    if(isset($data['sizes']['large'])) {
-        $data['sizes']['large']['file'] = $filename.'@!large';
+    if(isset($data['sizes'])) {
+        foreach ($data['sizes'] as $size => $info) {
+            $data['sizes'][$size]['file'] = "{$filename}@{$info['height']}h_{$info['width']}w_1l_1c";
+        }
     }
 
     return $data;
@@ -223,6 +212,7 @@ function modefiy_img_meta($data) {
  * 仅在开启图片服务时启用
  *
  * @param $url
+ * @param $post_id
  * @return mixed
  */
 function modefiy_img_url($url, $post_id) {
@@ -246,19 +236,20 @@ function modefiy_img_url($url, $post_id) {
  * @param $sources
  * @return mixed
  */
-function modefiy_img_srcset_url($sources, $size_array, $image_src, $image_meta, $attachment_id) {
+function modefiy_img_srcset_url($sources) {
     $oss_options = get_option('oss_options', TRUE);
     foreach( $sources as $w => $img )
         $sources[$w]['url'] = str_replace($oss_options['static_url'], $oss_options['img_url'], $img['url']);
     return $sources;
 }
 
-if(!$oss_options['img_url'] == "")
+if(!$oss_options['img_url'] == ""){
     add_action('wp_delete_file', 'delete_thumb_img', 99);
     add_filter('wp_get_attachment_metadata', 'modefiy_img_meta', 990);
     add_filter('wp_calculate_image_srcset_meta', 'modefiy_img_meta', 990);
     add_filter('wp_get_attachment_url', 'modefiy_img_url', 30, 2);
     add_filter('wp_calculate_image_srcset', 'modefiy_img_srcset_url', 30, 2);
+}
 
 /**
  * 设置 upload_url_path，使用外部存储OSS
@@ -282,6 +273,10 @@ add_filter( 'upload_dir', 'reset_upload_url_path', 30 );
 
 /**
  * 添加设置页面入口连接
+ *
+ * @param $links
+ * @param $file
+ * @return array
  */
 function oss_plugin_action_links( $links, $file ) {
     if ( $file == plugin_basename( dirname(__FILE__).'/oss-support.php' ) ) {
@@ -364,7 +359,6 @@ function oss_setting_page() {
                 <input type="text" name="bucket" value="<?php echo $oss_bucket;?>" placeholder="请输入云存储使用的 bucket"/>
                 <p>请先访问 <a href="http://i.aliyun.com/dashboard?type=oss">阿里云存储</a> 创建 bucket 后，填写以上内容。</p>
             </fieldset>
-            <hr>
             <fieldset>
                 <legend>Access Key / API key</legend>
                 <input type="text" name="ak" value="<?php echo $oss_ak;?>" placeholder=""/>
@@ -382,7 +376,7 @@ function oss_setting_page() {
             <fieldset>
                 <legend>数据节点地址</legend>
                 <input type="text" name="end_point" value="<?php echo $end_point;?>" placeholder=""/>
-                <p>查看所有节点及地址 <a href="https://help.aliyun.com/document_detail/oss/user_guide/endpoint_region.html?spm=5176.product8314910_oss.4.12.QYDIDL" target="_blank">OSS数据中心地址</a></p>
+                <p>查看所有节点及地址 <a href="https://docs.aliyun.com/?spm=5176.7114037.1996646101.11.XMMlZa&pos=6#/pub/oss/product-documentation/domain-region" target="_blank">OSS数据中心地址</a></p>
             </fieldset>
             <hr>
             <fieldset>
@@ -397,14 +391,13 @@ function oss_setting_page() {
             </fieldset>
             <hr>
             <fieldset>
-                <legend>Aliyun-OSS 图片服务的 URL</legend>
-                <input type="text" name="img_url" value="<?php echo $oss_img_url;?>" placeholder="http://"/>
                 <dl>
                     <dt>请瞩目：</dt>
                     <dd>1.图片服务是可选的，留空即可不启用</dd>
-                    <dd>2.使用请先在Aliyun中设置好四种样式: <code>{'thumbnail','post-thumbnail','large','medium'}</code></dd>
-                    <dd>3.开启图片服务后，只有原图会上传到 OSS 中，缩略图不会再上传</dd>
+                    <dd>2.开启图片服务后，只有原图会上传到 OSS 中，缩略图不会再上传</dd>
                 </dl>
+                <legend>Aliyun-OSS 图片服务的 URL</legend>
+                <input type="text" name="img_url" value="<?php echo $oss_img_url;?>" placeholder="http://"/>
             </fieldset>
             <hr>
             <fieldset>
@@ -438,3 +431,4 @@ function _delete_local_file($file){
         return FALSE;
     }
 }
+
