@@ -1,4 +1,4 @@
-## 基于阿里云OSS的WordPress远程附件支持插件——阿里云附件(Aliyun Support)(修订版)
+## 基于阿里云OSS的WordPress远程附件支持插件——阿里云附件(Aliyun Storage Support)(修订版)
 
 插件发布地址及说明：http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress
 

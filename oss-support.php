@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Aliyun OSS support
+ * Plugin Name: Aliyun Storage Support
  * Plugin URI: "https://yii.im/post/aliyun-oss-support-plugin-for-wordpress"
  * Description: 使用阿里云存储OSS作为附件存储空间。This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remote saving.
  * Author: ichou(Ivan Chou)

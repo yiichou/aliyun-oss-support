@@ -1,4 +1,4 @@
-=== Aliyun OSS support ===
+=== Aliyun Storage Support ===
 Contributors: ichou
 Tags: Aliyun,阿里云,OSS,storage
 Requires at least: 3.5.0
