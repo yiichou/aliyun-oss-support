@@ -215,9 +215,10 @@ function delete_thumb_img($file)
  */
 function modefiy_img_meta($data) {
     $filename = basename($data['file']);
+    $fileformat = strrchr($filename,'.');
     if(isset($data['sizes'])) {
         foreach ($data['sizes'] as $size => $info) {
-            $data['sizes'][$size]['file'] = "{$filename}@{$info['height']}h_{$info['width']}w_1l_1c";
+            $data['sizes'][$size]['file'] = "{$filename}@{$info['height']}h_{$info['width']}w_1l_1c{$fileformat}";
         }
     }
 
@@ -448,4 +449,3 @@ function _delete_local_file($file){
         return FALSE;
     }
 }
-
