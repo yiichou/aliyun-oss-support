@@ -1,0 +1,49 @@
+<?php
+/**
+ * Plugin Name: Aliyun OSS
+ * Plugin URI: "https://github.com/IvanChou/aliyun-oss-support"
+ * Description: 使用阿里云 OSS 作为附件的存储空间。 This is a plugin that used Aliyun OSS for attachments remote saving.
+ * Author: Ivan Chou
+ * Author URI: https://yii.im/
+ * Version: 3.0.0-beta
+ * Updated_at: 2016-09-17
+ */
+
+/*  Copyright 2016  Ivan Chou  (email : yiichou@gmail.com)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+require(dirname(__FILE__).DIRECTORY_SEPARATOR.'aliyun-oss-php-sdk-2.0.7.phar');
+require(dirname(__FILE__).DIRECTORY_SEPARATOR.'aliyun-oss-wp.phar');
+
+/* 如需开发调试,请至 https://github.com/IvanChou/aliyun-oss-support clone 源码 */
+//require(dirname(__FILE__).DIRECTORY_SEPARATOR.'autoload.php');
+
+use OSS\WP\Config;
+
+Config::init(__FILE__);
+new OSS\WP\Setting();
+
+try {
+    $ossClient = new OSS\OssClient(Config::$accessKeyId, Config::$accessKeySecret, Config::$endpoint);
+    new OSS\WP\Upload($ossClient);
+    new OSS\WP\Delete($ossClient);
+    new OSS\WP\UrlHelper();
+} catch (OSS\Core\OssException $e) {
+    register_activation_hook(__FILE__, function () {
+        add_option('oss_options', Config::$originOptions, '', 'yes');
+    });
+}

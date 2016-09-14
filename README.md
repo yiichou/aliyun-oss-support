@@ -1,71 +1,38 @@
-## 基于阿里云OSS的WordPress远程附件支持插件——阿里云附件(Aliyun Storage Support)(修订版)
+# 阿里云 OSS 支持插件(Aliyun OSS Support) For WordPress 
 
-插件发布地址及说明：http://yii.im/posts/aliyun-oss-support-plugin-for-wordpress
+本插件主要为 Wordpress 提供基于阿里云 OSS 的远程附件存储功能，并且最大限度的依赖 Wordpress 本身功能扩展来实现，以保证插件停用或博客搬迁时可以快速切换回原来的方式。
 
-> 请瞩目：ACE 已经跑路了，OSS 推出了回源选项，有兴趣的小伙伴可以试一下，有了回源这个插件就不是必要的了
+插架由官方商店中 马文建(@mawenjian) 同学的[「阿里云附件」](https://github.com/mawenjian/aliyun-oss-support)插件拓展而来。由于马同学在曾经的某段时间里没能即时维护这个项目，也没有开源，于是我在修复 bug 并 rebuild 后，将这个野生的修订版发布到阿里云社区，意外获得了 ACE 社区官方管理组的推荐。
 
-#### 当前版本
+后来，马同学 release 了 2.0 版本并开源他的项目了，我就中止了这边的维护。但依旧是有网友提 Issue 或发邮件来询问，加上自己的需求，有时间的时候，也就修补一下大家反应的问题，也许还是会有人会用到。
 
-2.4.1
+由于插件沿用了马同学插件的名字，并 WordPress 官方不再允许在未经授权的情况下使用知名商标（如：Aliyun) 作为插件名称的一部分，所以这个插件并没有提交官方商店的计划。（重新想个名字对我来说太麻烦了~~(￣▽￣)）
 
-### 插件简介
+## 当前版本
 
-本插件主要为 Wordpress 提供基于阿里云 OSS 的远程附件存储功能，并且最大限度的依赖 wordpress 本身功能扩展来实现，以保证插件停用或博客搬迁时可以快速切换会原来的方式。插件采用静默工作方式，设置启用后会直接替换原生存储，无需增加任何额外操作。当然，缺点就是无法同时使用 本地 和 OSS 两边的资源，<del>或许稍微改下可以实现</del>（想想都好麻烦 ╮(╯▽╰)╭）
+Stable: 2.5.0
 
-* * *
+Beta:   3.0.0-beta
 
-### 插件特色
 
-1.  支持阿里云 OSS 的图片服务（—>这个图片服务是个神器啊）  
+## 插件特色
 
-2.  支持设定文件在 OSS 上的存储路径  
+1. 支持 Aliyun OSS 的图片服务（根据参数获得不同尺寸的图片）
+2. 自定义文件在 Bucket 上的存储位置  
+3. 支持 Https 站点
+4. 全格式附件支持，不仅仅是图片
+5. 支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
+6. 支持在 WordPress 后台编辑图片
+7. 图片服务支持预设图片样式，可用于图片打水印的需求
+8. 中英文双语支持，方便使用英文为默认语言的同学
+9. 代码遵循 PSR-4 规则编写，并使用 phar 文件作为 release 版本
 
-3.  全格式附件支持，不仅仅是图片  
+## 插件使用
 
-4.  可以设定本地文件是否保留  
+ 
 
-5.  不使用图片服务时，会连缩略图一起上传  
-
-6.  可以自定义域名（已绑定bucket的）（—> 这也算特色？） 
-
-7.  支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
-
-8.  最后，也是最重要的特色，它的代码看上去还算干净
-
-* * *
-
-### 插件使用
-
-1.  下载  
-    [Aliyun-OSS-Support](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)  
-
-2.  安装并启用  
-3.  按提示设置  
-![](http://chou.oss-cn-hangzhou.aliyuncs.com/yii.im%2Fasset%2F549b11107969690548090000%2FFid_220-220_1900406608627700_2e0d2a0ca198570.png)
-
-4.  试一下能不能用(=<sup>‥</sup>=)
-
-* * *
-
-### 关于设置的一些说明
-
-1.  `img_server_url` 有值时，即代表开启了 OSS 的图片服务支持 
-
-2.  图片服务开启时，只会上传原图到 OSS 上  
-
-3.  OSS-Http-Url 留空的话，WordPress 会切换回使用本地资源的状态，但是 OSS 上传依旧会进行  
-
-4.  Save path on OSS 不会影响本地存储路径，可是放心设置  
-
-* * *
-
-### 更新日志
+## 更新日志
 
 https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 
-* * *
 
-### 插件下载：
-[OSS-Support.zip](https://github.com/IvanChou/aliyun-oss-support/archive/master.zip)
-
-[发布地址](https://yii.im/post/aliyun-oss-support-plugin-for-wordpress)

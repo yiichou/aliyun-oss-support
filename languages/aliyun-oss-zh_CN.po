@@ -1,0 +1,205 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aliyun OSS Support\n"
+"POT-Creation-Date: 2016-09-14 17:46+0800\n"
+"PO-Revision-Date: 2016-09-14 17:46+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.5\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: aliyun-oss.php\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#. Plugin Name of the plugin/theme
+#: src/Setting.php:23 src/Setting.php:24
+msgid "Aliyun OSS"
+msgstr "阿里云 OSS"
+
+#: src/Setting.php:41
+msgid "Settings"
+msgstr "设置"
+
+#: src/Setting.php:49
+#, php-format
+msgid ""
+"Aliyun OSS Support is almost ready. You should <a href=\"%s\">Setting</a> it "
+"to work."
+msgstr ""
+"阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
+"作。"
+
+#: src/Setting.php:87
+msgid "The settings have been saved"
+msgstr "配置已保存"
+
+#: view/setting.php:7
+msgid "Aliyun OSS Settings"
+msgstr "阿里云 OSS 设置"
+
+#: view/setting.php:19
+msgid "You can't see me"
+msgstr "你看不见我"
+
+#: view/setting.php:22
+msgid "Region"
+msgstr "区域"
+
+#: view/setting.php:22
+msgid "Endpoint"
+msgstr "数据节点"
+
+#: view/setting.php:25
+msgid "oss-cn-hangzhou"
+msgstr "华东 1 (杭州)"
+
+#: view/setting.php:26
+msgid "oss-cn-shanghai"
+msgstr "华东 2 (上海)"
+
+#: view/setting.php:27
+msgid "oss-cn-qingdao"
+msgstr "华北 1 (青岛)"
+
+#: view/setting.php:28
+msgid "oss-cn-beijing"
+msgstr "华北 2 (北京)"
+
+#: view/setting.php:29
+msgid "oss-cn-shenzhen"
+msgstr "华南 1 (深圳)"
+
+#: view/setting.php:30
+msgid "oss-cn-hongkong"
+msgstr "香港数据中心"
+
+#: view/setting.php:31
+msgid "oss-us-west-1"
+msgstr "美国硅谷数据中心"
+
+#: view/setting.php:32
+msgid "oss-us-east-1"
+msgstr "美国弗吉尼亚数据中心"
+
+#: view/setting.php:33
+msgid "oss-ap-southeast-1"
+msgstr "亚太（新加坡）数据中心"
+
+#: view/setting.php:38
+msgid "internal"
+msgstr "内网"
+
+#: view/setting.php:46
+msgid "Bucket Settings"
+msgstr "Bucket 设置"
+
+#: view/setting.php:54
+msgid "Bucket Host"
+msgstr "Bucket 域名"
+
+#: view/setting.php:57 view/setting.php:101
+msgid ""
+"Your site is working under https, please make sure the host can use https "
+"too."
+msgstr "你的站点启用了 HTTPS，请确保填入的域名也支持 HTTPS 服务。"
+
+#: view/setting.php:61
+msgid "Storage Path"
+msgstr "存储路径"
+
+#: view/setting.php:63
+msgid "Keep this empty if you don't need."
+msgstr "如果你不需要指定 Bucket 的存储位置，请留空。"
+
+#: view/setting.php:66 view/setting.php:69
+msgid "Keep Files"
+msgstr "保留文件"
+
+#: view/setting.php:72
+msgid "Don't keep files on local server."
+msgstr "不在本地服务器上保留文件"
+
+#: view/setting.php:81
+msgid "Aliyun Image Service Settings"
+msgstr "阿里云图片服务设置"
+
+#: view/setting.php:85
+msgid "Image Service"
+msgstr "图片服务"
+
+#: view/setting.php:88
+msgid "Image Service Enable"
+msgstr "开启图片服务"
+
+#: view/setting.php:91 view/setting.php:111
+msgid "Enable"
+msgstr "启用"
+
+#: view/setting.php:97
+msgid "Image Service Host"
+msgstr "图片服务域名"
+
+#: view/setting.php:105 view/setting.php:108
+msgid "Preset Image Style"
+msgstr "图片预设样式"
+
+#: view/setting.php:114
+msgid ""
+"Let Image Service use preset styles to deal image, enable it if you need a "
+"watermark."
+msgstr ""
+"使用图片服务里预设的图片样式来处理图片，建议你只有在需要水印的时候开启它。"
+
+#: view/setting.php:120
+msgid "Commit"
+msgstr "保存配置"
+
+#. Plugin URI of the plugin/theme
+msgid "\"https://yii.im/posts/aliyun-oss-support-plugin-for-wordpress\""
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"使用阿里云 OSS 作为附件的存储空间。 This is a plugin that used Aliyun OSS "
+"for attachments remote saving."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Ivan Chou"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://yii.im/"
+msgstr ""
+
+#~ msgid "Image Style"
+#~ msgstr "图片样式"
+
+#~ msgid ""
+#~ "Let Image Service use per-set styles to deal image, enable it if you need "
+#~ "a watermark."
+#~ msgstr ""
+#~ "使用图片服务里预设的图片样式来处理图片，建议你只有在需要水印的时候开启它。"
+
+#~ msgid "Use per-set styles to deal image, enable it if you need a watermark."
+#~ msgstr "使用预设的图片样式来"
+
+#~ msgid ""
+#~ "Using per-set styles on Image Service, enable it if you need to watermark "
+#~ "images."
+#~ msgstr "使用"
+
+#~ msgid "Aliyun OSS Support Settings"
+#~ msgstr "配置阿里云 OSS"
+
+#~ msgid "This is a plugin that used Aliyun OSS for attachments remote saving."
+#~ msgstr "使用阿里云 OSS 作为附件/图片的存储空间"

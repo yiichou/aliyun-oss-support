@@ -1,6 +1,24 @@
 ## ChangeLog - 阿里云附件存储
 ____________________
 
+### 版本号：3.0.0-beta
+
+修正日期：2016-09-17
+
+#### 修订内容：
+
+1. Add new feature -- support watermark [#15](https://github.com/IvanChou/aliyun-oss-support/issues/15) 
+
+2. Add new feature -- save edited image [#13](https://github.com/IvanChou/aliyun-oss-support/issues/13) 
+
+3. Rebuild all codes under PSR-4 and use phar file to release.
+
+4. Update Aliyun Oss SDK to the latest version.
+
+5. Settings page supports both English and 中文.
+
+____________________
+
 ### 版本号：2.4.1
 
 修正日期：2016-07-12
