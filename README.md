@@ -1,19 +1,12 @@
-# 阿里云 OSS 支持插件(Aliyun OSS Support) For WordPress 
+# 阿里云 OSS 支持插件 (Aliyun OSS For WordPress)
 
 本插件主要为 Wordpress 提供基于阿里云 OSS 的远程附件存储功能，并且最大限度的依赖 Wordpress 本身功能扩展来实现，以保证插件停用或博客搬迁时可以快速切换回原来的方式。
 
-插架由官方商店中 马文建(@mawenjian) 同学的[「阿里云附件」](https://github.com/mawenjian/aliyun-oss-support)插件拓展而来。由于马同学在曾经的某段时间里没能即时维护这个项目，也没有开源，于是我在修复 bug 并 rebuild 后，将这个野生的修订版发布到阿里云社区，意外获得了 ACE 社区官方管理组的推荐。
-
-后来，马同学 release 了 2.0 版本并开源他的项目了，我就中止了这边的维护。但依旧是有网友提 Issue 或发邮件来询问，加上自己的需求，有时间的时候，也就修补一下大家反应的问题，也许还是会有人会用到。
-
-由于插件沿用了马同学插件的名字，并 WordPress 官方不再允许在未经授权的情况下使用知名商标（如：Aliyun) 作为插件名称的一部分，所以这个插件并没有提交官方商店的计划。（重新想个名字对我来说太麻烦了~~(￣▽￣)）
-
 ## 当前版本
 
-Stable: 2.5.0
+Stable: `2.5.0`
 
-Beta:   3.0.0-beta
-
+Beta:   `3.0.0-beta`
 
 ## 插件特色
 
@@ -29,10 +22,39 @@ Beta:   3.0.0-beta
 
 ## 插件使用
 
- 
+下载最新 release 版本 zip 包
+
+https://github.com/IvanChou/aliyun-oss-support/releases
+
+将插件解压上传到 `/wp-content/plugins/` 或者通过 WordPress 插件中心上传安装
+
+启用插件 `Aliyun OSS`
+
+进入设置页面 完成相关设置
+
+![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
+
+## 题外
+
+本插架由官方商店中 马文建(@mawenjian) 同学的[「阿里云附件」](https://github.com/mawenjian/aliyun-oss-support)插件拓展而来。由于马同学在曾经的某段时间里没能即时维护这个项目，也没有开源，于是我在修复 bug 并 rebuild 后，将这个野生的修订版发布到阿里云社区，意外获得了 ACE 社区官方管理组的推荐。
+
+后来，马同学 release 了 2.0 版本并开源他的项目了，我就中止了这边的维护。但依旧是有网友提 Issue 或发邮件来询问，加上自己的需求，有时间的时候，也就修补一下大家反应的问题，也许还是会有人会用到。
+
+由于插件沿用了马同学插件的名字，并 WordPress 官方不再允许在未经授权的情况下使用知名商标（如：Aliyun) 作为插件名称的一部分，所以这个插件并没有提交官方商店的计划。（重新想个名字对我来说太麻烦了~~(￣▽￣)）
 
 ## 更新日志
 
 https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 
+## 贡献代码
+
+1. Fork 这个仓库
+2. Clone 源码并安装到本地 WordPress 中
+3. 打开 `aliyun-oss.php`, 根据提示打开注释
+4. 完成你的修改并测试
+5. 提交一个 Pull Request
+
+## 开源协议
+
+BSD
 

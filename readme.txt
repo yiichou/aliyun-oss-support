@@ -33,18 +33,10 @@ This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remo
 2. Activate the plugin through the 'Plugins' screen in WordPress
     激活插件
 
-3. Use the Settings->Oss Setting screen to configure the plugin
-    在 Settings->Aliyun Oss 中配置相关参数
+3. Use the Settings->Aliyun OSS screen to configure the plugin
+    在 Settings->Aliyun OSS 中配置相关参数
 
 == Frequently Asked Questions ==
-
-1.  `img_server_url` 有值时，即代表开启了 OSS 的图片服务支持
-
-2.  图片服务开启时，只会上传原图到 OSS 上
-
-3.  OSS-Http-Url 留空的话，WordPress 会切换回使用本地资源的状态，但是 OSS 上传依旧会进行
-
-4.  Save path on OSS 不会影响本地存储路径，可是放心设置
 
 == Screenshots ==
 
