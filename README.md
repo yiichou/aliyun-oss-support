@@ -22,11 +22,23 @@ Beta:   `3.0.0-beta`
 
 ## 插件使用
 
+### 下载
+
 下载最新 release 版本 zip 包
 
 https://github.com/IvanChou/aliyun-oss-support/releases
 
+由于 release 的 zip 使用 phar 打包,不便修改。如果你有定制需求,请下载 release 中对应的 `Source code (zip)` 版本
+
+你也可以使用 master 分支的 zip 包来获取最新特性 https://github.com/IvanChou/aliyun-oss-support/archive/master.zip
+
+### 安装
+
 将插件解压上传到 `/wp-content/plugins/` 或者通过 WordPress 插件中心上传安装
+
+注意上传时 zip 包的名字,建议使用 `aliyun-oss.zip`
+
+### 配置
 
 启用插件 `Aliyun OSS`
 

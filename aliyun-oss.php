@@ -27,13 +27,8 @@
 */
 
 require(dirname(__FILE__).DIRECTORY_SEPARATOR.'aliyun-oss-php-sdk-2.0.7.phar');
-require(dirname(__FILE__).DIRECTORY_SEPARATOR.'aliyun-oss-wp.phar');
-
-/*
-如需开发调试,请至 https://github.com/IvanChou/aliyun-oss-support 获得源码并安装
-注释掉 require 'aliyun-oss-wp.phar' 一行并取消下面一行的注释
-*/
-//require(dirname(__FILE__).DIRECTORY_SEPARATOR.'autoload.php');
+//require(dirname(__FILE__).DIRECTORY_SEPARATOR.'aliyun-oss-wp.phar');
+require(dirname(__FILE__).DIRECTORY_SEPARATOR.'autoload.php');
 
 use OSS\WP\Config;
 
