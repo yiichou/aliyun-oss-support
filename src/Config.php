@@ -9,7 +9,7 @@ class Config
     public static $accessKeyId = "";
     public static $accessKeySecret = "";
     public static $endpoint = "";
-    public static $storePath = "";
+    public static $storePath = "/";
     public static $staticHost = "";
     public static $imgHost = "";
     public static $enableImgStyle = false;
@@ -50,7 +50,7 @@ class Config
         $options['img_url'] && self::$imgHost = $scheme.$options['img_url'];
 
         self::$baseDir = wp_upload_dir()['basedir'];
-        self::$storePath = trim($options['path'],'/');
+        self::$storePath .= trim($options['path'],'/');
         self::$enableImgStyle = $options['img_style'];
         self::$noLocalSaving = $options['nolocalsaving'];
     }

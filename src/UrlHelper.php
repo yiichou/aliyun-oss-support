@@ -55,7 +55,7 @@ class UrlHelper
     {
         if (wp_attachment_is_image($post_id)) {
             $baseUrl = is_ssl() ?  set_url_scheme(Config::baseUrl()) : Config::baseUrl();
-            $imgBaseUrl = rtrim(Config::$imgHost.'/'.Config::$storePath, '/');
+            $imgBaseUrl = rtrim(Config::$imgHost . Config::$storePath, '/');
             $url = str_replace($baseUrl, $imgBaseUrl, $url);
 
             Config::$enableImgStyle && $url .= '@!origin';
@@ -86,7 +86,7 @@ class UrlHelper
     public function resetUploadBaseUrl( $uploads )
     {
         if (Config::$staticHost) {
-            $baseUrl = rtrim(Config::$staticHost.'/'.Config::$storePath, '/');
+            $baseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
             $uploads['baseurl'] = $baseUrl;
         }
         return $uploads;

@@ -6,7 +6,7 @@
 
 Stable: `2.5.0`
 
-Beta:   `3.0.0-beta`
+Beta:   `3.0.0-beta2`
 
 ## 插件特色
 

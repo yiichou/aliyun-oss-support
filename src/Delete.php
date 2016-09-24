@@ -26,7 +26,7 @@ class Delete
     public function deleteRemoteFile($file)
     {
         if (false === strpos($file, '@')) {
-            $del_file = str_replace(Config::$baseDir, Config::$storePath, $file);
+            $del_file = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file), '/');
             $this->oc->deleteObject(Config::$bucket, $del_file);
         }
 

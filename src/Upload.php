@@ -31,10 +31,10 @@ class Upload
      */
     function uploadOriginToOss($file)
     {
-        if ($_REQUEST["action"] == 'upload-plugin' || $_REQUEST["action"] == 'upload-theme')
+        if (isset($_REQUEST["action"]) && in_array($_REQUEST["action"], ['upload-plugin', 'upload-theme']))
             return $file;
 
-        $object = str_replace(Config::$baseDir, Config::$storePath, $file['file']);
+        $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file['file']), '/');
         $this->oc->multiuploadFile(Config::$bucket, $object, $file['file'], $this->ossHeader);
 
         if (Config::$noLocalSaving && false === strpos($file['type'], 'image'))
@@ -56,7 +56,7 @@ class Upload
                 $file = Config::monthDir($m[0]) . '/' . $val['file'];
 
                 if (Config::$imgHost == "") {
-                    $object = str_replace(Config::$baseDir, Config::$storePath, $file);
+                    $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file), '/');
                     $this->oc->multiuploadFile(Config::$bucket, $object, $file, $this->ossHeader);
                 }
 
@@ -71,7 +71,7 @@ class Upload
     function uploadEditedImage($override, $filename, $image, $mime_type)
     {
         $image->save($filename, $mime_type);
-        $object = Config::$storePath.'/'._wp_relative_upload_path($filename);
+        $object = ltrim(Config::$storePath.'/'._wp_relative_upload_path($filename), '/');
         $this->oc->multiuploadFile(Config::$bucket, $object, $filename, $this->ossHeader);
 
         return $override;
