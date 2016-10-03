@@ -5,8 +5,8 @@
  * Description: 使用阿里云 OSS 作为附件的存储空间。 This is a plugin that used Aliyun OSS for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: https://yii.im/
- * Version: 3.0.0-beta2
- * Updated_at: 2016-09-17
+ * Version: 3.0.0
+ * Updated_at: 2016-10-03
  */
 
 /*  Copyright 2016  Ivan Chou  (email : yiichou@gmail.com)

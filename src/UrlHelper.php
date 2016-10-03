@@ -37,7 +37,7 @@ class UrlHelper
                 isset($data['sizes'][$style]) && $data['sizes'][$style]['file'] = "{$filename}@!{$style}";
         } else {
             foreach ($data['sizes'] as $size => $info)
-                $data['sizes'][$size]['file'] = "{$filename}@{$info['height']}h_{$info['width']}w_1l_1c{$fileExt}";
+                $data['sizes'][$size]['file'] = "{$filename}@{$info['height']}h_{$info['width']}w_1e_1c_1l{$fileExt}";
         }
 
         return $data;

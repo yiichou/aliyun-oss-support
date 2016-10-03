@@ -4,9 +4,7 @@
 
 ## 当前版本
 
-Stable: `2.5.0`
-
-Beta:   `3.0.0-beta2`
+Stable: [`3.0.0`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
 
 ## 插件特色
 
@@ -22,15 +20,11 @@ Beta:   `3.0.0-beta2`
 
 ## 插件使用
 
+关于插件使用方式的 Wiki: [Quick start](https://github.com/IvanChou/aliyun-oss-support/wiki/Quick-start)
+
 ### 下载
 
-下载最新 release 版本 zip 包
-
-https://github.com/IvanChou/aliyun-oss-support/releases
-
-由于 release 的 zip 使用 phar 打包,不便修改。如果你有定制需求,请下载 release 中对应的 `Source code (zip)` 版本
-
-你也可以使用 master 分支的 zip 包来获取最新特性 https://github.com/IvanChou/aliyun-oss-support/archive/master.zip
+[latest release](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
 
 ### 安装
 
@@ -45,6 +39,12 @@ https://github.com/IvanChou/aliyun-oss-support/releases
 进入设置页面 完成相关设置
 
 ![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
+
+## 启用图片服务
+
+关于插件中图片服务的 Wiki: [How to use Image Service](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service)
+
+通常使用中,你不需要特别的去了解它。如果你对插件预设的图片处理规则不满意,或者你需要给图片加水印,可以参看这篇说明
 
 ## 题外
 
@@ -62,9 +62,8 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 
 1. Fork 这个仓库
 2. Clone 源码并安装到本地 WordPress 中
-3. 打开 `aliyun-oss.php`, 根据提示打开注释
-4. 完成你的修改并测试
-5. 提交一个 Pull Request
+3. 完成你的修改并测试
+4. 提交一个 Pull Request
 
 ## 开源协议
 
