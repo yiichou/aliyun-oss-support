@@ -29,7 +29,7 @@ class UrlHelper
         if (empty($data['sizes']))
             return $data;
 
-        $filename = basename($data['file']);
+        $filename = end(explode('/',$data['file']));
         $fileExt = strrchr($filename,'.');
 
         if (Config::$enableImgStyle) {
