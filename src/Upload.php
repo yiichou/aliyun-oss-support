@@ -18,7 +18,6 @@ class Upload
         );
 
         add_filter('wp_handle_upload', [$this, 'uploadOriginToOss'], 30);
-        add_filter('wp_generate_attachment_metadata', [$this, 'uploadThumbToOss'], 60);
         add_filter('wp_update_attachment_metadata', [$this, 'uploadThumbToOss'], 60);
         add_filter('wp_save_image_editor_file', [$this, 'uploadEditedImage'], 60, 4);
     }
@@ -61,8 +60,9 @@ class Upload
                 }
 
                 Config::$noLocalSaving && Delete::deleteLocalFile($file);
-                Config::$noLocalSaving && Delete::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
             }
+
+            Config::$noLocalSaving && Delete::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
         }
 
         return $metadata;
