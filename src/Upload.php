@@ -51,18 +51,22 @@ class Upload
     function uploadThumbToOss($metadata)
     {
         if (isset($metadata['sizes']) && preg_match('/\d{4}\/\d{2}/', $metadata['file'], $m)) {
-            foreach ($metadata['sizes'] as $val) {
-                $file = Config::monthDir($m[0]) . '/' . $val['file'];
+            $thumbs = [];
+            foreach ($metadata['sizes'] as $val)
+                $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
 
-                if (Config::$imgHost == "") {
-                    $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file), '/');
-                    $this->oc->multiuploadFile(Config::$bucket, $object, $file, $this->ossHeader);
+            if (Config::$imgHost == "") {
+                foreach ($thumbs as $thumb) {
+                    $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $thumb), '/');
+                    $this->oc->multiuploadFile(Config::$bucket, $object, $thumb, $this->ossHeader);
                 }
-
-                Config::$noLocalSaving && Delete::deleteLocalFile($file);
             }
 
-            Config::$noLocalSaving && Delete::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
+            if (Config::$noLocalSaving) {
+                foreach ($thumbs as $thumb)
+                    Delete::deleteLocalFile($thumb);
+                Delete::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
+            }
         }
 
         return $metadata;
