@@ -32,6 +32,7 @@ $d = 'aliyun-oss';
                         <option value="oss-us-east-1"><?= __('oss-us-east-1', $d)?></option>
                         <option value="oss-ap-southeast-1"><?= __('oss-ap-southeast-1', $d)?></option>
                         <option value="oss-ap-northeast-1"><?= __('oss-ap-northeast-1', $d)?></option>
+                        <option value="oss-eu-central-1"><?= __('oss-eu-central-1', $d)?></option>
                     </select>
 
                     <label for="internal" style="margin-left: 72px">

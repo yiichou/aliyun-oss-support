@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2016-09-14 17:46+0800\n"
-"PO-Revision-Date: 2016-09-14 17:46+0800\n"
+"POT-Creation-Date: 2016-11-16 00:41+0800\n"
+"PO-Revision-Date: 2016-11-16 00:42+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -94,77 +94,85 @@ msgstr "美国弗吉尼亚数据中心"
 msgid "oss-ap-southeast-1"
 msgstr "亚太（新加坡）数据中心"
 
-#: view/setting.php:38
+#: view/setting.php:34
+msgid "oss-ap-northeast-1"
+msgstr "亚太东北 1（日本）数据中心"
+
+#: view/setting.php:35
+msgid "oss-eu-central-1"
+msgstr "欧洲中部 1（法兰克福）"
+
+#: view/setting.php:40
 msgid "internal"
 msgstr "内网"
 
-#: view/setting.php:46
+#: view/setting.php:48
 msgid "Bucket Settings"
 msgstr "Bucket 设置"
 
-#: view/setting.php:54
+#: view/setting.php:56
 msgid "Bucket Host"
 msgstr "Bucket 域名"
 
-#: view/setting.php:57 view/setting.php:101
+#: view/setting.php:59 view/setting.php:103
 msgid ""
 "Your site is working under https, please make sure the host can use https "
 "too."
 msgstr "你的站点启用了 HTTPS，请确保填入的域名也支持 HTTPS 服务。"
 
-#: view/setting.php:61
+#: view/setting.php:63
 msgid "Storage Path"
 msgstr "存储路径"
 
-#: view/setting.php:63
+#: view/setting.php:65
 msgid "Keep this empty if you don't need."
 msgstr "如果你不需要指定 Bucket 的存储位置，请留空。"
 
-#: view/setting.php:66 view/setting.php:69
+#: view/setting.php:68 view/setting.php:71
 msgid "Keep Files"
 msgstr "保留文件"
 
-#: view/setting.php:72
+#: view/setting.php:74
 msgid "Don't keep files on local server."
 msgstr "不在本地服务器上保留文件"
 
-#: view/setting.php:81
+#: view/setting.php:83
 msgid "Aliyun Image Service Settings"
 msgstr "阿里云图片服务设置"
 
-#: view/setting.php:85
+#: view/setting.php:87
 msgid "Image Service"
 msgstr "图片服务"
 
-#: view/setting.php:88
+#: view/setting.php:90
 msgid "Image Service Enable"
 msgstr "开启图片服务"
 
-#: view/setting.php:91 view/setting.php:111
+#: view/setting.php:93 view/setting.php:113
 msgid "Enable"
 msgstr "启用"
 
-#: view/setting.php:97
+#: view/setting.php:99
 msgid "Image Service Host"
 msgstr "图片服务域名"
 
-#: view/setting.php:105 view/setting.php:108
+#: view/setting.php:107 view/setting.php:110
 msgid "Preset Image Style"
 msgstr "图片预设样式"
 
-#: view/setting.php:114
+#: view/setting.php:116
 msgid ""
 "Let Image Service use preset styles to deal image, enable it if you need a "
 "watermark."
 msgstr ""
 "使用图片服务里预设的图片样式来处理图片，建议你只有在需要水印的时候开启它。"
 
-#: view/setting.php:120
+#: view/setting.php:122
 msgid "Commit"
 msgstr "保存配置"
 
 #. Plugin URI of the plugin/theme
-msgid "\"https://yii.im/posts/aliyun-oss-support-plugin-for-wordpress\""
+msgid "\"https://github.com/IvanChou/aliyun-oss-support\""
 msgstr ""
 
 #. Description of the plugin/theme
