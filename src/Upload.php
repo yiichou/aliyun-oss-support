@@ -35,6 +35,7 @@ class Upload
      */
     function uniqueFilename($filename, $ext, $dir)
     {
+        $ext = strtolower($ext);
         $object = trim(str_replace(Config::$baseDir, Config::$storePath, $dir), '/') . '/' . $filename;
         $doesExist = $this->oc->doesObjectExist(Config::$bucket, $object);
         $doesExist && $filename = rtrim($filename, $ext) . '-' . strtolower(wp_generate_password(3, false)) . $ext;
