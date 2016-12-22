@@ -20,6 +20,25 @@ class Upload
         add_filter('wp_handle_upload', [$this, 'uploadOriginToOss'], 30);
         add_filter('wp_update_attachment_metadata', [$this, 'uploadThumbToOss'], 60);
         add_filter('wp_save_image_editor_file', [$this, 'uploadEditedImage'], 60, 4);
+        if (Config::$noLocalSaving) {
+            add_filter('wp_unique_filename', [$this, 'uniqueFilename'], 30, 3);
+        }
+    }
+
+    /**
+     * 确保文件名在目标文件夹中唯一
+     *
+     * @param $filename
+     * @param $ext
+     * @param $dir
+     * @return string
+     */
+    function uniqueFilename($filename, $ext, $dir)
+    {
+        $object = trim(str_replace(Config::$baseDir, Config::$storePath, $dir), '/') . '/' . $filename;
+        $doesExist = $this->oc->doesObjectExist(Config::$bucket, $object);
+        $doesExist && $filename = rtrim($filename, $ext) . '-' . strtolower(wp_generate_password(3, false)) . $ext;
+        return $filename;
     }
 
     /**

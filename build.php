@@ -1,4 +1,8 @@
 <?php
+
+/* =======================
+        构建 phar
+======================= */
 $exts = ['php'];
 $dir = __DIR__;
 $file = 'aliyun-oss-wp.phar';
@@ -18,4 +22,48 @@ __HALT_COMPILER();
 ?>");
 $phar->stopBuffering();
 
-echo "Finished {$file}\n";
+/* =======================
+        打包 zip
+======================= */
+
+system("sed -i ''  's/autoload.php/aliyun-oss-wp.phar/g' aliyun-oss.php");
+
+$zip = new ZipArchive();
+$zip->open('aliyun-oss.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+$packageDirs = ['languages', 'view'];
+$packageFiles = [
+    'aliyun-oss.php',
+    'aliyun-oss-php-sdk-2.2.1.phar',
+    'aliyun-oss-wp.phar',
+    'LICENSE.md',
+    'README.md',
+    'readme.txt',
+    'screenshot.png',
+    'uninstall.php'
+];
+
+foreach ($packageDirs as $dir) {
+    $dirPath = realpath($dir);
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($dirPath),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+
+    foreach ($files as $name => $file) {
+        if (!$file->isDir()) {
+            $relativePath = str_replace($dirPath, "{$dir}/", $file);
+            $zip->addFile($file, $relativePath);
+        }
+    }
+}
+foreach ($packageFiles as $file) {
+    $filePath = realpath($file);
+    $filePath && $zip->addFile($filePath, $file);
+}
+$zip->close();
+
+system("sed -i ''  's/aliyun-oss-wp.phar/autoload.php/g' aliyun-oss.php");
+
+
+echo "Finished aliyun-oss.zip\n";
