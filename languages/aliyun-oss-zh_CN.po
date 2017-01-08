@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2016-11-16 00:41+0800\n"
-"PO-Revision-Date: 2016-11-16 00:42+0800\n"
+"POT-Creation-Date: 2017-01-09 01:37+0800\n"
+"PO-Revision-Date: 2017-01-09 01:39+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr ""
 "阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
 "作。"
 
-#: src/Setting.php:87
+#: src/Setting.php:88
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
@@ -114,7 +114,7 @@ msgstr "Bucket 设置"
 msgid "Bucket Host"
 msgstr "Bucket 域名"
 
-#: view/setting.php:59 view/setting.php:103
+#: view/setting.php:59
 msgid ""
 "Your site is working under https, please make sure the host can use https "
 "too."
@@ -148,26 +148,36 @@ msgstr "图片服务"
 msgid "Image Service Enable"
 msgstr "开启图片服务"
 
-#: view/setting.php:93 view/setting.php:113
+#: view/setting.php:93 view/setting.php:106
 msgid "Enable"
 msgstr "启用"
 
-#: view/setting.php:99
-msgid "Image Service Host"
-msgstr "图片服务域名"
+#: view/setting.php:96
+msgid ""
+"Use Aliyun Image Service to provide thumbnails, no need to upload thumbnails "
+"to OSS any more."
+msgstr "使用阿里云图片服务来提供不同尺寸的图片，启用后不会再上传缩略图到 OSS"
 
-#: view/setting.php:107 view/setting.php:110
+#: view/setting.php:100 view/setting.php:103
 msgid "Preset Image Style"
 msgstr "图片预设样式"
 
-#: view/setting.php:116
+#: view/setting.php:109
 msgid ""
 "Let Image Service use preset styles to deal image, enable it if you need a "
 "watermark."
 msgstr ""
 "使用图片服务里预设的图片样式来处理图片，建议你只有在需要水印的时候开启它。"
 
-#: view/setting.php:122
+#: view/setting.php:115
+msgid "There is a guide about Image Service."
+msgstr " 关于图片服务可以参考："
+
+#: view/setting.php:117
+msgid "How to use Image Service"
+msgstr ""
+
+#: view/setting.php:125
 msgid "Commit"
 msgstr "保存配置"
 
@@ -188,6 +198,9 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "https://yii.im/"
 msgstr ""
+
+#~ msgid "Image Service Host"
+#~ msgstr "图片服务域名"
 
 #~ msgid "Image Style"
 #~ msgstr "图片样式"

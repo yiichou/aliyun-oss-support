@@ -90,17 +90,10 @@ $d = 'aliyun-oss';
                         <legend class="screen-reader-text"><span><?= __('Image Service Enable', $d) ?></span></legend>
                         <label for="img_host_enable">
                             <input name="img_host_enable" type="checkbox" id="img_host_enable"
-                                <?= $options['img_url'] ? 'checked' : '' ?>> <?= __('Enable', $d) ?>
+                                <?= $options['img_service'] || $options['img_url'] ? 'checked' : '' ?>> <?= __('Enable', $d) ?>
                         </label>
                     </fieldset>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><label for="img_host"></label><?= __('Image Service Host', $d) ?></th>
-                <td>
-                    <input name="img_host" type="text" id="img_host" class="regular-text host"
-                        <?= $options['img_url'] ? "value={$options['img_url']}" : "disabled" ?> >
-                    <?= is_ssl()?'<p class="description">'.__('Your site is working under https, please make sure the host can use https too.', $d).'</p>':'' ?>
+                    <p class="description"><?= __("Use Aliyun Image Service to provide thumbnails, no need to upload thumbnails to OSS any more.", $d) ?></p>
                 </td>
             </tr>
             <tr>
@@ -110,10 +103,20 @@ $d = 'aliyun-oss';
                         <legend class="screen-reader-text"><span><?= __('Preset Image Style', $d) ?></span></legend>
                         <label for="img_style">
                             <input name="img_style" type="checkbox" id="img_style" <?= $options['img_style'] ? 'checked' : '' ?>
-                                <?= $options['img_url'] ? "value={$options['img_url']}" : "disabled" ?>> <?= __('Enable', $d) ?>
+                                <?= $options['img_service'] ? '' : 'disabled' ?>> <?= __('Enable', $d) ?>
                         </label>
                     </fieldset>
                     <p class="description"><?= __("Let Image Service use preset styles to deal image, enable it if you need a watermark.", $d) ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td>
+                    <p class="description"><?= __("There is a guide about Image Service.", $d) ?> =>
+                        <a href="https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service">
+                            <?= __("How to use Image Service", $d) ?>
+                        </a>
+                    </p>
                 </td>
             </tr>
             </tbody>

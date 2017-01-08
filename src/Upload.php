@@ -75,7 +75,7 @@ class Upload
             foreach ($metadata['sizes'] as $val)
                 $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
 
-            if (Config::$imgHost == "") {
+            if (!Config::$enableImgService) {
                 foreach ($thumbs as $thumb) {
                     $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $thumb), '/');
                     $this->oc->multiuploadFile(Config::$bucket, $object, $thumb, $this->ossHeader);

@@ -75,13 +75,14 @@ class Setting
             $options['static_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['static_host']);
 
         if (isset($_POST['img_host_enable'])) {
-            $options['img_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['img_host']);
+            $options['img_service'] = true;
             $options['img_style'] = isset($_POST['img_style']);
         } else{
-            $options['img_url'] = "";
+            $options['img_service'] = false;
             $options['img_style'] = false;
         }
 
+        unset($options['img_url']);
         update_option('oss_options', $options);
 
         echo '<div class="updated"><p><strong>'. __('The settings have been saved', 'aliyun-oss') .'.</strong></p></div>';

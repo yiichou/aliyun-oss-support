@@ -9,11 +9,10 @@ class UrlHelper
     {
         add_filter('upload_dir', [$this, 'resetUploadBaseUrl'], 30 );
 
-        if (Config::$imgHost) {
+        if (Config::$enableImgService) {
             add_filter('wp_get_attachment_metadata', [$this, 'replaceImgMeta'], 990);
             add_filter('wp_calculate_image_srcset_meta', [$this, 'replaceImgMeta'], 990);
             add_filter('wp_get_attachment_url', [$this,'replaceImgUrl'], 30, 2);
-            add_filter('wp_calculate_image_srcset', [$this, 'replaceImgSrcsetUrl'], 30, 2);
         }
     }
 
@@ -30,14 +29,15 @@ class UrlHelper
             return $data;
 
         $filename = end(explode('/',$data['file']));
-        $fileExt = strrchr($filename,'.');
 
         if (Config::$enableImgStyle) {
-            foreach(['thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large'] as $style )
-                isset($data['sizes'][$style]) && $data['sizes'][$style]['file'] = "{$filename}@!{$style}";
+            foreach(['thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large'] as $style ) {
+                if (isset($data['sizes'][$style]))
+                    $data['sizes'][$style]['file'] = $this->aliImageStyle($filename, $style);
+            }
         } else {
             foreach ($data['sizes'] as $size => $info)
-                $data['sizes'][$size]['file'] = "{$filename}@{$info['height']}h_{$info['width']}w_1e_1c_1l{$fileExt}";
+                $data['sizes'][$size]['file'] = $this->aliImageResize($filename, $info['height'], $info['width']);
         }
 
         return $data;
@@ -55,26 +55,12 @@ class UrlHelper
     {
         if (wp_attachment_is_image($post_id)) {
             $baseUrl = is_ssl() ?  set_url_scheme(Config::baseUrl()) : Config::baseUrl();
-            $imgBaseUrl = rtrim(Config::$imgHost . Config::$storePath, '/');
+            $imgBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
             $url = str_replace($baseUrl, $imgBaseUrl, $url);
 
             Config::$enableImgStyle && $url .= '@!origin';
         }
         return $url;
-    }
-
-    /**
-     * 重置 srcset 图片链接，使用独立的图片服务器。
-     * 仅在开启图片服务时启用
-     *
-     * @param $sources
-     * @return mixed
-     */
-    public function replaceImgSrcsetUrl($sources)
-    {
-        foreach( $sources as $w => $img )
-            $sources[$w]['url'] = str_replace(Config::$staticHost, Config::$imgHost, $img['url']);
-        return $sources;
     }
 
     /**
@@ -90,6 +76,16 @@ class UrlHelper
             $uploads['baseurl'] = $baseUrl;
         }
         return $uploads;
+    }
+
+    protected function aliImageResize($file, $height, $width)
+    {
+        return "{$file}?x-oss-process=image/resize,m_fill,h_{$height},w_{$width}";
+    }
+
+    protected function aliImageStyle($file, $style)
+    {
+        return "{$file}?x-oss-process=style/{$style}";
     }
 
 }
