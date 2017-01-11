@@ -4,7 +4,7 @@
 
 ## 当前版本
 
-Stable: [`3.0.4`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
+Stable: [`3.1.0`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
 
 ## 插件特色
 
@@ -40,11 +40,15 @@ Stable: [`3.0.4`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 
 ![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
 
-## 启用图片服务
+## 关于图片服务
 
-关于插件中图片服务的 Wiki: [How to use Image Service](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service)
+阿里云 OSS 提供了根据 url 参数来获得各种尺寸的 `阿里云OSS图片处理服务（Image Service，简称 IMG）`, 相比起 WordPress 自身在图片上传的时候生成各种尺寸的图片, 明显是一种更优雅的解决方案, 占用的存储空间更小, 尺寸变更更灵活。
 
-通常使用中,你不需要特别的去了解它。如果你对插件预设的图片处理规则不满意,或者你需要给图片加水印,可以参看这篇说明
+通常使用中, 你不需要特别的去了解它的实现, 只需注意: 
+
+**开启图片服务时,只有原图会被上传到 OSS,如果此时关闭图片服务,服务开启这段时间内上传的图片会出现缩略图丢失的情况**
+
+更多关于图片服务的介绍: [How to use Image Service](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service)
 
 ## 题外
 

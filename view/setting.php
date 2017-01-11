@@ -122,6 +122,7 @@ $d = 'aliyun-oss';
             </tbody>
         </table>
 
+        <input name="keep_settings" type="hidden" id="keep_settings" value="<?= $options['keep_settings'] ?>">
         <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?= __('Commit', $d)?>"></p>
     </form>
 </div>

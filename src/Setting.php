@@ -82,6 +82,8 @@ class Setting
             $options['img_style'] = false;
         }
 
+        isset($_POST['keep_settings']) && $options['keep_settings'] = !!$_POST['keep_settings'];
+
         unset($options['img_url']);
         update_option('oss_options', $options);
 
