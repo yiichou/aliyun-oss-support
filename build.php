@@ -9,6 +9,7 @@ $zip->open('aliyun-oss.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
 $packageDirs = ['languages', 'view', 'vendor', 'src'];
 $packageFiles = [
     'aliyun-oss.php',
+    'autoload.php',
     'LICENSE.md',
     'README.md',
     'readme.txt',

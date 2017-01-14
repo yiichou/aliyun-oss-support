@@ -16,7 +16,7 @@ Stable: [`3.1.1`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 6. 支持在 WordPress 后台编辑图片
 7. 图片服务支持预设图片样式，可用于图片打水印的需求
 8. 中英文双语支持，方便使用英文为默认语言的同学
-9. 代码遵循 PSR-4 规则编写，并使用 phar 文件作为 release 版本
+9. 代码遵循 PSR-4 规则编写
 
 ## 插件使用
 
