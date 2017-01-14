@@ -32,9 +32,9 @@ class Config
         'nolocalsaving' => false,
     ];
 
-    public static function init($index_path = "")
+    public static function init($plugin_path = "")
     {
-        $index_path && self::$pluginPath = plugin_basename(dirname($index_path));
+        $plugin_path && self::$pluginPath = plugin_basename($plugin_path);
 
         $options = array_merge(self::$originOptions, get_option('oss_options', []));
         self::$bucket = $options['bucket'];
