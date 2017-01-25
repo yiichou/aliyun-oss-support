@@ -58,7 +58,7 @@ class UrlHelper
             $imgBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
             $url = str_replace($baseUrl, $imgBaseUrl, $url);
 
-            Config::$enableImgStyle && $url .= '@!origin';
+            Config::$enableImgStyle && $url = $this->aliImageStyle($url, 'origin');
         }
         return $url;
     }
