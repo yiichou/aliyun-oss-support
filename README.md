@@ -14,7 +14,7 @@ Stable: [`3.1.2`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 4. 全格式附件支持，不仅仅是图片
 5. 支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
 6. 支持在 WordPress 后台编辑图片
-7. 图片服务支持预设图片样式，可用于图片打水印的需求
+7. 图片服务支持预设图片样式，可用于图片打水印的需求 (如需原图保护,请暂时使用 [v3.0.x](https://github.com/IvanChou/aliyun-oss-support/releases/tag/3.0.4)
 8. 中英文双语支持，方便使用英文为默认语言的同学
 9. 代码遵循 PSR-4 规则编写
 
@@ -46,7 +46,11 @@ Stable: [`3.1.2`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 
 通常使用中, 你不需要特别的去了解它的实现, 只需注意: 
 
-**开启图片服务时,只有原图会被上传到 OSS,如果此时关闭图片服务,服务开启这段时间内上传的图片会出现缩略图丢失的情况**
+1. 开启图片服务时, 只有原图会被上传到 OSS, 如果此时关闭图片服务, 服务开启这段时间内上传的图片会出现缩略图丢失的情况
+2. 如果没有开启 不在本地服务器上保留文件 选项, 服务器上仍旧保留有缩略图, 此时关闭插件会发现所有的缩略图其实都在, 所以你可以通过手动上传到 OSS 来修复丢失问题
+3. 如果开启了 不在本地服务器上保留文件 选项, 那就真的找不回那些丢失的缩略图了 ㄟ( ▔, ▔ )ㄏ
+
+****
 
 更多关于图片服务的介绍: [How to use Image Service](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service)
 
