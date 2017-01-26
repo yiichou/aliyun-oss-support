@@ -106,7 +106,7 @@ $d = 'aliyun-oss';
                                 <?= $options['img_service'] ? '' : 'disabled' ?>> <?= __('Enable', $d) ?>
                         </label>
                     </fieldset>
-                    <p class="description"><?= __("Let Image Service use preset styles to deal image, enable it if you need a watermark.", $d) ?></p>
+                    <p class="description"><?= __("Optional, use preset styles instead of dynamic params to deal image.", $d) ?></p>
                 </td>
             </tr>
             <tr>

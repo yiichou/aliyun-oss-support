@@ -9,11 +9,14 @@ class UrlHelper
     {
         add_filter('upload_dir', [$this, 'resetUploadBaseUrl'], 30 );
 
-        if (Config::$enableImgService) {
-            add_filter('wp_get_attachment_metadata', [$this, 'replaceImgMeta'], 990);
-            add_filter('wp_calculate_image_srcset_meta', [$this, 'replaceImgMeta'], 990);
-            add_filter('wp_get_attachment_url', [$this,'replaceImgUrl'], 30, 2);
-        }
+        if (Config::$enableImgService == false) return $this;
+
+        add_filter('wp_get_attachment_metadata', [$this, 'replaceImgMeta'], 990);
+        add_filter('wp_calculate_image_srcset_meta', [$this, 'replaceImgMeta'], 990);
+
+        if (Config::$enableImgStyle == false) return $this;
+
+        add_filter('wp_get_attachment_image_src', [$this,'fixPostThumbnailUrl'], 990, 3);
     }
 
     /**
@@ -44,23 +47,19 @@ class UrlHelper
     }
 
     /**
-     * 重置图片链接，使用独立的图片服务器。
-     * 仅在开启图片服务时启用
+     * 修复某些情况下 WordPress 会使用原图替代其他尺寸图片
+     * 开启图片样式时,修复这种兼容可以带来更好的浏览体验
      *
-     * @param $url
-     * @param $post_id
+     * @param $image
+     * @param $_
+     * @param $size
      * @return mixed
      */
-    public function replaceImgUrl($url, $post_id)
+    public function fixPostThumbnailUrl($image, $_, $size)
     {
-        if (wp_attachment_is_image($post_id)) {
-            $baseUrl = is_ssl() ?  set_url_scheme(Config::baseUrl()) : Config::baseUrl();
-            $imgBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
-            $url = str_replace($baseUrl, $imgBaseUrl, $url);
-
-            Config::$enableImgStyle && $url = $this->aliImageStyle($url, 'origin');
-        }
-        return $url;
+        if (false === strpos($image[0], "x-oss-process=style/{$size}"))
+            $image[0] = $this->aliImageStyle($image[0], $size);
+        return $image;
     }
 
     /**
@@ -69,7 +68,7 @@ class UrlHelper
      * @param $uploads
      * @return mixed
      */
-    public function resetUploadBaseUrl( $uploads )
+    public function resetUploadBaseUrl($uploads)
     {
         if (Config::$staticHost) {
             $baseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');

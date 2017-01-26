@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2017-01-09 01:37+0800\n"
-"PO-Revision-Date: 2017-01-09 01:39+0800\n"
+"POT-Creation-Date: 2017-01-26 17:31+0800\n"
+"PO-Revision-Date: 2017-01-26 17:34+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr ""
 "阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
 "作。"
 
-#: src/Setting.php:88
+#: src/Setting.php:90
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
@@ -163,11 +163,8 @@ msgid "Preset Image Style"
 msgstr "图片预设样式"
 
 #: view/setting.php:109
-msgid ""
-"Let Image Service use preset styles to deal image, enable it if you need a "
-"watermark."
-msgstr ""
-"使用图片服务里预设的图片样式来处理图片，建议你只有在需要水印的时候开启它。"
+msgid "Optional, use preset styles instead of dynamic params to deal image."
+msgstr "可选项，使用 OSS 图片预设样式来替代通过参数获取缩略图的方式"
 
 #: view/setting.php:115
 msgid "There is a guide about Image Service."
@@ -177,7 +174,7 @@ msgstr " 关于图片服务可以参考："
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:125
+#: view/setting.php:126
 msgid "Commit"
 msgstr "保存配置"
 
@@ -198,6 +195,12 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "https://yii.im/"
 msgstr ""
+
+#~ msgid ""
+#~ "Let Image Service use preset styles to deal image, enable it if you need "
+#~ "a watermark."
+#~ msgstr ""
+#~ "使用图片服务里预设的图片样式来处理图片，建议你只有在需要水印的时候开启它。"
 
 #~ msgid "Image Service Host"
 #~ msgstr "图片服务域名"
