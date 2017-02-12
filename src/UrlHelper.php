@@ -9,14 +9,14 @@ class UrlHelper
     {
         add_filter('upload_dir', [$this, 'resetUploadBaseUrl'], 30 );
 
-        if (Config::$enableImgService == false) return $this;
+        if (Config::$enableImgService) {
+            add_filter('wp_get_attachment_metadata', [$this, 'replaceImgMeta'], 900);
 
-        add_filter('wp_get_attachment_metadata', [$this, 'replaceImgMeta'], 990);
-        add_filter('wp_calculate_image_srcset_meta', [$this, 'replaceImgMeta'], 990);
-
-        if (Config::$enableImgStyle == false) return $this;
-
-        add_filter('wp_get_attachment_image_src', [$this,'fixPostThumbnailUrl'], 990, 3);
+            if (Config::$enableImgStyle) {
+                add_filter('wp_get_attachment_url', [$this,'replaceImgUrl'], 30, 2);
+                add_filter('wp_calculate_image_srcset', [$this, 'replaceImgSrcset'], 900);
+            }
+        }
     }
 
     /**
@@ -34,7 +34,7 @@ class UrlHelper
         $filename = end(explode('/',$data['file']));
 
         if (Config::$enableImgStyle) {
-            foreach(['thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large'] as $style ) {
+            foreach(['thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full'] as $style ) {
                 if (isset($data['sizes'][$style]))
                     $data['sizes'][$style]['file'] = $this->aliImageStyle($filename, $style);
             }
@@ -47,21 +47,32 @@ class UrlHelper
     }
 
     /**
-     * 修复某些情况下 WordPress 会使用原图替代其他尺寸图片
-     * 开启图片样式时,修复这种兼容可以带来更好的浏览体验
+     * 重置图片链接, 仅在开启图片服务时启用
      *
-     * @param $image
-     * @param $_
-     * @param $size
+     * @param $url
+     * @param $post_id
      * @return mixed
      */
-    public function fixPostThumbnailUrl($image, $_, $size)
+    public function replaceImgUrl($url, $post_id)
     {
-        if (false === strpos($image[0], "x-oss-process=style/")) {
-            $size = is_string($size) ? $size : 'origin';
-            $image[0] = $this->aliImageStyle($image[0], $size);
+        if (wp_attachment_is_image($post_id))
+            $url = $this->aliImageStyle($url, 'full');
+        return $url;
+    }
+
+    /**
+     * 重置 Srcset 中原图链接, 仅在开启图片服务时启用
+     *
+     * @param $sources
+     * @return mixed
+     */
+    public function replaceImgSrcset($sources)
+    {
+        foreach ($sources as $k => $source) {
+            if (false === strpos($source['url'], "x-oss-process="))
+                $sources[$k]['url'] = $this->aliImageStyle($source['url'], 'full');
         }
-        return $image;
+        return $sources;
     }
 
     /**
@@ -86,7 +97,7 @@ class UrlHelper
 
     protected function aliImageStyle($file, $style)
     {
-        return "{$file}?x-oss-process=style/{$style}";
+        return "{$file}?x-oss-process=style%2F{$style}";
     }
 
 }

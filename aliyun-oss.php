@@ -6,7 +6,7 @@
  * Author: Ivan Chou
  * Author URI: https://yii.im/
  * Version: 3.1.2
- * Updated_at: 2017-01-25
+ * Updated_at: 2017-02-12
  */
 
 /*  Copyright 2016  Ivan Chou  (email : yiichou@gmail.com)

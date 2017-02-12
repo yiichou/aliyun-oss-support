@@ -14,7 +14,7 @@ Stable: [`3.1.2`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 4. 全格式附件支持，不仅仅是图片
 5. 支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
 6. 支持在 WordPress 后台编辑图片
-7. 图片服务支持预设图片样式，可用于图片打水印的需求 (如需原图保护,请暂时使用 [v3.0.x](https://github.com/IvanChou/aliyun-oss-support/releases/tag/3.0.4)
+7. 图片服务支持预设图片样式，可用于图片打水印的需求
 8. 中英文双语支持，方便使用英文为默认语言的同学
 9. 代码遵循 PSR-4 规则编写
 
