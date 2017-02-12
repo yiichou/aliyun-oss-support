@@ -57,8 +57,10 @@ class UrlHelper
      */
     public function fixPostThumbnailUrl($image, $_, $size)
     {
-        if (false === strpos($image[0], "x-oss-process=style/{$size}"))
+        if (false === strpos($image[0], "x-oss-process=style/")) {
+            $size = is_string($size) ? $size : 'origin';
             $image[0] = $this->aliImageStyle($image[0], $size);
+        }
         return $image;
     }
 
