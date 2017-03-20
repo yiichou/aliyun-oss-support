@@ -26,6 +26,7 @@ $d = 'aliyun-oss';
                         <option value="oss-cn-shanghai"><?= __('oss-cn-shanghai', $d)?></option>
                         <option value="oss-cn-qingdao"><?= __('oss-cn-qingdao', $d)?></option>
                         <option value="oss-cn-beijing"><?= __('oss-cn-beijing', $d)?></option>
+                        <option value="oss-cn-zhangjiakou"><?= __('oss-cn-zhangjiakou', $d)?></option>
                         <option value="oss-cn-shenzhen"><?= __('oss-cn-shenzhen', $d)?></option>
                         <option value="oss-cn-hongkong"><?= __('oss-cn-hongkong', $d)?></option>
                         <option value="oss-us-west-1"><?= __('oss-us-west-1', $d)?></option>
