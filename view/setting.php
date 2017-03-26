@@ -32,13 +32,19 @@ $d = 'aliyun-oss';
                         <option value="oss-us-west-1"><?= __('oss-us-west-1', $d)?></option>
                         <option value="oss-us-east-1"><?= __('oss-us-east-1', $d)?></option>
                         <option value="oss-ap-southeast-1"><?= __('oss-ap-southeast-1', $d)?></option>
+                        <option value="oss-ap-southeast-2"><?= __('oss-ap-southeast-2', $d)?></option>
                         <option value="oss-ap-northeast-1"><?= __('oss-ap-northeast-1', $d)?></option>
                         <option value="oss-eu-central-1"><?= __('oss-eu-central-1', $d)?></option>
+                        <option value="oss-me-east-1"><?= __('oss-me-east-1', $d)?></option>
                     </select>
 
-                    <label for="internal" style="margin-left: 72px">
+                    <label for="internal" style="margin-left: 48px">
                         <input name="internal" type="checkbox" id="internal" <?= $options['internal'] ? 'checked' : '' ?>>
                         <?= __('internal', $d)?>
+                    </label>
+                    <label for="vpc" style="margin-left: 20px">
+                        <input name="vpc" type="checkbox" id="vpc" <?= $options['vpc'] ? 'checked' : '' ?> <?= $options['internal'] ? '' : 'disabled' ?>>
+                        <?= __('VPC', $d)?>
                     </label>
                 </td>
             </tr>
@@ -153,6 +159,14 @@ $d = 'aliyun-oss';
             } else {
                 $('#img_host').attr('disabled', true);
                 $('#img_style').prop('checked', false).attr('disabled', true);
+            }
+        });
+
+        $('#internal').change(function () {
+            if ($(this).prop('checked')) {
+                $('#vpc').attr('disabled', false);
+            } else {
+                $('#vpc').attr('checked', false).attr('disabled', true);
             }
         })
     })

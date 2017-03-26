@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2017-01-26 17:31+0800\n"
-"PO-Revision-Date: 2017-01-26 17:34+0800\n"
+"POT-Creation-Date: 2017-03-26 13:46+0800\n"
+"PO-Revision-Date: 2017-03-26 13:49+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr ""
 "阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
 "作。"
 
-#: src/Setting.php:90
+#: src/Setting.php:91
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
@@ -75,106 +75,122 @@ msgid "oss-cn-beijing"
 msgstr "华北 2 (北京)"
 
 #: view/setting.php:29
+msgid "oss-cn-zhangjiakou"
+msgstr "华北 3 (张家口)"
+
+#: view/setting.php:30
 msgid "oss-cn-shenzhen"
 msgstr "华南 1 (深圳)"
 
-#: view/setting.php:30
+#: view/setting.php:31
 msgid "oss-cn-hongkong"
 msgstr "香港数据中心"
 
-#: view/setting.php:31
+#: view/setting.php:32
 msgid "oss-us-west-1"
 msgstr "美国硅谷数据中心"
 
-#: view/setting.php:32
+#: view/setting.php:33
 msgid "oss-us-east-1"
 msgstr "美国弗吉尼亚数据中心"
 
-#: view/setting.php:33
+#: view/setting.php:34
 msgid "oss-ap-southeast-1"
 msgstr "亚太（新加坡）数据中心"
 
-#: view/setting.php:34
+#: view/setting.php:35
+msgid "oss-ap-southeast-2"
+msgstr "亚太东南 2 （悉尼）"
+
+#: view/setting.php:36
 msgid "oss-ap-northeast-1"
 msgstr "亚太东北 1（日本）数据中心"
 
-#: view/setting.php:35
+#: view/setting.php:37
 msgid "oss-eu-central-1"
 msgstr "欧洲中部 1（法兰克福）"
 
-#: view/setting.php:40
+#: view/setting.php:38
+msgid "oss-me-east-1"
+msgstr "中东东部 1 （迪拜）"
+
+#: view/setting.php:43
 msgid "internal"
 msgstr "内网"
 
-#: view/setting.php:48
+#: view/setting.php:47
+msgid "vpc"
+msgstr ""
+
+#: view/setting.php:55
 msgid "Bucket Settings"
 msgstr "Bucket 设置"
 
-#: view/setting.php:56
+#: view/setting.php:63
 msgid "Bucket Host"
 msgstr "Bucket 域名"
 
-#: view/setting.php:59
+#: view/setting.php:66
 msgid ""
 "Your site is working under https, please make sure the host can use https "
 "too."
 msgstr "你的站点启用了 HTTPS，请确保填入的域名也支持 HTTPS 服务。"
 
-#: view/setting.php:63
+#: view/setting.php:70
 msgid "Storage Path"
 msgstr "存储路径"
 
-#: view/setting.php:65
+#: view/setting.php:72
 msgid "Keep this empty if you don't need."
 msgstr "如果你不需要指定 Bucket 的存储位置，请留空。"
 
-#: view/setting.php:68 view/setting.php:71
+#: view/setting.php:75 view/setting.php:78
 msgid "Keep Files"
 msgstr "保留文件"
 
-#: view/setting.php:74
+#: view/setting.php:81
 msgid "Don't keep files on local server."
 msgstr "不在本地服务器上保留文件"
 
-#: view/setting.php:83
+#: view/setting.php:90
 msgid "Aliyun Image Service Settings"
 msgstr "阿里云图片服务设置"
 
-#: view/setting.php:87
+#: view/setting.php:94
 msgid "Image Service"
 msgstr "图片服务"
 
-#: view/setting.php:90
+#: view/setting.php:97
 msgid "Image Service Enable"
 msgstr "开启图片服务"
 
-#: view/setting.php:93 view/setting.php:106
+#: view/setting.php:100 view/setting.php:113
 msgid "Enable"
 msgstr "启用"
 
-#: view/setting.php:96
+#: view/setting.php:103
 msgid ""
 "Use Aliyun Image Service to provide thumbnails, no need to upload thumbnails "
 "to OSS any more."
 msgstr "使用阿里云图片服务来提供不同尺寸的图片，启用后不会再上传缩略图到 OSS"
 
-#: view/setting.php:100 view/setting.php:103
+#: view/setting.php:107 view/setting.php:110
 msgid "Preset Image Style"
 msgstr "图片预设样式"
 
-#: view/setting.php:109
+#: view/setting.php:116
 msgid "Optional, use preset styles instead of dynamic params to deal image."
 msgstr "可选项，使用 OSS 图片预设样式来替代通过参数获取缩略图的方式"
 
-#: view/setting.php:115
+#: view/setting.php:122
 msgid "There is a guide about Image Service."
 msgstr " 关于图片服务可以参考："
 
-#: view/setting.php:117
+#: view/setting.php:124
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:126
+#: view/setting.php:133
 msgid "Commit"
 msgstr "保存配置"
 

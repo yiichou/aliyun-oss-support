@@ -66,6 +66,7 @@ class Setting
         isset($_POST['access_key']) && $options['ak'] = trim($_POST['access_key']);
         isset($_POST['region']) && $options['region'] = trim($_POST['region']);
         $options['internal'] = isset($_POST['internal']);
+        $options['vpc'] = isset($_POST['vpc']);
         empty($_POST['access_key_secret']) || $options['sk'] = trim($_POST['access_key_secret']);
 
         isset($_POST['bucket']) && $options['bucket'] = trim($_POST['bucket']);
