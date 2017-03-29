@@ -7,14 +7,14 @@ class UrlHelper
 
     public function __construct()
     {
-        add_filter('upload_dir', [$this, 'resetUploadBaseUrl'], 30 );
+        add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30 );
 
         if (Config::$enableImgService) {
-            add_filter('wp_get_attachment_metadata', [$this, 'replaceImgMeta'], 900);
+            add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
 
             if (Config::$enableImgStyle) {
-                add_filter('wp_get_attachment_url', [$this,'replaceImgUrl'], 30, 2);
-                add_filter('wp_calculate_image_srcset', [$this, 'replaceImgSrcset'], 900);
+                add_filter('wp_get_attachment_url', array($this,'replaceImgUrl'), 30, 2);
+                add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcset'), 900);
             }
         }
     }
@@ -34,7 +34,7 @@ class UrlHelper
         $filename = end(explode('/',$data['file']));
 
         if (Config::$enableImgStyle) {
-            foreach(['thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full'] as $style ) {
+            foreach(array('thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full') as $style ) {
                 if (isset($data['sizes'][$style]))
                     $data['sizes'][$style]['file'] = $this->aliImageStyle($filename, $style);
             }

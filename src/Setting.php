@@ -6,12 +6,12 @@ class Setting
 {
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'adminMenu']);
-        add_filter('plugin_action_links', [$this, 'pluginActionLink'], 10, 2);
+        add_action('admin_menu', array($this, 'adminMenu'));
+        add_filter('plugin_action_links', array($this, 'pluginActionLink'), 10, 2);
         load_plugin_textdomain('aliyun-oss', false , Config::$pluginPath.'/languages');
 
         if ( !(Config::$bucket && Config::$accessKeyId && Config::$accessKeySecret))
-            (isset($_GET['page']) && $_GET['page'] == 'aliyun-oss') || add_action('admin_notices', [$this, 'warning']);
+            (isset($_GET['page']) && $_GET['page'] == 'aliyun-oss') || add_action('admin_notices', array($this, 'warning'));
     }
 
     /**
@@ -24,7 +24,7 @@ class Setting
             __('Aliyun OSS', 'aliyun-oss'),
             'manage_options',
             'aliyun-oss',
-            [$this, 'settingsPage']
+            array($this, 'settingsPage')
         );
     }
 
@@ -61,7 +61,7 @@ class Setting
 
     private function updateSettings()
     {
-        $options = get_option('oss_options', []);
+        $options = get_option('oss_options', array());
 
         isset($_POST['access_key']) && $options['ak'] = trim($_POST['access_key']);
         isset($_POST['region']) && $options['region'] = trim($_POST['region']);

@@ -17,11 +17,11 @@ class Upload
             ),
         );
 
-        add_filter('wp_handle_upload', [$this, 'uploadOriginToOss'], 30);
-        add_filter('wp_update_attachment_metadata', [$this, 'uploadThumbToOss'], 60);
-        add_filter('wp_save_image_editor_file', [$this, 'uploadEditedImage'], 60, 4);
+        add_filter('wp_handle_upload', array($this, 'uploadOriginToOss'), 30);
+        add_filter('wp_update_attachment_metadata', array($this, 'uploadThumbToOss'), 60);
+        add_filter('wp_save_image_editor_file', array($this, 'uploadEditedImage'), 60, 4);
         if (Config::$noLocalSaving) {
-            add_filter('wp_unique_filename', [$this, 'uniqueFilename'], 30, 3);
+            add_filter('wp_unique_filename', array($this, 'uniqueFilename'), 30, 3);
         }
     }
 
@@ -50,7 +50,7 @@ class Upload
      */
     function uploadOriginToOss($file)
     {
-        if (isset($_REQUEST["action"]) && in_array($_REQUEST["action"], ['upload-plugin', 'upload-theme']))
+        if (isset($_REQUEST["action"]) && in_array($_REQUEST["action"], array('upload-plugin', 'upload-theme')))
             return $file;
 
         $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file['file']), '/');
@@ -71,7 +71,7 @@ class Upload
     function uploadThumbToOss($metadata)
     {
         if (isset($metadata['sizes']) && preg_match('/\d{4}\/\d{2}/', $metadata['file'], $m)) {
-            $thumbs = [];
+            $thumbs = array();
             foreach ($metadata['sizes'] as $val)
                 $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
 

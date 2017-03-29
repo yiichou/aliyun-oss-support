@@ -13,8 +13,8 @@ class Delete
     {
         $this->oc = $ossClient;
 
-        add_action('wp_delete_file', [$this, 'deleteRemoteFile']);
-        Config::$enableImgService && add_action('wp_delete_file', [$this, 'deleteLocalThumbs'], 99);
+        add_action('wp_delete_file', array($this, 'deleteRemoteFile'));
+        Config::$enableImgService && add_action('wp_delete_file', array($this, 'deleteLocalThumbs'), 99);
     }
 
     /**

@@ -5,8 +5,8 @@ namespace OSS\WP;
 
 class Config
 {
-    private static $special_vpc_list = ['oss-cn-hangzhou', 'oss-cn-shanghai', 'oss-cn-qingdao', 'oss-cn-beijing',
-                                        'oss-cn-shenzhen', 'oss-cn-hongkong', 'oss-us-west-1', 'oss-ap-southeast-1'];
+    private static $special_vpc_list = array('oss-cn-hangzhou', 'oss-cn-shanghai', 'oss-cn-qingdao', 'oss-cn-beijing',
+                                        'oss-cn-shenzhen', 'oss-cn-hongkong', 'oss-us-west-1', 'oss-ap-southeast-1');
 
     public static $bucket = "";
     public static $accessKeyId = "";
@@ -22,7 +22,7 @@ class Config
 
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
-    public static $originOptions = [
+    public static $originOptions = array(
         'bucket'        => "",
         'ak'            => "",
         'sk'            => "",
@@ -33,13 +33,13 @@ class Config
         'img_url'       => "",
         'img_style'     => false,
         'nolocalsaving' => false,
-    ];
+    );
 
     public static function init($plugin_path = "")
     {
         $plugin_path && self::$pluginPath = plugin_basename($plugin_path);
 
-        $options = array_merge(self::$originOptions, get_option('oss_options', []));
+        $options = array_merge(self::$originOptions, get_option('oss_options', array()));
         self::$bucket = $options['bucket'];
         self::$accessKeyId = $options['ak'];
         self::$accessKeySecret = $options['sk'];
@@ -56,7 +56,8 @@ class Config
         if ($options['img_service'] || $options['img_url'])
             self::$enableImgService = true;
 
-        self::$baseDir = wp_upload_dir()['basedir'];
+        $wp_upload_dir = wp_upload_dir();
+        self::$baseDir = $wp_upload_dir['basedir'];
         self::$storePath .= trim($options['path'],'/');
         self::$enableImgStyle = $options['img_style'];
         self::$noLocalSaving = $options['nolocalsaving'];
@@ -64,12 +65,14 @@ class Config
 
     public static function monthDir($time)
     {
-        return wp_upload_dir($time)['path'];
+        $wp_upload_dir = wp_upload_dir($time);
+        return $wp_upload_dir['path'];
     }
 
     public static function baseUrl()
     {
-        return wp_upload_dir()['baseurl'];
+        $wp_upload_dir = wp_upload_dir();
+        return $wp_upload_dir['baseurl'];
     }
 
 }

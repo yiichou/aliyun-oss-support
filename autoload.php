@@ -14,10 +14,10 @@
  */
 spl_autoload_register(function ($class) {
 
-    $auto_load_class = [
+    $auto_load_class = array(
         'OSS\\WP\\' => '/src/',
         'OSS\\' => '/vendor/aliyuncs/oss-sdk-php/src/OSS/'
-    ];
+    );
 
     foreach ($auto_load_class as $prefix => $base_dir) {
         $len = strlen($prefix);
