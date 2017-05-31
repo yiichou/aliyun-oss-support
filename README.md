@@ -67,6 +67,10 @@ Stable: [`3.1.4`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 
 https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 
+## 冲突列表
+
+- EvernoteSync
+
 ## 贡献代码
 
 1. Fork 这个仓库
