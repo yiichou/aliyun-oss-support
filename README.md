@@ -70,6 +70,7 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 ## 冲突列表
 
 - EvernoteSync
+- ultimate member
 
 ## 贡献代码
 
