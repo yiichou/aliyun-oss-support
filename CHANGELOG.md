@@ -7,7 +7,7 @@ ____________________
 
 #### 修订内容：
 
-1. 启用「预设图片样式」情况下, 由于 OSS 服务的 bug, 不对 gif 做处理. #43
+1. 启用「预设图片样式」情况下, 由于 OSS 服务的 bug, 不对 gif 做处理. [#43](/../../issues/43)
 
 ### 版本号: 3.1.4
 
@@ -57,7 +57,7 @@ ____________________
 
 #### 修订内容：
 
-1. 修正本地不保留文件时,同名文件覆盖. #20
+1. 修正本地不保留文件时,同名文件覆盖. [#20](/../../issues/20)
 2. 升级阿里云 OSS SDK 到 2.2.1
 3. 添加自动打包脚本
 
@@ -67,7 +67,7 @@ ____________________
 
 #### 修订内容：
 
-1. 修复不保存本地文件条件下, medium_large 和 large 尺寸一样时上传 OSS 失败的 Bug. #18、 #23
+1. 修复不保存本地文件条件下, medium_large 和 large 尺寸一样时上传 OSS 失败的 Bug. [#18](/../../issues/18) [#23](/../../issues/23)
 2. 新增日本节点、法兰克福节点的支持
 
 ### 版本号：3.0.2
@@ -76,7 +76,7 @@ ____________________
 
 #### 修订内容：
 
-1. 修复 [ISSUE #18](https://github.com/IvanChou/aliyun-oss-support/issues/18)
+1. 修复 [ISSUE #18](/../../issues/18)
 ____________________
 
 ### 版本号：3.0.1
@@ -105,7 +105,7 @@ ____________________
 
 #### 修订内容：
 
-1. Fix bug [#13](https://github.com/IvanChou/aliyun-oss-support/issues/13) 
+1. Fix bug [#13](/../../issues/13) 
 ____________________
 
 ### 版本号：3.0.0-beta
@@ -114,9 +114,9 @@ ____________________
 
 #### 修订内容：
 
-1. Add new feature -- support watermark [#15](https://github.com/IvanChou/aliyun-oss-support/issues/15) 
+1. Add new feature -- support watermark [#15](/../../issues/15) 
 
-2. Add new feature -- save edited image [#13](https://github.com/IvanChou/aliyun-oss-support/issues/13) 
+2. Add new feature -- save edited image [#13](/../../issues/13) 
 
 3. Rebuild all codes under PSR-4 and use phar file to release.
 
@@ -132,7 +132,7 @@ ____________________
 
 #### 修订内容：
 
-1. Fix the bug [#ISSUE 11](https://github.com/IvanChou/aliyun-oss-support/issues/10) 
+1. Fix the bug [#ISSUE 11](/../../issues/10) 
 
 2. 启用图片服务时，不再需要预设图片处理方式，改为按 Wordpress 提供的尺寸自动处理
 
@@ -151,7 +151,7 @@ ____________________
 2. 修改数据节点的链接，原链接失效了
 
 ##### 感谢
-https://github.com/IvanChou/aliyun-oss-support/issues/9 （感谢 @hairui219 提供）
+[#9](/../../issues/9) （感谢 @hairui219 提供）
 
 ____________________
 
