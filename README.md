@@ -72,6 +72,7 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 - EvernoteSync
 - ultimate member
 - BuddyPress
+- WP-AutoPost
 
 ## 贡献代码
 
