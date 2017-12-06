@@ -5,16 +5,19 @@ namespace OSS\WP;
 class UrlHelper
 {
 
-    public function __construct()
+    /**
+     * 修改为静态方法，这样外部（其它插件），可以调用里面的方法
+     */
+    public static function add_filter()
     {
-        add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30 );
+        add_filter('upload_dir', ('resetUploadBaseUrl'), 30 );
 
         if (Config::$enableImgService) {
-            add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
+            add_filter('wp_get_attachment_metadata', ('replaceImgMeta'), 900);
 
             if (Config::$enableImgStyle) {
-                add_filter('wp_get_attachment_url', array($this,'replaceImgUrl'), 30, 2);
-                add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcset'), 900);
+                add_filter('wp_get_attachment_url', ('replaceImgUrl'), 30, 2);
+                add_filter('wp_calculate_image_srcset', ('replaceImgSrcset'), 900);
             }
         }
     }
@@ -26,7 +29,7 @@ class UrlHelper
      * @param $data
      * @return mixed
      */
-    public function replaceImgMeta($data)
+    public static function replaceImgMeta($data)
     {
         if (empty($data['sizes']))
             return $data;
@@ -37,11 +40,11 @@ class UrlHelper
         if (Config::$enableImgStyle && $suffix != 'gif') {
             foreach(array('thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full') as $style ) {
                 if (isset($data['sizes'][$style]))
-                    $data['sizes'][$style]['file'] = $this->aliImageStyle($filename, $style);
+                    $data['sizes'][$style]['file'] = self::aliImageStyle($filename, $style);
             }
         } else {
             foreach ($data['sizes'] as $size => $info)
-                $data['sizes'][$size]['file'] = $this->aliImageResize($filename, $info['height'], $info['width']);
+                $data['sizes'][$size]['file'] = self::aliImageResize($filename, $info['height'], $info['width']);
         }
 
         return $data;
@@ -54,10 +57,10 @@ class UrlHelper
      * @param $post_id
      * @return mixed
      */
-    public function replaceImgUrl($url, $post_id)
+    public static  function replaceImgUrl($url, $post_id)
     {
         if (wp_attachment_is_image($post_id))
-            $url = $this->aliImageStyle($url, 'full');
+            $url =  self::aliImageStyle($url, 'full');
         return $url;
     }
 
@@ -67,11 +70,11 @@ class UrlHelper
      * @param $sources
      * @return mixed
      */
-    public function replaceImgSrcset($sources)
+    public  static function replaceImgSrcset($sources)
     {
         foreach ($sources as $k => $source) {
             if (false === strpos($source['url'], "x-oss-process="))
-                $sources[$k]['url'] = $this->aliImageStyle($source['url'], 'full');
+                $sources[$k]['url'] = self:: aliImageStyle($source['url'], 'full');
         }
         return $sources;
     }
@@ -82,7 +85,7 @@ class UrlHelper
      * @param $uploads
      * @return mixed
      */
-    public function resetUploadBaseUrl($uploads)
+    public  static function resetUploadBaseUrl($uploads)
     {
         if (Config::$staticHost) {
             $baseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
@@ -91,12 +94,12 @@ class UrlHelper
         return $uploads;
     }
 
-    protected function aliImageResize($file, $height, $width)
+    public static  function aliImageResize($file, $height, $width)
     {
         return "{$file}?x-oss-process=image/resize,m_fill,h_{$height},w_{$width}";
     }
 
-    protected function aliImageStyle($file, $style)
+    public static  function aliImageStyle($file, $style)
     {
         $suffix = end(explode('.',$file));
         return $suffix == 'gif' ? $file : "{$file}?x-oss-process=style%2F{$style}";
