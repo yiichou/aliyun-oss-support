@@ -10,14 +10,14 @@ class UrlHelper
      */
     public static function add_filter()
     {
-        add_filter('upload_dir', ('resetUploadBaseUrl'), 30 );
+        add_filter('upload_dir', array(UrlHelper::class,'resetUploadBaseUrl'), 30 );
 
         if (Config::$enableImgService) {
-            add_filter('wp_get_attachment_metadata', ('replaceImgMeta'), 900);
+            add_filter('wp_get_attachment_metadata',  array(UrlHelper::class,'replaceImgMeta'), 900);
 
             if (Config::$enableImgStyle) {
-                add_filter('wp_get_attachment_url', ('replaceImgUrl'), 30, 2);
-                add_filter('wp_calculate_image_srcset', ('replaceImgSrcset'), 900);
+                add_filter('wp_get_attachment_url',  array(UrlHelper::class,'replaceImgUrl'), 30, 2);
+                add_filter('wp_calculate_image_srcset',  array(UrlHelper::class,'replaceImgSrcset'), 900);
             }
         }
     }
