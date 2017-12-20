@@ -107,15 +107,14 @@ class UrlHelper
 
     public static function aliImageStyle($file, $style)
     {
-<<<<<<< HEAD
         $suffix = pathinfo($file, PATHINFO_EXTENSION);
         // On Debug mode, PHP Notice:  Only variables should be passed by reference
         //$suffix = end(explode('.', $file));
-        return $suffix == 'gif' ? $file :  $style=="full"?$file: "{$file}?x-oss-process=style%2F{$style}";
-=======
-        $suffix = end(explode('.', $file));
+        
+        // 如果 $style 传入空，则不生成带 oss style 的参数，因为我发现，oss style 即使为 full，返回的图片却比实际（不带参数的）原图文件尺寸要大不少！
+        // 这里其实还可以多处理一个地方，就是如果 $style=="full" 且 oss 没有开启原图片保护的情况下，则直接返回
+        // 不带 x-oss-process 参数的 URL，减少不必要的 OSS 的流量费用消耗。
         return $suffix == 'gif' ? $file : empty($style) ?$file: "{$file}?x-oss-process=style%2F{$style}" ;
->>>>>>> 40f32f5d36d0a06a027422a519b937c6f2472986
     }
 
 }
