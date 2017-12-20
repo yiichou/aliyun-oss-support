@@ -107,10 +107,15 @@ class UrlHelper
 
     public static function aliImageStyle($file, $style)
     {
+<<<<<<< HEAD
         $suffix = pathinfo($file, PATHINFO_EXTENSION);
         // On Debug mode, PHP Notice:  Only variables should be passed by reference
         //$suffix = end(explode('.', $file));
         return $suffix == 'gif' ? $file :  $style=="full"?$file: "{$file}?x-oss-process=style%2F{$style}";
+=======
+        $suffix = end(explode('.', $file));
+        return $suffix == 'gif' ? $file : empty($style) ?$file: "{$file}?x-oss-process=style%2F{$style}" ;
+>>>>>>> 40f32f5d36d0a06a027422a519b937c6f2472986
     }
 
 }
