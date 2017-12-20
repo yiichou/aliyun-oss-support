@@ -102,7 +102,7 @@ class UrlHelper
     public static function aliImageStyle($file, $style)
     {
         $suffix = end(explode('.', $file));
-        return $suffix == 'gif' ? $file : "{$file}?x-oss-process=style%2F{$style}";
+        return $suffix == 'gif' ? $file : empty($style) ?$file: "{$file}?x-oss-process=style%2F{$style}" ;
     }
 
 }
