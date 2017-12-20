@@ -34,8 +34,14 @@ class UrlHelper
         if (empty($data['sizes']))
             return $data;
 
-        $filename = end(explode('/', $data['file']));
-        $suffix = end(explode('.', $filename));
+        $pathinfo = pathinfo($data['file']);
+        // get file name with extensions
+        $filename = $pathinfo['basename'];
+        //$filename = basename($data['file']);
+
+        // fix On Debug mode, PHP Notice:  Only variables should be passed by reference
+        $suffix = $pathinfo['extension'];//pathinfo($filename, PATHINFO_EXTENSION); // extension name without dot
+        //$suffix = end(explode('.', $filename));
 
         if (Config::$enableImgStyle && $suffix != 'gif') {
             foreach (array('thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full') as $style) {
@@ -101,8 +107,10 @@ class UrlHelper
 
     public static function aliImageStyle($file, $style)
     {
-        $suffix = end(explode('.', $file));
-        return $suffix == 'gif' ? $file : "{$file}?x-oss-process=style%2F{$style}";
+        $suffix = pathinfo($file, PATHINFO_EXTENSION);
+        // On Debug mode, PHP Notice:  Only variables should be passed by reference
+        //$suffix = end(explode('.', $file));
+        return $suffix == 'gif' ? $file :  $style=="full"?$file: "{$file}?x-oss-process=style%2F{$style}";
     }
 
 }
