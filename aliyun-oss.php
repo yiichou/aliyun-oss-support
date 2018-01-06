@@ -37,9 +37,11 @@ try {
     $ossClient = new OSS\OssClient(Config::$accessKeyId, Config::$accessKeySecret, Config::$endpoint);
     new OSS\WP\Upload($ossClient);
     new OSS\WP\Delete($ossClient);
-    new OSS\WP\UrlHelper();
+//    new OSS\WP\UrlHelper();
+      OSS\WP\UrlHelper::add_filter();
 } catch (OSS\Core\OssException $e) {
     register_activation_hook(__FILE__, function () {
         add_option('oss_options', Config::$originOptions, '', 'yes');
     });
 }
+  
