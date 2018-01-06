@@ -23,6 +23,21 @@ class RequestCore
      * The headers being sent in the request.
      */
     public $request_headers;
+   
+    /**
+     * The raw response callback headers
+     */
+    public $response_raw_headers;
+
+    /**
+     * Response body when error occurs
+     */
+    public $response_error_body;
+
+    /**
+     *The hander of write file
+     */
+    public $write_file_handle; 
 
     /**
      * The body being sent in the request.
@@ -53,11 +68,6 @@ class RequestCore
      * Additional response data.
      */
     public $response_info;
-
-    /**
-     * The handle for the cURL object.
-     */
-    public $curl_handle;
 
     /**
      * The method by which the request is being made.
@@ -439,9 +449,6 @@ class RequestCore
     public function set_write_file($location)
     {
         $this->write_file = $location;
-        $write_file_handle = fopen($location, 'w');
-
-        return $this->set_write_stream($write_file_handle);
     }
 
     /**
@@ -472,6 +479,28 @@ class RequestCore
 
         return $this;
     }
+
+    /**
+     * A callback function that is invoked by cURL for streaming up.
+     *
+     * @param resource $curl_handle (Required) The cURL handle for the request.
+     * @param resource $header_content (Required) The header callback result.
+     * @return headers from a stream.
+     */
+   public function streaming_header_callback($curl_handle, $header_content)
+   {
+        $code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
+
+        if (isset($this->write_file) && intval($code) / 100 == 2 && !isset($this->write_file_handle))
+        {
+            $this->write_file_handle = fopen($this->write_file, 'w');
+            $this->set_write_stream($this->write_file_handle);
+        }
+
+        $this->response_raw_headers .= $header_content;
+        return strlen($header_content); 
+    }
+        
 
     /**
      * Register a callback function to execute whenever a data stream is read from using
@@ -571,10 +600,18 @@ class RequestCore
      */
     public function streaming_write_callback($curl_handle, $data)
     {
+        $code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
+        
+        if (intval($code) / 100 != 2)
+        {
+            $this->response_error_body .= $data;
+            return strlen($data);
+        }
+
         $length = strlen($data);
         $written_total = 0;
         $written_last = 0;
-
+        
         while ($written_total < $length) {
             $written_last = fwrite($this->write_stream, substr($data, $written_total));
 
@@ -617,6 +654,7 @@ class RequestCore
         curl_setopt($curl_handle, CURLOPT_NOSIGNAL, true);
         curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
         curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
+        curl_setopt($curl_handle, CURLOPT_HEADERFUNCTION, array($this, 'streaming_header_callback'));
         curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
         // Verification of the SSL cert
@@ -647,7 +685,6 @@ class RequestCore
 
         // Enable a proxy connection if requested.
         if ($this->proxy) {
-            curl_setopt($curl_handle, CURLOPT_HTTPPROXYTUNNEL, true);
 
             $host = $this->proxy['host'];
             $host .= ($this->proxy['port']) ? ':' . $this->proxy['port'] : '';
@@ -715,7 +752,7 @@ class RequestCore
 
             default: // Assumed GET
                 curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, $this->method);
-                if (isset($this->write_stream)) {
+                if (isset($this->write_stream) || isset($this->write_file)) {
                     curl_setopt($curl_handle, CURLOPT_WRITEFUNCTION, array($this, 'streaming_write_callback'));
                     curl_setopt($curl_handle, CURLOPT_HEADER, false);
                 } else {
@@ -747,18 +784,23 @@ class RequestCore
     {
         // Accept a custom one if it's passed.
         if ($curl_handle && $response) {
-            $this->curl_handle = $curl_handle;
             $this->response = $response;
         }
 
         // As long as this came back as a valid resource...
-        if (is_resource($this->curl_handle)) {
+        if (is_resource($curl_handle)) {
             // Determine what's what.
-            $header_size = curl_getinfo($this->curl_handle, CURLINFO_HEADER_SIZE);
+            $header_size = curl_getinfo($curl_handle, CURLINFO_HEADER_SIZE);
             $this->response_headers = substr($this->response, 0, $header_size);
             $this->response_body = substr($this->response, $header_size);
-            $this->response_code = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
-            $this->response_info = curl_getinfo($this->curl_handle);
+            $this->response_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
+            $this->response_info = curl_getinfo($curl_handle);
+            
+            if (intval($this->response_code) / 100 != 2 && isset($this->write_file))
+            {
+                $this->response_headers = $this->response_raw_headers;
+                $this->response_body = $this->response_error_body;
+            }
 
             // Parse out the headers
             $this->response_headers = explode("\r\n\r\n", trim($this->response_headers));
@@ -777,9 +819,8 @@ class RequestCore
             $this->response_headers = $header_assoc;
             $this->response_headers['info'] = $this->response_info;
             $this->response_headers['info']['method'] = $this->method;
-
+            
             if ($curl_handle && $response) {
-                //return new $this->response_class($this->response_headers, $this->response_body, $this->response_code, $this->curl_handle);
                 return new ResponseCore($this->response_headers, $this->response_body, $this->response_code);
             }
         }
@@ -815,88 +856,6 @@ class RequestCore
 
         return $this->response;
     }
-
-    /**
-     * Sends the request using <php:curl_multi_exec()>, enabling parallel requests. Uses the "rolling" method.
-     *
-     * @param array $handles (Required) An indexed array of cURL handles to process simultaneously.
-     * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-     *    <li><code>callback</code> - <code>string|array</code> - Optional - The string name of a function to pass the response data to. If this is a method, pass an array where the <code>[0]</code> index is the class and the <code>[1]</code> index is the method name.</li>
-     *    <li><code>limit</code> - <code>integer</code> - Optional - The number of simultaneous requests to make. This can be useful for scaling around slow server responses. Defaults to trusting cURLs judgement as to how many to use.</li></ul>
-     * @return array Post-processed cURL responses.
-     */
-    public function send_multi_request($handles, $opt = null)
-    {
-        set_time_limit(0);
-
-        // Skip everything if there are no handles to process.
-        if (count($handles) === 0) return array();
-
-        if (!$opt) $opt = array();
-
-        // Initialize any missing options
-        $limit = isset($opt['limit']) ? $opt['limit'] : -1;
-
-        // Initialize
-        $handle_list = $handles;
-        $http = new $this->request_class();
-        $multi_handle = curl_multi_init();
-        $handles_post = array();
-        $added = count($handles);
-        $last_handle = null;
-        $count = 0;
-        $i = 0;
-
-        // Loop through the cURL handles and add as many as it set by the limit parameter.
-        while ($i < $added) {
-            if ($limit > 0 && $i >= $limit) break;
-            curl_multi_add_handle($multi_handle, array_shift($handles));
-            $i++;
-        }
-
-        do {
-            $active = false;
-
-            // Start executing and wait for a response.
-            while (($status = curl_multi_exec($multi_handle, $active)) === CURLM_CALL_MULTI_PERFORM) {
-                // Start looking for possible responses immediately when we have to add more handles
-                if (count($handles) > 0) break;
-            }
-
-            // Figure out which requests finished.
-            $to_process = array();
-
-            while ($done = curl_multi_info_read($multi_handle)) {
-                // Since curl_errno() isn't reliable for handles that were in multirequests, we check the 'result' of the info read, which contains the curl error number, (listed here http://curl.haxx.se/libcurl/c/libcurl-errors.html )
-                if ($done['result'] > 0) {
-                    throw new RequestCore_Exception('cURL resource: ' . (string)$done['handle'] . '; cURL error: ' . curl_error($done['handle']) . ' (' . $done['result'] . ')');
-                } // Because curl_multi_info_read() might return more than one message about a request, we check to see if this request is already in our array of completed requests
-                elseif (!isset($to_process[(int)$done['handle']])) {
-                    $to_process[(int)$done['handle']] = $done;
-                }
-            }
-
-            // Actually deal with the request
-            foreach ($to_process as $pkey => $done) {
-                $response = $http->process_response($done['handle'], curl_multi_getcontent($done['handle']));
-                $key = array_search($done['handle'], $handle_list, true);
-                $handles_post[$key] = $response;
-
-                if (count($handles) > 0) {
-                    curl_multi_add_handle($multi_handle, array_shift($handles));
-                }
-
-                curl_multi_remove_handle($multi_handle, $done['handle']);
-                curl_close($done['handle']);
-            }
-        } while ($active || count($handles_post) < $added);
-
-        curl_multi_close($multi_handle);
-
-        ksort($handles_post, SORT_NUMERIC);
-        return $handles_post;
-    }
-
 
     /*%******************************************************************************************%*/
     // RESPONSE METHODS
