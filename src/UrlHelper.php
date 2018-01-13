@@ -33,9 +33,11 @@ class UrlHelper
 
         $basename = pathinfo($data['file'], PATHINFO_BASENAME);
         $suffix = pathinfo($data['file'], PATHINFO_EXTENSION);
+        $styles = get_intermediate_image_sizes();
+        $styles[] = 'full';
 
         if (Config::$enableImgStyle && $suffix != 'gif') {
-            foreach (array('thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full') as $style) {
+            foreach ($styles as $style) {
                 if (isset($data['sizes'][$style]))
                     $data['sizes'][$style]['file'] = $this->aliImageStyle($basename, $style);
             }
@@ -98,8 +100,7 @@ class UrlHelper
 
     protected function aliImageStyle($file, $style)
     {
-        $suffix = pathinfo($file, PATHINFO_EXTENSION);
-        return $suffix == 'gif' ? $file : "{$file}?x-oss-process=style%2F{$style}";
+        return "{$file}?x-oss-process=style%2F{$style}";
     }
 
 }
