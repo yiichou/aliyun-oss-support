@@ -16,6 +16,8 @@ class Config
     public static $staticHost = "";
     public static $enableImgService = false;
     public static $enableImgStyle = false;
+    public static $sourceImgProtect = false;
+    public static $customSeparator = "?x-oss-process=style%2F";
     public static $noLocalSaving = false;
 
     public static $baseDir = "";
@@ -23,16 +25,18 @@ class Config
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
     public static $originOptions = array(
-        'bucket'        => "",
-        'ak'            => "",
-        'sk'            => "",
-        'region'        => "oss-cn-hangzhou",
-        'internal'      => false,
-        'path'          => "",
-        'static_url'    => "",
-        'img_url'       => "",
-        'img_style'     => false,
-        'nolocalsaving' => false,
+        'bucket'                => "",
+        'ak'                    => "",
+        'sk'                    => "",
+        'region'                => "oss-cn-hangzhou",
+        'internal'              => false,
+        'path'                  => "",
+        'static_url'            => "",
+        'img_url'               => "",
+        'img_style'             => false,
+        'source_img_protect'    => false,
+        'custom_separator'      => "",
+        'nolocalsaving'         => false,
     );
 
     public static function init($plugin_path = "")
@@ -56,10 +60,14 @@ class Config
         if ($options['img_service'] || $options['img_url'])
             self::$enableImgService = true;
 
+        if (! empty($options['custom_separator']))
+            self::$customSeparator = "@{$options['custom_separator']}";
+
         $wp_upload_dir = wp_upload_dir();
         self::$baseDir = $wp_upload_dir['basedir'];
         self::$storePath .= trim($options['path'],'/');
         self::$enableImgStyle = $options['img_style'];
+        self::$sourceImgProtect = $options['source_img_protect'];
         self::$noLocalSaving = $options['nolocalsaving'];
     }
 

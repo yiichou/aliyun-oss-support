@@ -12,7 +12,7 @@ class UrlHelper
         if (Config::$enableImgService) {
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
 
-            if (Config::$enableImgStyle) {
+            if (Config::$enableImgStyle && Config::$sourceImgProtect) {
                 add_filter('wp_get_attachment_url', array($this,'replaceImgUrl'), 30, 2);
                 add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcset'), 900);
             }
@@ -32,11 +32,10 @@ class UrlHelper
             return $data;
 
         $basename = pathinfo($data['file'], PATHINFO_BASENAME);
-        $suffix = pathinfo($data['file'], PATHINFO_EXTENSION);
         $styles = get_intermediate_image_sizes();
         $styles[] = 'full';
 
-        if (Config::$enableImgStyle && $suffix != 'gif') {
+        if (Config::$enableImgStyle) {
             foreach ($styles as $style) {
                 if (isset($data['sizes'][$style]))
                     $data['sizes'][$style]['file'] = $this->aliImageStyle($basename, $style);
@@ -72,7 +71,7 @@ class UrlHelper
     public function replaceImgSrcset($sources)
     {
         foreach ($sources as $k => $source) {
-            if (false === strpos($source['url'], "x-oss-process="))
+            if (false === strstr($source['url'], Config::$customSeparator))
                 $sources[$k]['url'] = $this->aliImageStyle($source['url'], 'full');
         }
         return $sources;
@@ -100,7 +99,11 @@ class UrlHelper
 
     protected function aliImageStyle($file, $style)
     {
-        return "{$file}?x-oss-process=style%2F{$style}";
+        if (pathinfo($file, PATHINFO_EXTENSION) == 'gif')
+            return $file;
+        elseif ($style == 'full' && !Config::$sourceImgProtect)
+            return $file;
+        else
+            return $file . Config::$customSeparator . $style;
     }
-
 }

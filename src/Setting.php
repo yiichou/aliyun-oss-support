@@ -75,16 +75,12 @@ class Setting
         if (isset($_POST['static_host']))
             $options['static_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['static_host']);
 
-        if (isset($_POST['img_host_enable'])) {
-            $options['img_service'] = true;
-            $options['img_style'] = isset($_POST['img_style']);
-        } else{
-            $options['img_service'] = false;
-            $options['img_style'] = false;
-        }
+        $options['img_service'] = isset($_POST['img_service']);
+        $options['img_style'] = $options['img_service'] ? isset($_POST['img_style']) : false;
+        $options['source_img_protect'] = $options['img_style'] ? isset($_POST['source_img_protect']) : false;
+        $options['custom_separator'] = $options['img_service'] ? $_POST['custom_separator'] : '';
 
-        isset($_POST['keep_settings']) && $options['keep_settings'] = !!$_POST['keep_settings'];
-
+        $options['keep_settings'] = isset($_POST['keep_settings']);
         unset($options['img_url']);
         update_option('oss_options', $options);
 
