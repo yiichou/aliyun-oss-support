@@ -8,13 +8,14 @@ class UrlHelper
     public function __construct()
     {
         add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30 );
+        add_filter('oss_get_image_url', array($this, 'getImgOssUrl'), 9, 2);
 
         if (Config::$enableImgService) {
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
 
             if (Config::$enableImgStyle && Config::$sourceImgProtect) {
-                add_filter('wp_get_attachment_url', array($this,'replaceImgUrl'), 30, 2);
-                add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcset'), 900);
+                add_filter('wp_get_attachment_url', array($this,'replaceOriginalImgUrl'), 30, 2);
+                add_filter('wp_calculate_image_srcset', array($this, 'replaceOriginalImgSrcset'), 900);
             }
         }
     }
@@ -49,13 +50,14 @@ class UrlHelper
     }
 
     /**
-     * 重置图片链接, 仅在开启图片服务时启用
+     * 将原图链接替换为 full 样式的 OSS 图片地址
+     * 仅在开启图片服务 + 原图保护时启用
      *
      * @param $url
      * @param $post_id
      * @return mixed
      */
-    public function replaceImgUrl($url, $post_id)
+    public function replaceOriginalImgUrl($url, $post_id)
     {
         if (wp_attachment_is_image($post_id))
             $url = $this->aliImageStyle($url, 'full');
@@ -63,12 +65,13 @@ class UrlHelper
     }
 
     /**
-     * 重置 Srcset 中原图链接, 仅在开启图片服务时启用
+     * 将 Srcset 中原图链接替换为 full 样式的 OSS 图片地址
+     * 仅在开启图片服务 + 原图保护时启用
      *
      * @param $sources
      * @return mixed
      */
-    public function replaceImgSrcset($sources)
+    public function replaceOriginalImgSrcset($sources)
     {
         foreach ($sources as $k => $source) {
             if (false === strstr($source['url'], Config::$customSeparator))
@@ -78,7 +81,7 @@ class UrlHelper
     }
 
     /**
-     * 设置 upload_url_path，使用外部存储OSS
+     * 设置 upload_url_path，将图片/附件的路径修改为 OSS 地址
      *
      * @param $uploads
      * @return mixed
@@ -90,6 +93,33 @@ class UrlHelper
             $uploads['baseurl'] = $base_url;
         }
         return $uploads;
+    }
+
+    /**
+     * 将图片地址替换为 OSS 图片地址
+     * 通过 apply_filters: oss_get_image_url 手动调用
+     * eg. $url = apply_filters('oss_get_image_url', $image_url, $style)
+     * 
+     * @param string $url 图片/附件的 url 或相对路径
+     * @param srting/array $style 图片样式或包含高宽的数组. eg. 'large' or ['width' => 50, 'height' => 50]
+     * @return string
+     */
+    public function getImgOssUrl($url, $style)
+    {
+        error_log('asdasdas');
+        $uri = parse_url($url);
+        if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host']))
+            $url = Config::$staticHost . Config::$storePath . $uri['path'];
+
+        if (Config::$enableImgService) {
+            if (Config::$enableImgStyle){
+                $style = (is_string($style) && !empty($style)) ? $style : 'full';
+                return $this->aliImageStyle($url, $style);
+            } elseif (is_array($style) && !empty($style['height']) && !empty($style['width']))
+                return $this->aliImageResize($url, $height, $width);
+        }
+
+        return $url;
     }
 
     protected function aliImageResize($file, $height, $width)
