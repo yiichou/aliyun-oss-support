@@ -8,7 +8,7 @@ class Upload
 {
     private $oc;
 
-    function __construct(OssClient $ossClient)
+    public function __construct(OssClient $ossClient)
     {
         $this->oc = $ossClient;
         $this->ossHeader = array(
@@ -33,7 +33,7 @@ class Upload
      * @param $dir
      * @return string
      */
-    function uniqueFilename($filename, $ext, $dir)
+    public function uniqueFilename($filename, $ext, $dir)
     {
         $ext = strtolower($ext);
         $object = trim(str_replace(Config::$baseDir, Config::$storePath, $dir), '/') . '/' . $filename;
@@ -48,16 +48,18 @@ class Upload
      * @param $file
      * @return mixed
      */
-    function uploadOriginToOss($file)
+    public function uploadOriginToOss($file)
     {
-        if (isset($_REQUEST["action"]) && in_array($_REQUEST["action"], array('upload-plugin', 'upload-theme')))
+        if (isset($_REQUEST["action"]) && in_array($_REQUEST["action"], array('upload-plugin', 'upload-theme'))) {
             return $file;
+        }
 
         $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file['file']), '/');
         $this->oc->multiuploadFile(Config::$bucket, $object, $file['file'], $this->ossHeader);
 
-        if (Config::$noLocalSaving && false === strpos($file['type'], 'image'))
+        if (Config::$noLocalSaving && false === strpos($file['type'], 'image')) {
             Delete::deleteLocalFile($file['file']);
+        }
 
         return $file;
     }
@@ -68,12 +70,13 @@ class Upload
      * @param $metadata
      * @return mixed
      */
-    function uploadThumbToOss($metadata)
+    public function uploadThumbToOss($metadata)
     {
         if (isset($metadata['sizes']) && preg_match('/\d{4}\/\d{2}/', $metadata['file'], $m)) {
             $thumbs = array();
-            foreach ($metadata['sizes'] as $val)
+            foreach ($metadata['sizes'] as $val) {
                 $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
+            }
 
             if (!Config::$enableImgService) {
                 foreach ($thumbs as $thumb) {
@@ -83,8 +86,9 @@ class Upload
             }
 
             if (Config::$noLocalSaving) {
-                foreach ($thumbs as $thumb)
+                foreach ($thumbs as $thumb) {
                     Delete::deleteLocalFile($thumb);
+                }
                 Delete::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
             }
         }
@@ -92,7 +96,7 @@ class Upload
         return $metadata;
     }
 
-    function uploadEditedImage($override, $filename, $image, $mime_type)
+    public function uploadEditedImage($override, $filename, $image, $mime_type)
     {
         $image->save($filename, $mime_type);
         $object = ltrim(Config::$storePath.'/'._wp_relative_upload_path($filename), '/');
@@ -100,5 +104,4 @@ class Upload
 
         return $override;
     }
-
 }

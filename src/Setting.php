@@ -8,10 +8,11 @@ class Setting
     {
         add_action('admin_menu', array($this, 'adminMenu'));
         add_filter('plugin_action_links', array($this, 'pluginActionLink'), 10, 2);
-        load_plugin_textdomain('aliyun-oss', false , Config::$pluginPath.'/languages');
+        load_plugin_textdomain('aliyun-oss', false, Config::$pluginPath.'/languages');
 
-        if ( !(Config::$bucket && Config::$accessKeyId && Config::$accessKeySecret))
+        if (!(Config::$bucket && Config::$accessKeyId && Config::$accessKeySecret)) {
             (isset($_GET['page']) && $_GET['page'] == 'aliyun-oss') || add_action('admin_notices', array($this, 'warning'));
+        }
     }
 
     /**
@@ -35,10 +36,11 @@ class Setting
      * @param $file
      * @return array
      */
-    function pluginActionLink( $links, $file )
+    public function pluginActionLink($links, $file)
     {
-        if ( $file == Config::$pluginPath.'/aliyun-oss.php' )
+        if ($file == Config::$pluginPath.'/aliyun-oss.php') {
             array_unshift($links, '<a href="'.Config::$settingsUrl.'">'.__('Settings').'</a>');
+        }
 
         return $links;
     }
@@ -53,8 +55,9 @@ class Setting
 
     public function settingsPage()
     {
-        if (!empty($_POST))
+        if (!empty($_POST)) {
             $this->updateSettings();
+        }
 
         require __DIR__.'/../view/setting.php';
     }
@@ -72,8 +75,9 @@ class Setting
         isset($_POST['bucket']) && $options['bucket'] = trim($_POST['bucket']);
         isset($_POST['store_path']) && $options['path'] = trim($_POST['store_path']);
         $options['nolocalsaving'] = isset($_POST['no_local_saving']);
-        if (isset($_POST['static_host']))
+        if (isset($_POST['static_host'])) {
             $options['static_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['static_host']);
+        }
 
         $options['img_service'] = isset($_POST['img_service']);
         $options['img_style'] = $options['img_service'] ? isset($_POST['img_style']) : false;

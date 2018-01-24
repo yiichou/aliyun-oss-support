@@ -57,20 +57,18 @@ class Delete
      */
     public static function deleteLocalFile($file)
     {
-        try{
+        try {
             //文件不存在
-            if (!@file_exists($file))
-                return TRUE;
+            if (!@file_exists($file)) {
+                return true;
+            }
             //删除文件
-            if (!@unlink($file))
-                return FALSE;
-            return TRUE;
-        }
-        catch(Exception $ex) {
-            return FALSE;
+            if (!@unlink($file)) {
+                return false;
+            }
+            return true;
+        } catch (Exception $ex) {
+            return false;
         }
     }
-
-
-
 }

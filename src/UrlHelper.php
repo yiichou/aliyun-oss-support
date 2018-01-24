@@ -4,10 +4,9 @@ namespace OSS\WP;
 
 class UrlHelper
 {
-
     public function __construct()
     {
-        add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30 );
+        add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30);
         add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
         add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 9, 2);
 
@@ -30,8 +29,9 @@ class UrlHelper
      */
     public function replaceImgMeta($data)
     {
-        if (empty($data['sizes']))
+        if (empty($data['sizes'])) {
             return $data;
+        }
 
         $basename = pathinfo($data['file'], PATHINFO_BASENAME);
         $styles = get_intermediate_image_sizes();
@@ -39,12 +39,14 @@ class UrlHelper
 
         if (Config::$enableImgStyle) {
             foreach ($styles as $style) {
-                if (isset($data['sizes'][$style]))
+                if (isset($data['sizes'][$style])) {
                     $data['sizes'][$style]['file'] = $this->aliImageStyle($basename, $style);
+                }
             }
         } else {
-            foreach ($data['sizes'] as $size => $info)
+            foreach ($data['sizes'] as $size => $info) {
                 $data['sizes'][$size]['file'] = $this->aliImageResize($basename, $info['height'], $info['width']);
+            }
         }
 
         return $data;
@@ -60,8 +62,9 @@ class UrlHelper
      */
     public function replaceOriginalImgUrl($url, $post_id)
     {
-        if (wp_attachment_is_image($post_id))
+        if (wp_attachment_is_image($post_id)) {
             $url = $this->aliImageStyle($url, 'full');
+        }
         return $url;
     }
 
@@ -75,8 +78,9 @@ class UrlHelper
     public function replaceOriginalImgSrcset($sources)
     {
         foreach ($sources as $k => $source) {
-            if (false === strstr($source['url'], Config::$customSeparator))
+            if (false === strstr($source['url'], Config::$customSeparator)) {
                 $sources[$k]['url'] = $this->aliImageStyle($source['url'], 'full');
+            }
         }
         return $sources;
     }
@@ -100,15 +104,16 @@ class UrlHelper
      * 将附件地址替换为 OSS 地址
      * 通过 apply_filters: oss_get_attachment_url 手动调用
      * eg. $url = apply_filters('oss_get_attachment_url', $url)
-     * 
+     *
      * @param string $url 附件的 url 或相对路径
      * @return string
      */
     public function getOssUrl($url)
     {
         $uri = parse_url($url);
-        if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host']))
+        if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host'])) {
             $url = Config::$staticHost . Config::$storePath . $uri['path'];
+        }
 
         return $url;
     }
@@ -117,7 +122,7 @@ class UrlHelper
      * 将图片地址替换为 OSS 图片地址
      * 通过 apply_filters: oss_get_image_url 手动调用
      * eg. $url = apply_filters('oss_get_image_url', $image_url, $style)
-     * 
+     *
      * @param string $url 图片的 url 或相对路径
      * @param srting/array $style 图片样式或包含高宽的数组. eg. 'large' or ['width' => 50, 'height' => 50]
      * @return string
@@ -125,10 +130,11 @@ class UrlHelper
     public function getOssImgUrl($url, $style)
     {
         $url = $this->getOssUrl($url);
-        if ( !Config::$enableImgService )
+        if (!Config::$enableImgService) {
             return $url;
+        }
 
-        if ( Config::$enableImgStyle ) {
+        if (Config::$enableImgStyle) {
             $style = (is_string($style) && !empty($style)) ? $style : 'full';
             $url = $this->aliImageStyle($url, $style);
         } else {
@@ -136,11 +142,12 @@ class UrlHelper
                 $height = $style['height'];
                 $width = $style['width'];
             } elseif (!empty($style)) {
-                $height = get_option($style . '_size_h' );
-                $width = get_option($style . '_size_w' );
+                $height = get_option($style . '_size_h');
+                $width = get_option($style . '_size_w');
             }
-            if ($height && $height)
+            if ($height && $height) {
                 $url = $this->aliImageResize($url, $height, $width);
+            }
         }
 
         return $url;
@@ -153,11 +160,12 @@ class UrlHelper
 
     protected function aliImageStyle($file, $style)
     {
-        if (pathinfo($file, PATHINFO_EXTENSION) == 'gif')
+        if (pathinfo($file, PATHINFO_EXTENSION) == 'gif') {
             return $file;
-        elseif ($style == 'full' && !Config::$sourceImgProtect)
+        } elseif ($style == 'full' && !Config::$sourceImgProtect) {
             return $file;
-        else
+        } else {
             return $file . Config::$customSeparator . $style;
+        }
     }
 }
