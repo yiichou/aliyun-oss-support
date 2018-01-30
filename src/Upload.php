@@ -24,7 +24,7 @@ class Upload
             add_filter('wp_unique_filename', array($this, 'uniqueFilename'), 30, 3);
         }
 
-        add_action('oss_upload_file', array($this, 'uploadFlieToOss'), 9, 3);
+        add_action('oss_upload_file', array($this, 'uploadFileToOss'), 9, 3);
     }
 
     /**
@@ -36,12 +36,12 @@ class Upload
      * @param string [$base_dir] 文件本地存储的基础路径，上传 OSS 时会被去掉，default: Config::$baseDir or ''
      * @param string [$oss_dir] 文件在 OSS 上的 存储目录，default: Config::$storePath
      */
-    public function uploadFlieToOss($file, $base_dir = '', $oss_dir = '')
+    public function uploadFileToOss($file, $base_dir = '', $oss_dir = '')
     {
         empty($base_dir) && path_is_absolute($file) && $base_dir = Config::$baseDir;
         empty($oss_dir) && $oss_dir = Config::$storePath;
 
-        $object = ltrim($file, $base_dir);
+        $object = preg_replace('/^' . preg_quote($base_dir, '/') . '/', '', $file);
         $object = trim($oss_dir, '/') . '/' . trim($object, '/');
 
         $this->oc->multiuploadFile(Config::$bucket, $object, $file, $this->ossHeader);
