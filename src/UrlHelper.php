@@ -112,7 +112,7 @@ class UrlHelper
     {
         $uri = parse_url($url);
         if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host'])) {
-            $url = Config::$staticHost . Config::$storePath . $uri['path'];
+            $url = Config::$staticHost . Config::$storePath . '/' . ltrim($uri['path'], '/');
         }
 
         return $url;

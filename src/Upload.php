@@ -23,6 +23,29 @@ class Upload
         if (Config::$noLocalSaving) {
             add_filter('wp_unique_filename', array($this, 'uniqueFilename'), 30, 3);
         }
+
+        add_action('oss_upload_file', array($this, 'uploadFlieToOss'), 9, 3);
+    }
+
+    /**
+     * 将文件上传到 OSS 上
+     * 通过 do_action: oss_upload_file 手动调用
+     * eg. do_action('oss_upload_file', $file)
+     * 
+     * @param string $file 文件的本地路径
+     * @param string [$base_dir] 文件本地存储的基础路径，上传 OSS 时会被去掉，default: Config::$baseDir or ''
+     * @param string [$oss_dir] 文件在 OSS 上的 存储目录，default: Config::$storePath
+     */
+    public function uploadFlieToOss($file, $base_dir = '', $oss_dir = '')
+    {
+        empty($base_dir) && path_is_absolute($file) && $base_dir = Config::$baseDir;
+        empty($oss_dir) && $oss_dir = Config::$storePath;
+
+        $object = ltrim($file, $base_dir);
+        $object = trim($oss_dir, '/') . '/' . trim($object, '/');
+
+        $this->oc->multiuploadFile(Config::$bucket, $object, $file, $this->ossHeader);
+        // Config::$noLocalSaving && Delete::deleteLocalFile($file);
     }
 
     /**
