@@ -4,20 +4,18 @@ namespace OSS\WP;
 
 class UrlHelper
 {
-
-    /**
-     * 修改为静态方法，这样外部（其它插件），可以调用里面的方法
-     */
-    public static function add_filter()
+    public function __construct()
     {
-        add_filter('upload_dir', array(UrlHelper::class, 'resetUploadBaseUrl'), 30);
+        add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30);
+        add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
+        add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 9, 2);
 
         if (Config::$enableImgService) {
-            add_filter('wp_get_attachment_metadata', array(UrlHelper::class, 'replaceImgMeta'), 900);
+            add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
 
-            if (Config::$enableImgStyle) {
-                add_filter('wp_get_attachment_url', array(UrlHelper::class, 'replaceImgUrl'), 30, 2);
-                add_filter('wp_calculate_image_srcset', array(UrlHelper::class, 'replaceImgSrcset'), 900);
+            if (Config::$enableImgStyle && Config::$sourceImgProtect) {
+                add_filter('wp_get_attachment_url', array($this,'replaceOriginalImgUrl'), 30, 2);
+                add_filter('wp_calculate_image_srcset', array($this, 'replaceOriginalImgSrcset'), 900);
             }
         }
     }
@@ -29,92 +27,145 @@ class UrlHelper
      * @param $data
      * @return mixed
      */
-    public static function replaceImgMeta($data)
+    public function replaceImgMeta($data)
     {
-        if (empty($data['sizes']))
+        if (empty($data['sizes'])) {
             return $data;
+        }
 
-        $pathinfo = pathinfo($data['file']);
-        // get file name with extensions
-        $filename = $pathinfo['basename'];
-        //$filename = basename($data['file']);
+        $basename = pathinfo($data['file'], PATHINFO_BASENAME);
+        $styles = get_intermediate_image_sizes();
+        $styles[] = 'full';
 
-        // fix On Debug mode, PHP Notice:  Only variables should be passed by reference
-        $suffix = $pathinfo['extension'];//pathinfo($filename, PATHINFO_EXTENSION); // extension name without dot
-        //$suffix = end(explode('.', $filename));
-
-        if (Config::$enableImgStyle && $suffix != 'gif') {
-            foreach (array('thumbnail', 'post-thumbnail', 'medium', 'medium_large', 'large', 'full') as $style) {
-                if (isset($data['sizes'][$style]))
-                    $data['sizes'][$style]['file'] = self::aliImageStyle($filename, $style);
+        if (Config::$enableImgStyle) {
+            foreach ($styles as $style) {
+                if (isset($data['sizes'][$style])) {
+                    $data['sizes'][$style]['file'] = $this->aliImageStyle($basename, $style);
+                }
             }
         } else {
-            foreach ($data['sizes'] as $size => $info)
-                $data['sizes'][$size]['file'] = self::aliImageResize($filename, $info['height'], $info['width']);
+            foreach ($data['sizes'] as $size => $info) {
+                $data['sizes'][$size]['file'] = $this->aliImageResize($basename, $info['height'], $info['width']);
+            }
         }
 
         return $data;
     }
 
     /**
-     * 重置图片链接, 仅在开启图片服务时启用
+     * 将原图链接替换为 full 样式的 OSS 图片地址
+     * 仅在开启图片服务 + 原图保护时启用
      *
      * @param $url
      * @param $post_id
      * @return mixed
      */
-    public static function replaceImgUrl($url, $post_id)
+    public function replaceOriginalImgUrl($url, $post_id)
     {
-        if (wp_attachment_is_image($post_id))
-            $url = self::aliImageStyle($url, 'full');
+        if (wp_attachment_is_image($post_id)) {
+            $url = $this->aliImageStyle($url, 'full');
+        }
         return $url;
     }
 
     /**
-     * 重置 Srcset 中原图链接, 仅在开启图片服务时启用
+     * 将 Srcset 中原图链接替换为 full 样式的 OSS 图片地址
+     * 仅在开启图片服务 + 原图保护时启用
      *
      * @param $sources
      * @return mixed
      */
-    public static function replaceImgSrcset($sources)
+    public function replaceOriginalImgSrcset($sources)
     {
         foreach ($sources as $k => $source) {
-            if (false === strpos($source['url'], "x-oss-process="))
-                $sources[$k]['url'] = self:: aliImageStyle($source['url'], 'full');
+            if (false === strstr($source['url'], Config::$customSeparator)) {
+                $sources[$k]['url'] = $this->aliImageStyle($source['url'], 'full');
+            }
         }
         return $sources;
     }
 
     /**
-     * 设置 upload_url_path，使用外部存储OSS
+     * 设置 upload_url_path，将图片/附件的路径修改为 OSS 地址
      *
      * @param $uploads
      * @return mixed
      */
-    public static function resetUploadBaseUrl($uploads)
+    public function resetUploadBaseUrl($uploads)
     {
         if (Config::$staticHost) {
-            $baseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
-            $uploads['baseurl'] = $baseUrl;
+            $base_url = rtrim(Config::$staticHost . Config::$storePath, '/');
+            $uploads['baseurl'] = $base_url;
         }
         return $uploads;
     }
 
-    public static function aliImageResize($file, $height, $width)
+    /**
+     * 将附件地址替换为 OSS 地址
+     * 通过 apply_filters: oss_get_attachment_url 手动调用
+     * eg. $url = apply_filters('oss_get_attachment_url', $url)
+     *
+     * @param string $url 附件的 url 或相对路径
+     * @return string
+     */
+    public function getOssUrl($url)
+    {
+        $uri = parse_url($url);
+        if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host'])) {
+            $url = Config::$staticHost . Config::$storePath . '/' . ltrim($uri['path'], '/');
+        }
+
+        return $url;
+    }
+
+    /**
+     * 将图片地址替换为 OSS 图片地址
+     * 通过 apply_filters: oss_get_image_url 手动调用
+     * eg. $url = apply_filters('oss_get_image_url', $image_url, $style)
+     *
+     * @param string $url 图片的 url 或相对路径
+     * @param srting/array $style 图片样式或包含高宽的数组. eg. 'large' or ['width' => 50, 'height' => 50]
+     * @return string
+     */
+    public function getOssImgUrl($url, $style)
+    {
+        $url = $this->getOssUrl($url);
+        if (!Config::$enableImgService) {
+            return $url;
+        }
+
+        if (Config::$enableImgStyle) {
+            $style = (is_string($style) && !empty($style)) ? $style : 'full';
+            $url = $this->aliImageStyle($url, $style);
+        } else {
+            if (is_array($style)) {
+                $height = $style['height'];
+                $width = $style['width'];
+            } elseif (!empty($style)) {
+                $height = get_option($style . '_size_h');
+                $width = get_option($style . '_size_w');
+            }
+            if ($height && $height) {
+                $url = $this->aliImageResize($url, $height, $width);
+            }
+        }
+
+        return $url;
+    }
+
+    protected function aliImageResize($file, $height, $width)
     {
         return "{$file}?x-oss-process=image/resize,m_fill,h_{$height},w_{$width}";
     }
 
-    public static function aliImageStyle($file, $style)
+    protected function aliImageStyle($file, $style)
     {
-        $suffix = pathinfo($file, PATHINFO_EXTENSION);
-        // On Debug mode, PHP Notice:  Only variables should be passed by reference
-        //$suffix = end(explode('.', $file));
-        
-        // 如果 $style 传入空，则不生成带 oss style 的参数，因为我发现，oss style 即使为 full，返回的图片却比实际（不带参数的）原图文件尺寸要大不少！
-        // 这里其实还可以多处理一个地方，就是如果 $style=="full" 且 oss 没有开启原图片保护的情况下，则直接返回
-        // 不带 x-oss-process 参数的 URL，减少不必要的 OSS 的流量费用消耗。
-        return $suffix == 'gif' ? $file : empty($style) ?$file: "{$file}?x-oss-process=style%2F{$style}" ;
+        if (pathinfo($file, PATHINFO_EXTENSION) == 'gif') {
+            return $file;
+        } elseif ($style == 'full' && !Config::$sourceImgProtect) {
+            return $file;
+        } else {
+            return $file . Config::$customSeparator . $style;
+        }
     }
-
 }

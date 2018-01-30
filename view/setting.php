@@ -94,10 +94,10 @@ $d = 'aliyun-oss';
                 <th scope="row"><?php echo __('Image Service', $d) ?></th>
                 <td>
                     <fieldset>
-                        <legend class="screen-reader-text"><span><?php echo __('Image Service Enable', $d) ?></span></legend>
-                        <label for="img_host_enable">
-                            <input name="img_host_enable" type="checkbox" id="img_host_enable"
-                                <?php echo $options['img_service'] || $options['img_url'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
+                        <legend class="screen-reader-text"><span><?php echo __('Image Service', $d) ?></span></legend>
+                        <label for="img_service">
+                            <input name="img_service" type="checkbox" id="img_service"
+                                <?php echo $options['img_service'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
                         </label>
                     </fieldset>
                     <p class="description"><?php echo __("Use Aliyun Image Service to provide thumbnails, no need to upload thumbnails to OSS any more.", $d) ?></p>
@@ -117,6 +117,39 @@ $d = 'aliyun-oss';
                 </td>
             </tr>
             <tr>
+                <th scope="row"><?php echo __('Source Image Protection', $d) ?></th>
+                <td>
+                    <fieldset>
+                        <legend class="screen-reader-text"><span><?php echo __('Source Image Protection', $d) ?></span></legend>
+                        <label for="source_img_protect">
+                            <input name="source_img_protect" type="checkbox" id="source_img_protect"
+                                <?php echo $options['source_img_protect'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
+                        </label>
+                    </fieldset>
+                    <p class="description"><?php echo __("If you have enabled source image protection on Aliyun OSS, don't forget to enable this.", $d) ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><?php echo __('Custom Separator', $d) ?></th>
+                <td>
+                    <fieldset>
+                        <legend class="screen-reader-text"><span><?php echo __('Custom Separator', $d) ?></span></legend>
+                        <label for="custom_separator">
+                            <input name="custom_separator" type="radio" value="" <?php echo empty($options['custom_separator']) ? 'checked' : '' ?>>
+                            <span style="padding-right: 2rem"><?php echo __('Default', $d) ?></span>
+                            <input name="custom_separator" type="radio" value="-" <?php echo $options['custom_separator'] == '-' ? 'checked' : '' ?>>
+                            <span style="padding-right: 2rem">-</span>
+                            <input name="custom_separator" type="radio" value="_" <?php echo $options['custom_separator'] == '_' ? 'checked' : '' ?>>
+                            <span style="padding-right: 2rem">_</span>
+                            <input name="custom_separator" type="radio" value="/" <?php echo $options['custom_separator'] == '/' ? 'checked' : '' ?>>
+                            <span style="padding-right: 2rem">/</span>
+                            <input name="custom_separator" type="radio" value="!" <?php echo $options['custom_separator'] == '!' ? 'checked' : '' ?>>
+                            <span style="padding-right: 2rem">!</span>
+                        </label>
+                    </fieldset>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row"></th>
                 <td>
                     <p class="description"><?php echo __("There is a guide about Image Service.", $d) ?> =>
@@ -129,7 +162,25 @@ $d = 'aliyun-oss';
             </tbody>
         </table>
 
-        <input name="keep_settings" type="hidden" id="keep_settings" value="<?php echo $options['keep_settings'] ?>">
+        <div style="display: none">
+            <h2 class="title"><?php echo __('Advanced Settings', $d) ?></h2>
+            <table class="form-table">
+                <tbody>
+                <tr>
+                    <th scope="row"><?php echo __('keep Settings When Uninstall', $d) ?></th>
+                    <td>
+                        <fieldset>
+                            <legend class="screen-reader-text"><span><?php echo __('keep Settings When Uninstall', $d) ?></span></legend>
+                            <label for="keep_settings">
+                                <input name="keep_settings" type="checkbox" id="keep_settings"
+                                    <?php echo $options['keep_settings'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
+                            </label>
+                        </fieldset>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
         <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Commit', $d)?>"></p>
     </form>
 </div>
@@ -152,13 +203,23 @@ $d = 'aliyun-oss';
                 $staticHost.val(bucket + '.' + region + '.aliyuncs.com');
         });
 
-        $('#img_host_enable').change(function () {
+        $('#img_service').change(function () {
             if ($(this).prop('checked')) {
-                $('#img_host').attr('disabled', false);
                 $('#img_style').attr('disabled', false);
             } else {
-                $('#img_host').attr('disabled', true);
                 $('#img_style').prop('checked', false).attr('disabled', true);
+                $('#source_img_protect').prop('checked', false).attr('disabled', true);
+                $('input[name="custom_separator"]').attr('disabled', true).eq(0).prop('checked', true);
+            }
+        });
+
+        $('#img_style').change(function () {
+            if ($(this).prop('checked')) {
+                $('#source_img_protect').attr('disabled', false);
+                $('input[name="custom_separator"]').attr('disabled', false);
+            } else {
+                $('#source_img_protect').prop('checked', false).attr('disabled', true);
+                $('input[name="custom_separator"]').attr('disabled', true).eq(0).prop('checked', true);
             }
         });
 

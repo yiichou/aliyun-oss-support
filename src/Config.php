@@ -2,7 +2,6 @@
 
 namespace OSS\WP;
 
-
 class Config
 {
     private static $special_vpc_list = array('oss-cn-hangzhou', 'oss-cn-shanghai', 'oss-cn-qingdao', 'oss-cn-beijing',
@@ -16,6 +15,8 @@ class Config
     public static $staticHost = "";
     public static $enableImgService = false;
     public static $enableImgStyle = false;
+    public static $sourceImgProtect = false;
+    public static $customSeparator = "?x-oss-process=style%2F";
     public static $noLocalSaving = false;
 
     public static $baseDir = "";
@@ -23,16 +24,18 @@ class Config
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
     public static $originOptions = array(
-        'bucket'        => "",
-        'ak'            => "",
-        'sk'            => "",
-        'region'        => "oss-cn-hangzhou",
-        'internal'      => false,
-        'path'          => "",
-        'static_url'    => "",
-        'img_url'       => "",
-        'img_style'     => false,
-        'nolocalsaving' => false,
+        'bucket'                => "",
+        'ak'                    => "",
+        'sk'                    => "",
+        'region'                => "oss-cn-hangzhou",
+        'internal'              => false,
+        'path'                  => "",
+        'static_url'            => "",
+        'img_url'               => "",
+        'img_style'             => false,
+        'source_img_protect'    => false,
+        'custom_separator'      => "",
+        'nolocalsaving'         => false,
     );
 
     public static function init($plugin_path = "")
@@ -47,19 +50,27 @@ class Config
         $suffix = $options['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
         self::$endpoint = $options['region'].$suffix;
 
-        if ($options['vpc'] && in_array($options['region'], self::$special_vpc_list))
+        if ($options['vpc'] && in_array($options['region'], self::$special_vpc_list)) {
             self::$endpoint = "vpc100-{$options['region']}.aliyuncs.com";
+        }
 
-        if ($options['static_url'])
+        if ($options['static_url']) {
             self::$staticHost = is_ssl() ? "https://{$options['static_url']}" : "http://{$options['static_url']}";
+        }
 
-        if ($options['img_service'] || $options['img_url'])
+        if ($options['img_service'] || $options['img_url']) {
             self::$enableImgService = true;
+        }
+
+        if (! empty($options['custom_separator'])) {
+            self::$customSeparator = "@{$options['custom_separator']}";
+        }
 
         $wp_upload_dir = wp_upload_dir();
         self::$baseDir = $wp_upload_dir['basedir'];
-        self::$storePath .= trim($options['path'],'/');
+        self::$storePath .= trim($options['path'], '/');
         self::$enableImgStyle = $options['img_style'];
+        self::$sourceImgProtect = $options['source_img_protect'];
         self::$noLocalSaving = $options['nolocalsaving'];
     }
 
@@ -74,5 +85,4 @@ class Config
         $wp_upload_dir = wp_upload_dir();
         return $wp_upload_dir['baseurl'];
     }
-
 }
