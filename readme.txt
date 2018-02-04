@@ -18,12 +18,14 @@ This is a plugin that used Aliyun Cloud Storage(Aliyun OSS) for attachments remo
 1. 支持 Aliyun OSS 的图片服务（根据参数获得不同尺寸的图片）
 2. 自定义文件在 Bucket 上的存储位置
 3. 支持 Https 站点
-4. 全格式附件支持，不仅仅是图片
-5. 支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
-6. 支持在 WordPress 后台编辑图片
-7. 图片服务支持预设图片样式，可用于图片打水印的需求
-8. 中英文双语支持，方便使用英文为默认语言的同学
-9. 代码遵循 PSR-4 规则编写，并使用 phar 文件作为 release 版本
+4. 支持阿里云内网和 VPC 网络
+6. 全格式附件支持，不仅仅是图片
+7. 支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
+8. 支持在 WordPress 后台编辑图片
+9. 支持预设图片样式，图片保护，自定义分割符
+9. 中英文双语支持，方便使用英文为默认语言的同学
+10. 支持在其他插件/主题中通过系统钩子调用插件功能
+11. 代码遵循 PSR-4 规则编写
 
 == Installation ==
 

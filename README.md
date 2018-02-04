@@ -5,6 +5,7 @@
 ## 当前版本
 
 Stable: [`3.1.5`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
+Alpha: 3.1.6
 
 ## 插件特色
 
@@ -15,9 +16,10 @@ Stable: [`3.1.5`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 6. 全格式附件支持，不仅仅是图片
 7. 支持 wordpress 4.4+ 新功能 srcset，在不同分辨率设备上加载不同大小图片
 8. 支持在 WordPress 后台编辑图片
-9. 图片服务支持预设图片样式，可用于图片打水印的需求
+9. 支持预设图片样式，图片保护，自定义分割符
 9. 中英文双语支持，方便使用英文为默认语言的同学
-10. 代码遵循 PSR-4 规则编写
+10. 支持在其他插件/主题中通过系统钩子调用插件功能
+11. 代码遵循 PSR-4 规则编写
 
 ## 插件使用
 
@@ -73,6 +75,10 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 - ultimate member
 - BuddyPress
 - WP-AutoPost
+
+## 依赖
+
+- https://github.com/aliyun/aliyun-oss-php-sdk
 
 ## 贡献代码
 

@@ -1,6 +1,6 @@
 (The BSD License)
 
-Copyright (c) 2014-2016, Ivan Chou, yiichou@gmail.com
+Copyright (c) 2013-2018, Ivan Chou, yiichou@gmail.com
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
