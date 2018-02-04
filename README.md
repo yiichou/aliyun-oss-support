@@ -5,7 +5,8 @@
 ## 当前版本
 
 Stable: [`3.1.5`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
-Alpha: 3.1.6
+
+Alpha: [`3.1.6`](https://github.com/IvanChou/aliyun-oss-support/releases/tag/3.1.6)
 
 ## 插件特色
 
@@ -75,6 +76,8 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 - ultimate member
 - BuddyPress
 - WP-AutoPost
+- ARMember
+- minify
 
 ## 依赖
 
