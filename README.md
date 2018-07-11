@@ -4,9 +4,7 @@
 
 ## 当前版本
 
-Stable: [`3.1.5`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
-
-Alpha: [`3.1.6`](https://github.com/IvanChou/aliyun-oss-support/releases/tag/3.1.6)
+Stable: [`3.1.6`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
 
 ## 插件特色
 
