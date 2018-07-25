@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2018-02-04 21:59+0800\n"
-"PO-Revision-Date: 2018-02-04 22:02+0800\n"
+"POT-Creation-Date: 2018-07-26 02:14+0800\n"
+"PO-Revision-Date: 2018-07-26 02:15+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -21,15 +21,15 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #. Plugin Name of the plugin/theme
-#: src/Setting.php:24 src/Setting.php:25
+#: src/Setting.php:30 src/Setting.php:31
 msgid "Aliyun OSS"
 msgstr "阿里云 OSS"
 
-#: src/Setting.php:42
+#: src/Setting.php:48
 msgid "Settings"
 msgstr "设置"
 
-#: src/Setting.php:51
+#: src/Setting.php:57
 #, php-format
 msgid ""
 "Aliyun OSS Support is almost ready. You should <a href=\"%s\">Setting</a> it "
@@ -38,7 +38,7 @@ msgstr ""
 "阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
 "作。"
 
-#: src/Setting.php:91
+#: src/Setting.php:100
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
@@ -160,8 +160,8 @@ msgstr "阿里云图片服务设置"
 msgid "Image Service"
 msgstr "图片服务"
 
-#: view/setting.php:100 view/setting.php:113 view/setting.php:126
-#: view/setting.php:176
+#: view/setting.php:100 view/setting.php:113 view/setting.php:133
+#: view/setting.php:183
 msgid "Enable"
 msgstr "启用"
 
@@ -175,45 +175,49 @@ msgstr "使用阿里云图片服务来提供不同尺寸的图片，启用后不
 msgid "Preset Image Style"
 msgstr "图片预设样式"
 
-#: view/setting.php:116
+#: view/setting.php:117
 msgid "Optional, use preset styles instead of dynamic params to deal image."
 msgstr "可选项，使用 OSS 图片预设样式来替代通过参数获取缩略图的方式"
 
-#: view/setting.php:120 view/setting.php:123
+#: view/setting.php:120
+msgid "Click to export style profile"
+msgstr "点击下载图片样式配置文件"
+
+#: view/setting.php:127 view/setting.php:130
 msgid "Source Image Protection"
 msgstr "原图保护"
 
-#: view/setting.php:129
+#: view/setting.php:136
 msgid ""
 "If you have enabled source image protection on Aliyun OSS, don't forget to "
 "enable this."
 msgstr "如果你在 Aliyun OSS 控制台开启了「原图保护」，请记得勾选这项"
 
-#: view/setting.php:133 view/setting.php:136
+#: view/setting.php:140 view/setting.php:143
 msgid "Custom Separator"
 msgstr "自定义分割符"
 
-#: view/setting.php:139
+#: view/setting.php:146
 msgid "Default"
 msgstr ""
 
-#: view/setting.php:155
+#: view/setting.php:162
 msgid "There is a guide about Image Service."
 msgstr " 关于图片服务可以参考："
 
-#: view/setting.php:157
+#: view/setting.php:164
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:166
+#: view/setting.php:173
 msgid "Advanced Settings"
 msgstr ""
 
-#: view/setting.php:170 view/setting.php:173
+#: view/setting.php:177 view/setting.php:180
 msgid "keep Settings When Uninstall"
 msgstr ""
 
-#: view/setting.php:184
+#: view/setting.php:191
 msgid "Commit"
 msgstr "保存配置"
 
