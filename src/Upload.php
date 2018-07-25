@@ -97,8 +97,11 @@ class Upload
     {
         if (isset($metadata['sizes']) && preg_match('/\d{4}\/\d{2}/', $metadata['file'], $m)) {
             $thumbs = array();
-            foreach ($metadata['sizes'] as $val) {
-                $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
+            $current_styles = get_intermediate_image_sizes();
+            foreach ($metadata['sizes'] as $style => $val) {
+                if (in_array($style, $current_styles)) {
+                    $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
+                }
             }
 
             if (!Config::$enableImgService) {
