@@ -13,6 +13,7 @@ class Config
     public static $endpoint = "";
     public static $storePath = "/";
     public static $staticHost = "";
+    public static $safeStaticHost = "";
     public static $enableImgService = false;
     public static $enableImgStyle = false;
     public static $sourceImgProtect = false;
@@ -37,6 +38,7 @@ class Config
         'custom_separator'      => "",
         'nolocalsaving'         => false,
     );
+    public static $imgStyleProfile = "";
 
     public static function init($plugin_path = "")
     {
@@ -57,6 +59,7 @@ class Config
         if ($options['static_url']) {
             self::$staticHost = is_ssl() ? "https://{$options['static_url']}" : "http://{$options['static_url']}";
         }
+        self::$safeStaticHost = "https://{$options['bucket']}.{$options['region']}.aliyuncs.com";
 
         if ($options['img_service'] || $options['img_url']) {
             self::$enableImgService = true;
@@ -72,6 +75,8 @@ class Config
         self::$enableImgStyle = $options['img_style'];
         self::$sourceImgProtect = $options['source_img_protect'];
         self::$noLocalSaving = $options['nolocalsaving'];
+
+        self::$imgStyleProfile = trim(Config::$storePath . '/aliyun-img-styles.txt', '/');
     }
 
     public static function monthDir($time)

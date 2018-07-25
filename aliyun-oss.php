@@ -31,12 +31,12 @@ require(ALIYUN_OSS_PATH.'/autoload.php');
 
 use OSS\WP\Config;
 Config::init(ALIYUN_OSS_PATH);
-new OSS\WP\Setting();
 
 try {
     $ossClient = new OSS\OssClient(Config::$accessKeyId, Config::$accessKeySecret, Config::$endpoint);
     new OSS\WP\Upload($ossClient);
     new OSS\WP\Delete($ossClient);
+    new OSS\WP\Setting($ossClient);
     new OSS\WP\UrlHelper();
 } catch (OSS\Core\OssException $e) {
     register_activation_hook(__FILE__, function () {

@@ -2,10 +2,16 @@
 
 namespace OSS\WP;
 
+use OSS\OssClient;
+
 class Setting
 {
-    public function __construct()
+    private $oc;
+
+    public function __construct(OssClient $ossClient)
     {
+        $this->oc = $ossClient;
+
         add_action('admin_menu', array($this, 'adminMenu'));
         add_filter('plugin_action_links', array($this, 'pluginActionLink'), 10, 2);
         load_plugin_textdomain('aliyun-oss', false, Config::$pluginPath.'/languages');
@@ -58,8 +64,11 @@ class Setting
         if (!empty($_POST)) {
             $this->updateSettings();
         }
-
-        require __DIR__.'/../view/setting.php';
+        if (isset($_GET["update-img-style-profile"])) {
+            $this->updateImageStyleProfile();
+        } else {
+            require __DIR__.'/../view/setting.php';
+        }
     }
 
     private function updateSettings()
@@ -89,5 +98,42 @@ class Setting
         update_option('oss_options', $options);
 
         echo '<div class="updated"><p><strong>'. __('The settings have been saved', 'aliyun-oss') .'.</strong></p></div>';
+    }
+
+    private function updateImageStyleProfile()
+    {
+        global $_wp_additional_image_sizes;
+        $content = '';
+
+        foreach ( get_intermediate_image_sizes() as $s ) {
+            $style = ['resize'];
+
+            if (isset($_wp_additional_image_sizes[$s]['crop'])) {
+                $crop = $_wp_additional_image_sizes[$s]['crop'];
+            } else {
+                $crop = get_option("{$s}_crop");
+            }
+            $style[] = $crop ? 'm_fill' : 'm_lfit';
+
+
+            if (isset($_wp_additional_image_sizes[$s]['width'])) {
+                $width = intval($_wp_additional_image_sizes[$s]['width']);
+            } else {
+                $width = get_option("{$s}_size_w");
+            }
+            $width > 0 && $style[] = "w_{$width}";
+
+            if (isset($_wp_additional_image_sizes[$s]['height'])) {
+                $height = intval($_wp_additional_image_sizes[$s]['height']);
+            } else {
+                $height = get_option("{$s}_size_h");
+            }
+            $height > 0 && $style[] = "w_{$height}";
+
+            $style[] = 'limit_1';
+            $content .= "styleName:{$s},styleBody:image/" . join(',', $style) . "/auto-orient,0\n";
+        }
+        $content .= 'styleName:full,styleBody:image/auto-orient,0';
+        $this->oc->putObject(Config::$bucket, Config::$imgStyleProfile, $content);
     }
 }
