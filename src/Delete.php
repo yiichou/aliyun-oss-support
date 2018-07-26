@@ -13,8 +13,12 @@ class Delete
     {
         $this->oc = $ossClient;
 
-        add_action('wp_delete_file', array($this, 'deleteRemoteFile'));
-        Config::$enableImgService && add_action('wp_delete_file', array($this, 'deleteLocalThumbs'), 99);
+        add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));
+        if (Config::$noLocalSaving) {
+            add_filter('wp_update_attachment_metadata', array($this, 'deleteLocalOriginImage'), 60);
+        }
+
+        add_action('oss_delete_file', array($this, 'deleteRemoteFile'), 9);
     }
 
     /**
@@ -34,19 +38,16 @@ class Delete
     }
 
     /**
-     * 删除本地的缩略图（修正由于启用图片服务导致的原生方法删除不了缩略图）
-     * 仅在开启图片服务时启用
+     * 删除本地的原图 (本地不保留文件开启时)
+     * 由于缩略图等操作时依赖原图,所以原图需要在最后单独删掉
      *
-     * @param $file
+     * @param $metadata
      * @return mixed
      */
-    public function deleteLocalThumbs($file)
+    public function deleteLocalOriginImage($metadata)
     {
-        if (false === strpos($file, '@')) {
-            $file_t = substr($file, 0, strrpos($file, '.'));
-            array_map('self::deleteLocalFile', glob($file_t.'-*'));
-        }
-        return $file;
+        self::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
+        return $metadata;
     }
 
     /**

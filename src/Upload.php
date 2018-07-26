@@ -18,8 +18,7 @@ class Upload
         );
 
         add_filter('wp_handle_upload', array($this, 'uploadOriginToOss'), 30);
-        add_filter('wp_update_attachment_metadata', array($this, 'uploadThumbToOss'), 60);
-        add_filter('wp_save_image_editor_file', array($this, 'uploadEditedImage'), 60, 4);
+        add_filter('image_make_intermediate_size', array($this, 'uploadImageToOss'));
         if (Config::$noLocalSaving) {
             add_filter('wp_unique_filename', array($this, 'uniqueFilename'), 30, 3);
         }
@@ -31,7 +30,7 @@ class Upload
      * 将文件上传到 OSS 上
      * 通过 do_action: oss_upload_file 手动调用
      * eg. do_action('oss_upload_file', $file)
-     * 
+     *
      * @param string $file 文件的本地路径
      * @param string [$base_dir] 文件本地存储的基础路径，上传 OSS 时会被去掉，default: Config::$baseDir or ''
      * @param string [$oss_dir] 文件在 OSS 上的 存储目录，default: Config::$storePath
@@ -45,7 +44,6 @@ class Upload
         $object = trim($oss_dir, '/') . '/' . trim($object, '/');
 
         $this->oc->multiuploadFile(Config::$bucket, $object, $file, $this->ossHeader);
-        // Config::$noLocalSaving && Delete::deleteLocalFile($file);
     }
 
     /**
@@ -88,46 +86,19 @@ class Upload
     }
 
     /**
-     * 上传生成的缩略图到 OSS (并根据设定清理本地文件)
+     * 上传( Wordpress 生成的)图片到 OSS (并根据设定清理本地文件)
      *
-     * @param $metadata
+     * @param $file
      * @return mixed
      */
-    public function uploadThumbToOss($metadata)
+    public function uploadImageToOss($file)
     {
-        if (isset($metadata['sizes']) && preg_match('/\d{4}\/\d{2}/', $metadata['file'], $m)) {
-            $thumbs = array();
-            $current_styles = get_intermediate_image_sizes();
-            foreach ($metadata['sizes'] as $style => $val) {
-                if (in_array($style, $current_styles)) {
-                    $thumbs[] = Config::monthDir($m[0]) . '/' . $val['file'];
-                }
-            }
-
-            if (!Config::$enableImgService) {
-                foreach ($thumbs as $thumb) {
-                    $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $thumb), '/');
-                    $this->oc->multiuploadFile(Config::$bucket, $object, $thumb, $this->ossHeader);
-                }
-            }
-
-            if (Config::$noLocalSaving) {
-                foreach ($thumbs as $thumb) {
-                    Delete::deleteLocalFile($thumb);
-                }
-                Delete::deleteLocalFile(Config::$baseDir.'/'.$metadata['file']);
-            }
+        if (debug_backtrace()[4]['function'] == 'multi_resize') {
+            Config::$enableImgService || $this->uploadFileToOss($file);
+            Config::$noLocalSaving && Delete::deleteLocalFile($file);
+        } else {
+            $this->uploadFileToOss($file);
         }
-
-        return $metadata;
-    }
-
-    public function uploadEditedImage($override, $filename, $image, $mime_type)
-    {
-        $image->save($filename, $mime_type);
-        $object = ltrim(Config::$storePath.'/'._wp_relative_upload_path($filename), '/');
-        $this->oc->multiuploadFile(Config::$bucket, $object, $filename, $this->ossHeader);
-
-        return $override;
+        return $file;
     }
 }

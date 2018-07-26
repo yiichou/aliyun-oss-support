@@ -4,7 +4,7 @@
 
 ## 当前版本
 
-Stable: [`3.1.8`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
+Stable: [`3.2.0`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
 
 ## 插件特色
 
@@ -44,17 +44,24 @@ Stable: [`3.1.8`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 
 ## 关于图片服务
 
-阿里云 OSS 提供了根据 url 参数来获得各种尺寸的 `阿里云OSS图片处理服务（Image Service，简称 IMG）`, 相比起 WordPress 自身在图片上传的时候生成各种尺寸的图片, 明显是一种更优雅的解决方案, 占用的存储空间更小, 尺寸变更更灵活。
+阿里云 OSS 提供了根据 url 参数来获得各种尺寸的 `阿里云OSS图片处理服务（Image Service，简称 IMG）`, 相比起 WordPress 上传的时候生成各种尺寸的图片, 这是一种更优雅的解决方案, 占用的存储空间更小, 尺寸变更更灵活。
 
-通常使用中, 你不需要特别的去了解它的实现, 只需注意: 
+如何开启并配置图片服务, 请参见: [How to use Image Service](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service)
 
-1. 开启图片服务时, 只有原图会被上传到 OSS, 如果此时关闭图片服务, 服务开启这段时间内上传的图片会出现缩略图丢失的情况
-2. 如果没有开启 不在本地服务器上保留文件 选项, 服务器上仍旧保留有缩略图, 此时关闭插件会发现所有的缩略图其实都在, 所以你可以通过手动上传到 OSS 来修复丢失问题
-3. 如果开启了 不在本地服务器上保留文件 选项, 那就真的找不回那些丢失的缩略图了 ㄟ( ▔, ▔ )ㄏ
+另外还有几点需要你了解:
+
+1. 开启图片服务时, 只有原图会被上传到 OSS, 缩略图本地依旧会生成但不会上传
+2. 基于第 1 条, 建议开启图片服务后就不要关了, 关掉会导致之前上传的图片缩略图丢失
+3. 基于第 2 条, 如果你一定要关或者不再使用本插件, 可以使用本地保留的缩略图做数据恢复, That's EZ.
+
+## 关于不在本地服务器上保留文件
+
+『不在本地服务器上保留文件』是一个看上去炫酷实则没什么用的功能, 没有特殊需求强烈建议不要开启, 理由如下:
+
+1. 由于本地文件早早被删掉了, 导致从后台删除图片或附件时, OSS 里面的资源无法被删掉
+2. 如果你同时开启了『图片服务』, 当你想停用这个插件的时候不可避免的会遇到缩略图丢失问题
 
 ****
-
-更多关于图片服务的介绍: [How to use Image Service](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service)
 
 ## 题外
 
@@ -72,7 +79,7 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 
 - EvernoteSync
 - ultimate member
-- BuddyPress
+- ~~BuddyPress~~
 - WP-AutoPost
 - ARMember
 - minify
