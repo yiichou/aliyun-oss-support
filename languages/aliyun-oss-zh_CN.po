@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2018-07-26 02:14+0800\n"
-"PO-Revision-Date: 2018-07-26 02:15+0800\n"
+"POT-Creation-Date: 2018-07-26 16:03+0800\n"
+"PO-Revision-Date: 2018-07-26 16:16+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr ""
 "阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
 "作。"
 
-#: src/Setting.php:100
+#: src/Setting.php:102
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
@@ -79,48 +79,60 @@ msgid "oss-cn-zhangjiakou"
 msgstr "华北 3 (张家口)"
 
 #: view/setting.php:30
+msgid "oss-cn-huhehaote"
+msgstr "华北 5 (呼和浩特)"
+
+#: view/setting.php:31
 msgid "oss-cn-shenzhen"
 msgstr "华南 1 (深圳)"
 
-#: view/setting.php:31
+#: view/setting.php:32
 msgid "oss-cn-hongkong"
 msgstr "香港数据中心"
 
-#: view/setting.php:32
+#: view/setting.php:33
 msgid "oss-us-west-1"
 msgstr "美国硅谷数据中心"
 
-#: view/setting.php:33
+#: view/setting.php:34
 msgid "oss-us-east-1"
 msgstr "美国弗吉尼亚数据中心"
 
-#: view/setting.php:34
+#: view/setting.php:35
 msgid "oss-ap-southeast-1"
 msgstr "亚太（新加坡）数据中心"
 
-#: view/setting.php:35
+#: view/setting.php:36
 msgid "oss-ap-southeast-2"
 msgstr "亚太东南 2 （悉尼）"
 
-#: view/setting.php:36
-msgid "oss-ap-northeast-1"
-msgstr "亚太东北 1（日本）数据中心"
-
 #: view/setting.php:37
+msgid "oss-ap-southeast-3"
+msgstr "亚太东南 3 （吉隆坡）"
+
+#: view/setting.php:38
+msgid "oss-ap-southeast-5"
+msgstr "亚太东南 5 (雅加达)"
+
+#: view/setting.php:39
+msgid "oss-ap-northeast-1"
+msgstr "亚太东北 1（日本）"
+
+#: view/setting.php:40
+msgid "oss-ap-south-1"
+msgstr "亚太南部 1 （孟买）"
+
+#: view/setting.php:41
 msgid "oss-eu-central-1"
 msgstr "欧洲中部 1（法兰克福）"
 
-#: view/setting.php:38
+#: view/setting.php:42
 msgid "oss-me-east-1"
 msgstr "中东东部 1 （迪拜）"
 
-#: view/setting.php:43
+#: view/setting.php:47
 msgid "internal"
 msgstr "内网"
-
-#: view/setting.php:47
-msgid "VPC"
-msgstr ""
 
 #: view/setting.php:55
 msgid "Bucket Settings"
@@ -160,8 +172,8 @@ msgstr "阿里云图片服务设置"
 msgid "Image Service"
 msgstr "图片服务"
 
-#: view/setting.php:100 view/setting.php:113 view/setting.php:133
-#: view/setting.php:183
+#: view/setting.php:100 view/setting.php:113 view/setting.php:134
+#: view/setting.php:189
 msgid "Enable"
 msgstr "启用"
 
@@ -187,37 +199,37 @@ msgstr "点击下载图片样式配置文件"
 msgid "Source Image Protection"
 msgstr "原图保护"
 
-#: view/setting.php:136
+#: view/setting.php:137
 msgid ""
 "If you have enabled source image protection on Aliyun OSS, don't forget to "
 "enable this."
 msgstr "如果你在 Aliyun OSS 控制台开启了「原图保护」，请记得勾选这项"
 
-#: view/setting.php:140 view/setting.php:143
+#: view/setting.php:141 view/setting.php:144
 msgid "Custom Separator"
 msgstr "自定义分割符"
 
-#: view/setting.php:146
+#: view/setting.php:148
 msgid "Default"
 msgstr ""
 
-#: view/setting.php:162
+#: view/setting.php:168
 msgid "There is a guide about Image Service."
 msgstr " 关于图片服务可以参考："
 
-#: view/setting.php:164
+#: view/setting.php:170
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:173
+#: view/setting.php:179
 msgid "Advanced Settings"
 msgstr ""
 
-#: view/setting.php:177 view/setting.php:180
+#: view/setting.php:183 view/setting.php:186
 msgid "keep Settings When Uninstall"
 msgstr ""
 
-#: view/setting.php:191
+#: view/setting.php:197
 msgid "Commit"
 msgstr "保存配置"
 

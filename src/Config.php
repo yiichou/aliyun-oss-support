@@ -4,9 +4,6 @@ namespace OSS\WP;
 
 class Config
 {
-    private static $special_vpc_list = array('oss-cn-hangzhou', 'oss-cn-shanghai', 'oss-cn-qingdao', 'oss-cn-beijing',
-                                        'oss-cn-shenzhen', 'oss-cn-hongkong', 'oss-us-west-1', 'oss-ap-southeast-1');
-
     public static $bucket = "";
     public static $accessKeyId = "";
     public static $accessKeySecret = "";
@@ -51,10 +48,6 @@ class Config
 
         $suffix = $options['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
         self::$endpoint = $options['region'].$suffix;
-
-        if ($options['vpc'] && in_array($options['region'], self::$special_vpc_list)) {
-            self::$endpoint = "vpc100-{$options['region']}.aliyuncs.com";
-        }
 
         if ($options['static_url']) {
             self::$staticHost = is_ssl() ? "https://{$options['static_url']}" : "http://{$options['static_url']}";

@@ -27,13 +27,17 @@ $d = 'aliyun-oss';
                         <option value="oss-cn-qingdao"><?php echo __('oss-cn-qingdao', $d)?></option>
                         <option value="oss-cn-beijing"><?php echo __('oss-cn-beijing', $d)?></option>
                         <option value="oss-cn-zhangjiakou"><?php echo __('oss-cn-zhangjiakou', $d)?></option>
+                        <option value="oss-cn-huhehaote"><?php echo __('oss-cn-huhehaote', $d)?></option>
                         <option value="oss-cn-shenzhen"><?php echo __('oss-cn-shenzhen', $d)?></option>
                         <option value="oss-cn-hongkong"><?php echo __('oss-cn-hongkong', $d)?></option>
                         <option value="oss-us-west-1"><?php echo __('oss-us-west-1', $d)?></option>
                         <option value="oss-us-east-1"><?php echo __('oss-us-east-1', $d)?></option>
                         <option value="oss-ap-southeast-1"><?php echo __('oss-ap-southeast-1', $d)?></option>
                         <option value="oss-ap-southeast-2"><?php echo __('oss-ap-southeast-2', $d)?></option>
+                        <option value="oss-ap-southeast-3"><?php echo __('oss-ap-southeast-3', $d)?></option>
+                        <option value="oss-ap-southeast-5"><?php echo __('oss-ap-southeast-5', $d)?></option>
                         <option value="oss-ap-northeast-1"><?php echo __('oss-ap-northeast-1', $d)?></option>
+                        <option value="oss-ap-south-1"><?php echo __('oss-ap-south-1', $d)?></option>
                         <option value="oss-eu-central-1"><?php echo __('oss-eu-central-1', $d)?></option>
                         <option value="oss-me-east-1"><?php echo __('oss-me-east-1', $d)?></option>
                     </select>
@@ -41,10 +45,6 @@ $d = 'aliyun-oss';
                     <label for="internal" style="margin-left: 48px">
                         <input name="internal" type="checkbox" id="internal" <?php echo $options['internal'] ? 'checked' : '' ?>>
                         <?php echo __('internal', $d)?>
-                    </label>
-                    <label for="vpc" style="margin-left: 20px">
-                        <input name="vpc" type="checkbox" id="vpc" <?php echo $options['vpc'] ? 'checked' : '' ?> <?php echo $options['internal'] ? '' : 'disabled' ?>>
-                        <?php echo __('VPC', $d)?>
                     </label>
                 </td>
             </tr>
@@ -130,7 +130,8 @@ $d = 'aliyun-oss';
                         <legend class="screen-reader-text"><span><?php echo __('Source Image Protection', $d) ?></span></legend>
                         <label for="source_img_protect">
                             <input name="source_img_protect" type="checkbox" id="source_img_protect"
-                                <?php echo $options['source_img_protect'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
+                                <?php echo $options['source_img_protect'] ? 'checked' : '' ?>
+                                <?php echo $options['img_style'] ? '' : 'disabled' ?> > <?php echo __('Enable', $d) ?>
                         </label>
                     </fieldset>
                     <p class="description"><?php echo __("If you have enabled source image protection on Aliyun OSS, don't forget to enable this.", $d) ?></p>
@@ -142,15 +143,20 @@ $d = 'aliyun-oss';
                     <fieldset>
                         <legend class="screen-reader-text"><span><?php echo __('Custom Separator', $d) ?></span></legend>
                         <label for="custom_separator">
-                            <input name="custom_separator" type="radio" value="" <?php echo empty($options['custom_separator']) ? 'checked' : '' ?>>
+                            <input name="custom_separator" type="radio" value=""
+                                <?php echo empty($options['custom_separator']) ? 'checked' : '' ?> <?php echo $options['img_style'] ? '' : 'disabled' ?>>
                             <span style="padding-right: 2rem"><?php echo __('Default', $d) ?></span>
-                            <input name="custom_separator" type="radio" value="-" <?php echo $options['custom_separator'] == '-' ? 'checked' : '' ?>>
+                            <input name="custom_separator" type="radio" value="-"
+                                <?php echo $options['custom_separator'] == '-' ? 'checked' : '' ?> <?php echo $options['img_style'] ? '' : 'disabled' ?>>
                             <span style="padding-right: 2rem">-</span>
-                            <input name="custom_separator" type="radio" value="_" <?php echo $options['custom_separator'] == '_' ? 'checked' : '' ?>>
+                            <input name="custom_separator" type="radio" value="_"
+                                <?php echo $options['custom_separator'] == '_' ? 'checked' : '' ?> <?php echo $options['img_style'] ? '' : 'disabled' ?>>
                             <span style="padding-right: 2rem">_</span>
-                            <input name="custom_separator" type="radio" value="/" <?php echo $options['custom_separator'] == '/' ? 'checked' : '' ?>>
+                            <input name="custom_separator" type="radio" value="/"
+                                <?php echo $options['custom_separator'] == '/' ? 'checked' : '' ?> <?php echo $options['img_style'] ? '' : 'disabled' ?>>
                             <span style="padding-right: 2rem">/</span>
-                            <input name="custom_separator" type="radio" value="!" <?php echo $options['custom_separator'] == '!' ? 'checked' : '' ?>>
+                            <input name="custom_separator" type="radio" value="!"
+                                <?php echo $options['custom_separator'] == '!' ? 'checked' : '' ?> <?php echo $options['img_style'] ? '' : 'disabled' ?>>
                             <span style="padding-right: 2rem">!</span>
                         </label>
                     </fieldset>
@@ -232,13 +238,5 @@ $d = 'aliyun-oss';
                 $('#export_style_profile').hide();
             }
         });
-
-        $('#internal').change(function () {
-            if ($(this).prop('checked')) {
-                $('#vpc').attr('disabled', false);
-            } else {
-                $('#vpc').attr('checked', false).attr('disabled', true);
-            }
-        })
     })
 </script>

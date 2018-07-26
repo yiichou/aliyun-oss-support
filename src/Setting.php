@@ -91,7 +91,11 @@ class Setting
         $options['img_service'] = isset($_POST['img_service']);
         $options['img_style'] = $options['img_service'] ? isset($_POST['img_style']) : false;
         $options['source_img_protect'] = $options['img_style'] ? isset($_POST['source_img_protect']) : false;
-        $options['custom_separator'] = $options['img_service'] ? $_POST['custom_separator'] : '';
+        if ($options['img_style'] && isset($_POST['custom_separator'])) {
+            $options['custom_separator'] = $_POST['custom_separator'];
+        } else {
+            $options['custom_separator'] = '';
+        }
 
         $options['keep_settings'] = isset($_POST['keep_settings']);
         unset($options['img_url']);
@@ -128,7 +132,7 @@ class Setting
             } else {
                 $height = get_option("{$s}_size_h");
             }
-            $height > 0 && $style[] = "w_{$height}";
+            $height > 0 && $style[] = "h_{$height}";
 
             $style[] = 'limit_1';
             $content .= "styleName:{$s},styleBody:image/" . join(',', $style) . "/auto-orient,0\n";
