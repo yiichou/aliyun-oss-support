@@ -2,16 +2,10 @@
 
 namespace OSS\WP;
 
-use OSS\OssClient;
-
 class Setting
 {
-    private $oc;
-
-    public function __construct(OssClient $ossClient)
+    public function __construct()
     {
-        $this->oc = $ossClient;
-
         add_action('admin_menu', array($this, 'adminMenu'));
         add_filter('plugin_action_links', array($this, 'pluginActionLink'), 10, 2);
         load_plugin_textdomain('aliyun-oss', false, Config::$pluginPath.'/languages');
@@ -64,8 +58,10 @@ class Setting
         if (!empty($_POST)) {
             $this->updateSettings();
         }
-        if (isset($_GET["update-img-style-profile"])) {
+        if (isset($_GET['action']) && $_GET['action'] == 'update-img-style-profile') {
             $this->updateImageStyleProfile();
+            wp_redirect(Config::$safeStaticHost . '/'. Config::$imgStyleProfile);
+            exit;
         } else {
             require __DIR__.'/../view/setting.php';
         }
@@ -138,6 +134,6 @@ class Setting
             $content .= "styleName:{$s},styleBody:image/" . join(',', $style) . "/auto-orient,0\n";
         }
         $content .= 'styleName:full,styleBody:image/auto-orient,0';
-        $this->oc->putObject(Config::$bucket, Config::$imgStyleProfile, $content);
+        Config::$ossClient->putObject(Config::$bucket, Config::$imgStyleProfile, $content);
     }
 }

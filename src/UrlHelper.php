@@ -29,7 +29,7 @@ class UrlHelper
      */
     public function replaceImgMeta($data)
     {
-        if (empty($data['sizes']) || (debug_backtrace()[4]['function'] == 'wp_delete_attachment')) {
+        if (empty($data['sizes']) || (wp_debug_backtrace_summary(null, 4, false)[0] == 'wp_delete_attachment')) {
             return $data;
         }
 

@@ -8,9 +8,9 @@ class Upload
 {
     private $oc;
 
-    public function __construct(OssClient $ossClient)
+    public function __construct(OssClient $ossClient = null)
     {
-        $this->oc = $ossClient;
+        $this->oc = $ossClient ? $ossClient : Config::$ossClient;
         $this->ossHeader = array(
             OssClient::OSS_HEADERS => array(
                 'Cache-Control' => 'max-age=2592000'
@@ -93,7 +93,7 @@ class Upload
      */
     public function uploadImageToOss($file)
     {
-        if (debug_backtrace()[4]['function'] == 'multi_resize') {
+        if (wp_debug_backtrace_summary(null, 4, false)[0] == 'multi_resize') {
             Config::$enableImgService || $this->uploadFileToOss($file);
             Config::$noLocalSaving && Delete::deleteLocalFile($file);
         } else {

@@ -18,6 +18,9 @@ class Config
     public static $noLocalSaving = false;
 
     public static $baseDir = "";
+    public static $imgStyleProfile = "";
+
+    public static $ossClient = null;
 
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
@@ -35,7 +38,7 @@ class Config
         'custom_separator'      => "",
         'nolocalsaving'         => false,
     );
-    public static $imgStyleProfile = "";
+
 
     public static function init($plugin_path = "")
     {

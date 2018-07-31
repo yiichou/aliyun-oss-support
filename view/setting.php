@@ -116,7 +116,7 @@ $d = 'aliyun-oss';
                     <p class="description">
                         <?php echo __("Optional, use preset styles instead of dynamic params to deal image.", $d) ?>
                         <span id="export_style_profile" <?php echo $options['img_style'] ? '' : 'style="display: none"' ?>>
-                            => <a href="<?php echo OSS\WP\Config::$safeStaticHost . '/'. OSS\WP\Config::$imgStyleProfile?>">
+                            => <a href="/wp-admin/options-general.php?page=aliyun-oss&action=update-img-style-profile" target="_blank">
                                 <?php echo __("Click to export style profile", $d) ?>
                             </a>
                         </span>
@@ -231,7 +231,6 @@ $d = 'aliyun-oss';
                 $('#source_img_protect').attr('disabled', false);
                 $('input[name="custom_separator"]').attr('disabled', false);
                 $('#export_style_profile').show();
-                $.get('/wp-admin/options-general.php?page=aliyun-oss&update-img-style-profile', function() {});
             } else {
                 $('#source_img_protect').prop('checked', false).attr('disabled', true);
                 $('input[name="custom_separator"]').attr('disabled', true).eq(0).prop('checked', true);

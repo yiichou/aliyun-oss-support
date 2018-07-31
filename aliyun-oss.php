@@ -5,8 +5,8 @@
  * Description: 使用阿里云 OSS 作为附件的存储空间。 This is a plugin that used Aliyun OSS for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: https://yii.im/
- * Version: 3.2.0
- * Updated_at: 2018-07-26
+ * Version: 3.2.1
+ * Updated_at: 2018-07-31
  */
 
 /*  Copyright 2016  Ivan Chou  (email : yiichou@gmail.com)
@@ -31,12 +31,12 @@ require(ALIYUN_OSS_PATH.'/autoload.php');
 
 use OSS\WP\Config;
 Config::init(ALIYUN_OSS_PATH);
+new OSS\WP\Setting();
 
 try {
-    $ossClient = new OSS\OssClient(Config::$accessKeyId, Config::$accessKeySecret, Config::$endpoint);
-    new OSS\WP\Upload($ossClient);
-    new OSS\WP\Delete($ossClient);
-    new OSS\WP\Setting($ossClient);
+    Config::$ossClient = new OSS\OssClient(Config::$accessKeyId, Config::$accessKeySecret, Config::$endpoint);
+    new OSS\WP\Upload();
+    new OSS\WP\Delete();
     new OSS\WP\UrlHelper();
 } catch (OSS\Core\OssException $e) {
     register_activation_hook(__FILE__, function () {
