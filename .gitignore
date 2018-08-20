@@ -15,4 +15,4 @@ doc/
 .vscode
 .secret
 aliyun-oss-wp.phar
-aliyun-oss.zip
+aliyun-oss*.zip

@@ -6,7 +6,7 @@
  * Author: Ivan Chou
  * Author URI: https://yii.im/
  * Version: 3.2.2
- * Updated_at: 2018-08-20
+ * Updated_at: 2018-08-21
  */
 
 /*  Copyright 2016  Ivan Chou  (email : yiichou@gmail.com)
@@ -43,4 +43,10 @@ try {
         add_option('oss_options', Config::$originOptions, '', 'yes');
     });
 }
-  
+
+require(ALIYUN_OSS_PATH.'/vendor/plugin-update-checker/plugin-update-checker.php');
+Puc_v4_Factory::buildUpdateChecker(
+    'https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss/plugin.json',
+    __FILE__,
+    Config::$pluginPath
+);

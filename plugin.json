@@ -1,0 +1,17 @@
+{
+  "name": "Aliyun OSS",
+  "version": "3.2.2",
+  "download_url": "https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss-3.2.2.zip",
+  "homepage": "https://github.com/IvanChou/aliyun-oss-support",
+  "requires": "4.5",
+  "tested": "4.9.8",
+  "last_updated": "2018-08-21 01:22:00",
+  "author": "Ivan Chou",
+  "author_homepage": "https://yii.im/",
+  "sections": {
+    "description": "(Required) Plugin description. Basic HTML can be used in all sections.",
+    "installation": "(Recommended) Installation instructions.",
+    "changelog": "(Recommended) Changelog. <p>This section will be displayed by default when the user clicks 'View version x.y.z details'.</p>",
+    "custom_section": "This is a custom section labeled 'Custom Section'."
+  }
+}

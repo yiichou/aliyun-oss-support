@@ -3,8 +3,11 @@
         打包 zip
 ======================= */
 
+preg_match('/Version:\s(.+)\n/', file_get_contents('aliyun-oss.php'), $matches);
+$version = $matches[1];
+
 $zip = new ZipArchive();
-$zip->open('aliyun-oss.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+$zip->open("aliyun-oss-{$version}.zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
 $packageDirs = ['languages', 'view', 'vendor', 'src'];
 $packageFiles = [
@@ -12,8 +15,6 @@ $packageFiles = [
     'autoload.php',
     'LICENSE.md',
     'README.md',
-    'readme.txt',
-    'screenshot.png',
     'uninstall.php'
 ];
 
@@ -27,14 +28,14 @@ foreach ($packageDirs as $dir) {
     foreach ($files as $name => $file) {
         if (!$file->isDir()) {
             $relativePath = str_replace($dirPath, "{$dir}/", $file);
-            $zip->addFile($file, $relativePath);
+            $zip->addFile($file, 'aliyun-oss/'.$relativePath);
         }
     }
 }
 foreach ($packageFiles as $file) {
     $filePath = realpath($file);
-    $filePath && $zip->addFile($filePath, $file);
+    $filePath && $zip->addFile($filePath, 'aliyun-oss/'.$file);
 }
 $zip->close();
 
-echo "Finished aliyun-oss.zip\n";
+echo "Finished aliyun-oss-{$version}.zip\n";
