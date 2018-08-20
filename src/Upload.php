@@ -38,10 +38,10 @@ class Upload
     public function uploadFileToOss($file, $base_dir = '', $oss_dir = '')
     {
         empty($base_dir) && path_is_absolute($file) && $base_dir = Config::$baseDir;
-        empty($oss_dir) && $oss_dir = Config::$storePath;
-
         $object = preg_replace('/^' . preg_quote($base_dir, '/') . '/', '', $file);
-        $object = trim($oss_dir, '/') . '/' . trim($object, '/');
+
+        $oss_dir = empty($oss_dir) ? Config::$storePath : rtrim($oss_dir, '/');
+        $object = trim($oss_dir . '/' . ltrim($object, '/'), '/');
 
         $this->oc->multiuploadFile(Config::$bucket, $object, $file, $this->ossHeader);
     }

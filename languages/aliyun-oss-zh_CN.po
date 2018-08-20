@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2018-07-26 16:03+0800\n"
-"PO-Revision-Date: 2018-07-26 16:16+0800\n"
+"POT-Creation-Date: 2018-08-20 15:56+0800\n"
+"PO-Revision-Date: 2018-08-20 15:57+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -21,15 +21,15 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #. Plugin Name of the plugin/theme
-#: src/Setting.php:30 src/Setting.php:31
+#: src/Setting.php:24 src/Setting.php:25
 msgid "Aliyun OSS"
 msgstr "阿里云 OSS"
 
-#: src/Setting.php:48
+#: src/Setting.php:42
 msgid "Settings"
 msgstr "设置"
 
-#: src/Setting.php:57
+#: src/Setting.php:51
 #, php-format
 msgid ""
 "Aliyun OSS Support is almost ready. You should <a href=\"%s\">Setting</a> it "
@@ -156,80 +156,84 @@ msgstr "存储路径"
 msgid "Keep this empty if you don't need."
 msgstr "如果你不需要指定 Bucket 的存储位置，请留空。"
 
-#: view/setting.php:75 view/setting.php:78
-msgid "Keep Files"
-msgstr "保留文件"
-
-#: view/setting.php:81
-msgid "Don't keep files on local server."
-msgstr "不在本地服务器上保留文件"
-
-#: view/setting.php:90
+#: view/setting.php:78
 msgid "Aliyun Image Service Settings"
 msgstr "阿里云图片服务设置"
 
-#: view/setting.php:94 view/setting.php:97
+#: view/setting.php:82 view/setting.php:85
 msgid "Image Service"
 msgstr "图片服务"
 
-#: view/setting.php:100 view/setting.php:113 view/setting.php:134
-#: view/setting.php:189
+#: view/setting.php:88 view/setting.php:101 view/setting.php:122
+#: view/setting.php:192
 msgid "Enable"
 msgstr "启用"
 
-#: view/setting.php:103
+#: view/setting.php:91
 msgid ""
 "Use Aliyun Image Service to provide thumbnails, no need to upload thumbnails "
 "to OSS any more."
 msgstr "使用阿里云图片服务来提供不同尺寸的图片，启用后不会再上传缩略图到 OSS"
 
-#: view/setting.php:107 view/setting.php:110
+#: view/setting.php:95 view/setting.php:98
 msgid "Preset Image Style"
 msgstr "图片预设样式"
 
-#: view/setting.php:117
+#: view/setting.php:105
 msgid "Optional, use preset styles instead of dynamic params to deal image."
 msgstr "可选项，使用 OSS 图片预设样式来替代通过参数获取缩略图的方式"
 
-#: view/setting.php:120
+#: view/setting.php:108
 msgid "Click to export style profile"
 msgstr "点击下载图片样式配置文件"
 
-#: view/setting.php:127 view/setting.php:130
+#: view/setting.php:115 view/setting.php:118
 msgid "Source Image Protection"
 msgstr "原图保护"
 
-#: view/setting.php:137
+#: view/setting.php:125
 msgid ""
 "If you have enabled source image protection on Aliyun OSS, don't forget to "
 "enable this."
 msgstr "如果你在 Aliyun OSS 控制台开启了「原图保护」，请记得勾选这项"
 
-#: view/setting.php:141 view/setting.php:144
+#: view/setting.php:129 view/setting.php:132
 msgid "Custom Separator"
 msgstr "自定义分割符"
 
-#: view/setting.php:148
+#: view/setting.php:136
 msgid "Default"
 msgstr ""
 
-#: view/setting.php:168
+#: view/setting.php:156
 msgid "There is a guide about Image Service."
 msgstr " 关于图片服务可以参考："
 
-#: view/setting.php:170
+#: view/setting.php:158
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:179
-msgid "Advanced Settings"
-msgstr ""
+#: view/setting.php:167
+msgid "More Options"
+msgstr "更多选项"
 
-#: view/setting.php:183 view/setting.php:186
+#: view/setting.php:170
+msgid "Advanced Options"
+msgstr "高级选项"
+
+#: view/setting.php:174 view/setting.php:177
+msgid "Clear Files On Server"
+msgstr "清理服务器存储"
+
+#: view/setting.php:180
+msgid "Don't keep files on local server."
+msgstr "不在本地服务器上保留文件"
+
+#: view/setting.php:186 view/setting.php:189
 msgid "keep Settings When Uninstall"
-msgstr ""
+msgstr "卸载时保留配置"
 
-#: view/setting.php:197
+#: view/setting.php:200
 msgid "Commit"
 msgstr "保存配置"
 
@@ -250,6 +254,9 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "https://yii.im/"
 msgstr ""
+
+#~ msgid "Keep Files"
+#~ msgstr "保留文件"
 
 #~ msgid "Image Service Enable"
 #~ msgstr "开启图片服务"

@@ -80,8 +80,10 @@ class Setting
         isset($_POST['bucket']) && $options['bucket'] = trim($_POST['bucket']);
         isset($_POST['store_path']) && $options['path'] = trim($_POST['store_path']);
         $options['nolocalsaving'] = isset($_POST['no_local_saving']);
-        if (isset($_POST['static_host'])) {
+        if ( !empty($_POST['static_host']) ) {
             $options['static_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['static_host']);
+        } elseif ( !empty($options['bucket']) ) {
+            $options['static_url'] = join([$options['bucket'] , $options['region'], 'aliyuncs.com'], '.');
         }
 
         $options['img_service'] = isset($_POST['img_service']);

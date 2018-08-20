@@ -71,18 +71,6 @@ $d = 'aliyun-oss';
                 <td><input name="store_path" type="text" id="store_path" value="<?php echo $options['path'] ?>" class="regular-text">
                     <p class="description"><?php echo __("Keep this empty if you don't need.", $d) ?></p></td>
             </tr>
-            <tr>
-                <th scope="row"><?php echo __('Keep Files', $d) ?></th>
-                <td>
-                    <fieldset>
-                        <legend class="screen-reader-text"><span><?php echo __('Keep Files', $d) ?></span></legend>
-                        <label for="no_local_saving">
-                            <input name="no_local_saving" type="checkbox" id="no_local_saving"
-                                <?php echo $options['nolocalsaving'] ? 'checked' : '' ?>> <?php echo __("Don't keep files on local server.", $d) ?>
-                        </label>
-                    </fieldset>
-                </td>
-            </tr>
             </tbody>
         </table>
         <hr>
@@ -175,10 +163,25 @@ $d = 'aliyun-oss';
             </tbody>
         </table>
 
-        <div style="display: none">
-            <h2 class="title"><?php echo __('Advanced Settings', $d) ?></h2>
+        <p>
+            <a href="#more-settings" id="load-more-settings"><?php echo __('More Options', $d) ?></a>
+        </p>
+        <div style="display: none" id="more-settings">
+            <h2 class="title"><?php echo __('Advanced Options', $d) ?></h2>
             <table class="form-table">
                 <tbody>
+                <tr>
+                    <th scope="row"><?php echo __('Clear Files On Server', $d) ?></th>
+                    <td>
+                        <fieldset>
+                            <legend class="screen-reader-text"><span><?php echo __('Clear Files On Server', $d) ?></span></legend>
+                            <label for="no_local_saving">
+                                <input name="no_local_saving" type="checkbox" id="no_local_saving"
+                                    <?php echo $options['nolocalsaving'] ? 'checked' : '' ?>> <?php echo __("Don't keep files on local server.", $d) ?>
+                            </label>
+                        </fieldset>
+                    </td>
+                </tr>
                 <tr>
                     <th scope="row"><?php echo __('keep Settings When Uninstall', $d) ?></th>
                     <td>
@@ -237,5 +240,10 @@ $d = 'aliyun-oss';
                 $('#export_style_profile').hide();
             }
         });
+
+        $('#load-more-settings').click(function () {
+            $('#more-settings').show();
+            $(this).remove();
+        })
     })
 </script>
