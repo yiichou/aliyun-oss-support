@@ -9,9 +9,8 @@
   "author": "Ivan Chou",
   "author_homepage": "https://yii.im/",
   "sections": {
-    "description": "(Required) Plugin description. Basic HTML can be used in all sections.",
-    "installation": "(Recommended) Installation instructions.",
-    "changelog": "(Recommended) Changelog. <p>This section will be displayed by default when the user clicks 'View version x.y.z details'.</p>",
-    "custom_section": "This is a custom section labeled 'Custom Section'."
+    "description": "使用阿里云 OSS 作为附件的存储空间。<br> This is a plugin that used Aliyun OSS for attachments remote saving.",
+    "installation": "<h4>下载</h4> <p>最新版本： <a href='https://github.com/IvanChou/aliyun-oss-support/releases/latest'>latest release</a> </p> <p>历史版本： <a href='https://github.com/IvanChou/aliyun-oss-support/releases'>releases</a> </p> <h4>安装</h4> <ol> <li> <p>Wordpress 管理后台安装</p> </li> <li> <p>手动解压上传到 <code>wp-content/plugins</code> 目录下</p> </li> </ol> <h4>基本配置</h4> <p>根据提示配置即可</p> <h4>图片服务</h4> <p>关于 图片服务 的使用，请参照 <a href='https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-use-Image-Service'>图片服务详解</a> </p> <h4>卸载</h4> <p>后台卸载即可</p> <p>为了保持纯净，卸载时会一并删除配置信息</p>",
+    "changelog": "<h4>3.2.2</h4> <ul> <li>修复不能使用 OSS 根目录作为存储路径的 bug <a class='issue-link js-issue-link tooltipped tooltipped-ne' data-error-text='Failed to load issue title' data-id='346918827' data-permission-text='Issue title is private' href='https://github.com/IvanChou/aliyun-oss-support/issues/70' aria-label='#70, 3.2.1版本上传文件时报错：“HTTP错误”'>#70</a></li> <li>修复图片服务开启时, 缩略图依旧被上传的 bug <a class='issue-link js-issue-link' data-error-text='Failed to load issue title' data-id='347961174' data-permission-text='Issue title is private' data-url='https://github.com/IvanChou/aliyun-oss-support/issues/71' href='https://github.com/IvanChou/aliyun-oss-support/issues/71'>#71</a></li> <li>新增插件自动更新功能</li> <li>为 Bucket Host 增加 fallback 值</li> <li>调整部分配置选项</li> </ul>"
   }
 }

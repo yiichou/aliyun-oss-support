@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name: Aliyun OSS
- * Plugin URI: "https://github.com/IvanChou/aliyun-oss-support"
  * Description: 使用阿里云 OSS 作为附件的存储空间。 This is a plugin that used Aliyun OSS for attachments remote saving.
  * Author: Ivan Chou
  * Author URI: https://yii.im/
