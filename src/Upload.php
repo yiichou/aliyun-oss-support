@@ -93,7 +93,7 @@ class Upload
      */
     public function uploadImageToOss($file)
     {
-        if (wp_debug_backtrace_summary(null, 4, false)[0] == 'WP_Image_Editor_GD->multi_resize') {
+        if (stristr(wp_debug_backtrace_summary(null, 4, false)[0], '->multi_resize')) {
             Config::$enableImgService || $this->uploadFileToOss($file);
             Config::$noLocalSaving && Delete::deleteLocalFile($file);
         } else {
