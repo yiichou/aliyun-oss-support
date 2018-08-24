@@ -1,7 +1,7 @@
 {
   "name": "Aliyun OSS",
   "version": "3.2.2",
-  "download_url": "https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss-3.2.2.zip",
+  "download_url": "https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss/aliyun-oss-3.2.2.zip",
   "homepage": "https://github.com/IvanChou/aliyun-oss-support",
   "requires": "4.5",
   "tested": "4.9.8",
