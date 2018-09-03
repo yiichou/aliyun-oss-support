@@ -32,8 +32,6 @@ Stable: [`3.2.2`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 
 将插件解压上传到 `/wp-content/plugins/` 或者通过 WordPress 插件中心上传安装
 
-注意上传时 zip 包的名字,建议使用 `aliyun-oss.zip`
-
 ### 配置
 
 启用插件 `Aliyun OSS`
@@ -41,6 +39,16 @@ Stable: [`3.2.2`](https://github.com/IvanChou/aliyun-oss-support/releases/latest
 进入设置页面 完成相关设置
 
 ![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
+
+## 使用阿里云内网
+
+如果你使用的 ECS 与 OSS 在同一区域，可以开启内网传输，节约流量
+
+勾选『区域/数据节点』下的 『内网』选项即可
+
+## 自定义/CDN 域名
+
+『Bucket 域名/Bucket Host』一项可以设置为你的 OSS 自定义域名或 CDN 域名，它仅仅是用来生成文件 Url 的，上传等操作并不依赖它
 
 ## 关于图片服务
 
@@ -87,6 +95,7 @@ https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
 ## 依赖
 
 - https://github.com/aliyun/aliyun-oss-php-sdk
+- https://github.com/YahnisElsts/plugin-update-checker
 
 ## 贡献代码
 
