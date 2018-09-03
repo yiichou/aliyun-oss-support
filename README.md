@@ -2,10 +2,6 @@
 
 本插件主要为 Wordpress 提供基于阿里云 OSS 的远程附件存储功能，并且最大限度的依赖 Wordpress 本身功能扩展来实现，以保证插件停用或博客搬迁时可以快速切换回原来的方式。
 
-## 当前版本
-
-Stable: [`3.2.2`](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
-
 ## 插件特色
 
 1. 支持 Aliyun OSS 的图片服务（根据参数获得不同尺寸的图片）
