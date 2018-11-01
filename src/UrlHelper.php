@@ -37,14 +37,10 @@ class UrlHelper
         $styles = get_intermediate_image_sizes();
         $styles[] = 'full';
 
-        if (Config::$enableImgStyle) {
-            foreach ($styles as $style) {
-                if (isset($data['sizes'][$style])) {
-                    $data['sizes'][$style]['file'] = $this->aliImageStyle($basename, $style);
-                }
-            }
-        } else {
-            foreach ($data['sizes'] as $size => $info) {
+        foreach ($data['sizes'] as $size => $info) {
+            if (Config::$enableImgStyle && in_array($size, $styles)) {
+                $data['sizes'][$size]['file'] = $this->aliImageStyle($basename, $size);
+            } else {
                 $data['sizes'][$size]['file'] = $this->aliImageResize($basename, $info['height'], $info['width']);
             }
         }
