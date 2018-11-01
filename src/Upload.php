@@ -17,8 +17,8 @@ class Upload
             ),
         );
 
-        add_filter('wp_handle_upload', array($this, 'uploadOriginToOss'), 30);
-        add_filter('image_make_intermediate_size', array($this, 'uploadImageToOss'));
+        add_filter('wp_handle_upload', array($this, 'uploadOriginToOss'), 300);
+        add_filter('image_make_intermediate_size', array($this, 'uploadImageToOss'), 901);
         if (Config::$noLocalSaving) {
             add_filter('wp_unique_filename', array($this, 'uniqueFilename'), 30, 3);
         }
