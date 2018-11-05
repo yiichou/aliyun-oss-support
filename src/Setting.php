@@ -7,6 +7,7 @@ class Setting
     public function __construct()
     {
         add_action('admin_menu', array($this, 'adminMenu'));
+        add_action('admin_init', array($this, 'redirectToImgStyleProfile'));
         add_filter('plugin_action_links', array($this, 'pluginActionLink'), 10, 2);
         load_plugin_textdomain('aliyun-oss', false, Config::$pluginPath.'/languages');
 
@@ -57,13 +58,17 @@ class Setting
     {
         if (!empty($_POST)) {
             $this->updateSettings();
-        }
-        if (isset($_GET['action']) && $_GET['action'] == 'update-img-style-profile') {
-            $this->updateImageStyleProfile();
-            wp_redirect(Config::$safeStaticHost . '/'. Config::$imgStyleProfile);
-            exit;
         } else {
             require __DIR__.'/../view/setting.php';
+        }
+    }
+
+    public function redirectToImgStyleProfile()
+    {
+        if (isset($_GET['action']) && $_GET['action'] == 'update-img-style-profile') {
+            $this->updateImageStyleProfile();
+            wp_redirect(Config::$safeStaticHost . '/' . Config::$imgStyleProfile);
+            exit;
         }
     }
 
