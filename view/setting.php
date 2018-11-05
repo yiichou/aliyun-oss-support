@@ -194,6 +194,13 @@ $d = 'aliyun-oss';
                         </fieldset>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><label for="exclude"></label><?php echo __('Files To Exclude', $d) ?></th>
+                    <td>
+                        <input name="exclude" type="text" id="exclude" value="<?php echo $options['exclude'] ?>" class="regular-text">
+                        <p class="description"><?php echo __("Regular expression only", $d) ?></p>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

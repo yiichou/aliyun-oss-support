@@ -56,11 +56,8 @@ class Setting
 
     public function settingsPage()
     {
-        if (!empty($_POST)) {
-            $this->updateSettings();
-        } else {
-            require __DIR__.'/../view/setting.php';
-        }
+        !empty($_POST) && $this->updateSettings();
+        require __DIR__.'/../view/setting.php';
     }
 
     public function redirectToImgStyleProfile()
@@ -101,6 +98,7 @@ class Setting
         }
 
         $options['keep_settings'] = isset($_POST['keep_settings']);
+        isset($_POST['exclude']) && $options['exclude'] = trim($_POST['exclude']);
         unset($options['img_url']);
         update_option('oss_options', $options);
 

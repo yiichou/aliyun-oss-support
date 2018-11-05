@@ -20,6 +20,8 @@ class Config
     public static $baseDir = "";
     public static $imgStyleProfile = "";
 
+    public static $exclude = null;
+
     public static $ossClient = null;
 
     public static $pluginPath = "aliyun-oss";
@@ -37,6 +39,7 @@ class Config
         'source_img_protect'    => false,
         'custom_separator'      => "",
         'nolocalsaving'         => false,
+        'exclude'               => "",
     );
 
 
@@ -61,7 +64,7 @@ class Config
             self::$enableImgService = true;
         }
 
-        if (! empty($options['custom_separator'])) {
+        if (!empty($options['custom_separator'])) {
             self::$customSeparator = "@{$options['custom_separator']}";
         }
 
@@ -71,6 +74,8 @@ class Config
         self::$enableImgStyle = $options['img_style'];
         self::$sourceImgProtect = $options['source_img_protect'];
         self::$noLocalSaving = $options['nolocalsaving'];
+
+        !empty($options['exclude']) && self::$exclude = $options['exclude'];
 
         self::$imgStyleProfile = trim(Config::$storePath . '/aliyun-img-styles.txt', '/');
     }

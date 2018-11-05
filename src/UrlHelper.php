@@ -4,25 +4,81 @@ namespace OSS\WP;
 
 class UrlHelper
 {
+    protected $wpBaseUrl = "";
+    protected $ossBaseUrl = "";
+
     public function __construct()
     {
-        add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30);
+        if (empty(Config::$staticHost))
+            return;
+
+        $this->wpBaseUrl = wp_get_upload_dir();
+        $this->ossBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
+
         add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
         add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 9, 2);
+
+        if (empty(Config::$exclude)) {
+            add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30);
+        } else {
+            add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 30);
+            add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'), 30);
+        }
 
         if (Config::$enableImgService) {
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
 
             if (Config::$enableImgStyle && Config::$sourceImgProtect) {
-                add_filter('wp_get_attachment_url', array($this,'replaceOriginalImgUrl'), 30, 2);
+                add_filter('wp_get_attachment_url', array($this,'replaceOriginalImgUrl'), 900, 2);
                 add_filter('wp_calculate_image_srcset', array($this, 'replaceOriginalImgSrcset'), 900);
             }
         }
     }
 
     /**
-     * 修改从数据库中取出的图片信息，以使用 Aliyun 的图片服务
-     * 仅在开启图片服务时启用
+     * 非 Exclude 模式下, 全局修改 upload_dir 的 baseurl 为 OSS 路径
+     * WordPress 生成附件 Url 时, 依赖这个值, 所以可能会引起插件兼容问题
+     * 但是这样做性能好
+     *
+     * @param $uploads
+     * @return mixed
+     */
+    public function resetUploadBaseUrl($uploads)
+    {
+        $uploads['baseurl'] = $this->ossBaseUrl;
+        return $uploads;
+    }
+
+    /**
+     * Exclude 模式下, 逐个将图片/附件 Url 替换为 OSS Url
+     *
+     * @param $url
+     * @return mixed
+     */
+    public function replaceAttachmentUrl($url)
+    {
+        if (preg_match(Config::$exclude, $url)) {
+            return $url;
+        }
+        return str_replace($this->wpBaseUrl, $this->ossBaseUrl, $url);
+    }
+
+    /**
+     * Exclude 模式下, 将图片 Srcsets Url 替换为 OSS Url
+     *
+     * @param $sources
+     * @return mixed
+     */
+    public function replaceImgSrcsetUrl($sources)
+    {
+        foreach ($sources as $k => $source) {
+            $sources[$k]['url'] = str_replace($this->wpBaseUrl, $this->ossBaseUrl, $source['url']);
+        }
+        return $sources;
+    }
+
+    /**
+     * 图片服务模式下, 修改图片元数据，以使用 Aliyun 的图片服务
      *
      * @param $data
      * @return mixed
@@ -49,8 +105,7 @@ class UrlHelper
     }
 
     /**
-     * 将原图链接替换为 full 样式的 OSS 图片地址
-     * 仅在开启图片服务 + 原图保护时启用
+     * 原图保护模式下, 为原图链接加上样式 full (因为原图不可直接访问)
      *
      * @param $url
      * @param $post_id
@@ -65,8 +120,7 @@ class UrlHelper
     }
 
     /**
-     * 将 Srcset 中原图链接替换为 full 样式的 OSS 图片地址
-     * 仅在开启图片服务 + 原图保护时启用
+     * 原图保护模式下, 为 Srcset 中的原图链接加上样式 full (因为原图不可直接访问)
      *
      * @param $sources
      * @return mixed
@@ -79,21 +133,6 @@ class UrlHelper
             }
         }
         return $sources;
-    }
-
-    /**
-     * 设置 upload_url_path，将图片/附件的路径修改为 OSS 地址
-     *
-     * @param $uploads
-     * @return mixed
-     */
-    public function resetUploadBaseUrl($uploads)
-    {
-        if (Config::$staticHost) {
-            $base_url = rtrim(Config::$staticHost . Config::$storePath, '/');
-            $uploads['baseurl'] = $base_url;
-        }
-        return $uploads;
     }
 
     /**
