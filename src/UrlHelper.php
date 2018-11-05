@@ -18,53 +18,35 @@ class UrlHelper
         add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
         add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 9, 2);
 
-        if (empty(Config::$exclude)) {
-            add_filter('upload_dir', array($this, 'resetUploadBaseUrl'), 30);
-        } else {
-            add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 30);
-            add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'), 30);
-        }
+        add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 300, 2);
+        add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'), 300);
 
         if (Config::$enableImgService) {
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
-
-            if (Config::$enableImgStyle && Config::$sourceImgProtect) {
-                add_filter('wp_get_attachment_url', array($this,'replaceOriginalImgUrl'), 900, 2);
-                add_filter('wp_calculate_image_srcset', array($this, 'replaceOriginalImgSrcset'), 900);
-            }
         }
     }
 
     /**
-     * 非 Exclude 模式下, 全局修改 upload_dir 的 baseurl 为 OSS 路径
-     * WordPress 生成附件 Url 时, 依赖这个值, 所以可能会引起插件兼容问题
-     * 但是这样做性能好
-     *
-     * @param $uploads
-     * @return mixed
-     */
-    public function resetUploadBaseUrl($uploads)
-    {
-        $uploads['baseurl'] = $this->ossBaseUrl;
-        return $uploads;
-    }
-
-    /**
-     * Exclude 模式下, 逐个将图片/附件 Url 替换为 OSS Url
+     * 将图片/附件 Url 替换为 OSS Url
      *
      * @param $url
+     * @param $post_id
      * @return mixed
      */
-    public function replaceAttachmentUrl($url)
+    public function replaceAttachmentUrl($url, $post_id)
     {
-        if (preg_match(Config::$exclude, $url)) {
-            return $url;
+        if (!$this->is_excluded($url)) {
+            $url = str_replace($this->wpBaseUrl, $this->ossBaseUrl, $url);
+
+            if (Config::$sourceImgProtect && wp_attachment_is_image($post_id)) {
+                $url = $this->aliImageStyle($url, 'full');
+            }
         }
-        return str_replace($this->wpBaseUrl, $this->ossBaseUrl, $url);
+        return $url;
     }
 
     /**
-     * Exclude 模式下, 将图片 Srcsets Url 替换为 OSS Url
+     * 将图片 Srcsets Url 替换为 OSS Url
      *
      * @param $sources
      * @return mixed
@@ -72,7 +54,13 @@ class UrlHelper
     public function replaceImgSrcsetUrl($sources)
     {
         foreach ($sources as $k => $source) {
-            $sources[$k]['url'] = str_replace($this->wpBaseUrl, $this->ossBaseUrl, $source['url']);
+            if (!$this->is_excluded($source['url'])) {
+                $sources[$k]['url'] = str_replace($this->wpBaseUrl, $this->ossBaseUrl, $source['url']);
+
+                if (Config::$sourceImgProtect && (false === strstr($sources[$k]['url'], Config::$customSeparator))) {
+                    $sources[$k]['url'] = $this->aliImageStyle($sources[$k]['url'], 'full');
+                }
+            }
         }
         return $sources;
     }
@@ -85,7 +73,8 @@ class UrlHelper
      */
     public function replaceImgMeta($data)
     {
-        if (empty($data['sizes']) || (wp_debug_backtrace_summary(null, 4, false)[0] == 'wp_delete_attachment')) {
+        if (empty($data['sizes']) || $this->is_excluded($data['file']) ||
+            (wp_debug_backtrace_summary(null, 4, false)[0] == 'wp_delete_attachment')) {
             return $data;
         }
 
@@ -102,37 +91,6 @@ class UrlHelper
         }
 
         return $data;
-    }
-
-    /**
-     * 原图保护模式下, 为原图链接加上样式 full (因为原图不可直接访问)
-     *
-     * @param $url
-     * @param $post_id
-     * @return mixed
-     */
-    public function replaceOriginalImgUrl($url, $post_id)
-    {
-        if (wp_attachment_is_image($post_id)) {
-            $url = $this->aliImageStyle($url, 'full');
-        }
-        return $url;
-    }
-
-    /**
-     * 原图保护模式下, 为 Srcset 中的原图链接加上样式 full (因为原图不可直接访问)
-     *
-     * @param $sources
-     * @return mixed
-     */
-    public function replaceOriginalImgSrcset($sources)
-    {
-        foreach ($sources as $k => $source) {
-            if (false === strstr($source['url'], Config::$customSeparator)) {
-                $sources[$k]['url'] = $this->aliImageStyle($source['url'], 'full');
-            }
-        }
-        return $sources;
     }
 
     /**
@@ -186,6 +144,11 @@ class UrlHelper
         }
 
         return $url;
+    }
+
+    protected function is_excluded($url)
+    {
+        return Config::$exclude && preg_match(Config::$exclude, $url);
     }
 
     protected function aliImageResize($file, $height, $width)

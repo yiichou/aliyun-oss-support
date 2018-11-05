@@ -71,8 +71,8 @@ class Config
         $wp_upload_dir = wp_upload_dir();
         self::$baseDir = $wp_upload_dir['basedir'];
         self::$storePath .= trim($options['path'], '/');
-        self::$enableImgStyle = $options['img_style'];
-        self::$sourceImgProtect = $options['source_img_protect'];
+        self::$enableImgStyle = self::$enableImgService && $options['img_style'];
+        self::$sourceImgProtect = self::$enableImgStyle && $options['source_img_protect'];
         self::$noLocalSaving = $options['nolocalsaving'];
 
         !empty($options['exclude']) && self::$exclude = $options['exclude'];
