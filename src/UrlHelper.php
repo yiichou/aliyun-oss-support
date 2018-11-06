@@ -12,7 +12,7 @@ class UrlHelper
         if (empty(Config::$staticHost))
             return;
 
-        $this->wpBaseUrl = wp_get_upload_dir();
+        $this->wpBaseUrl = wp_get_upload_dir()['baseurl'];
         $this->ossBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
 
         add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
