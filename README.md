@@ -34,10 +34,10 @@
 
 进入设置页面 完成相关设置
 
-![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
-
 - 如果你使用的 ECS 与 OSS 在同一区域，可以开启**『内网/internal』**选项，节约流量
 - 『Bucket 域名/Bucket Host』一项会自动补全，也可以手动设置为你的 **自定义域名** 或 CDN 域名
+
+![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
 
 ## 关于图片服务
 
