@@ -36,15 +36,8 @@
 
 ![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
 
-## 使用阿里云内网
-
-如果你使用的 ECS 与 OSS 在同一区域，可以开启内网传输，节约流量
-
-勾选『区域/数据节点』下的 『内网』选项即可
-
-## 自定义/CDN 域名
-
-『Bucket 域名/Bucket Host』一项可以设置为你的 OSS 自定义域名或 CDN 域名，它仅仅是用来生成文件 Url 的，上传等操作并不依赖它
+- 如果你使用的 ECS 与 OSS 在同一区域，可以开启**『内网/internal』**选项，节约流量
+- 『Bucket 域名/Bucket Host』一项会自动补全，也可以手动设置为你的 **自定义域名** 或 CDN 域名
 
 ## 关于图片服务
 
@@ -57,6 +50,10 @@
 1. 开启图片服务时, 只有原图会被上传到 OSS, 缩略图本地依旧会生成但不会上传
 2. 基于第 1 条, 建议开启图片服务后就不要关了, 关掉会导致之前上传的图片缩略图丢失
 3. 基于第 2 条, 如果你一定要关或者不再使用本插件, 可以使用本地保留的缩略图做数据恢复, That's EZ.
+
+## 启用插件后，老文件无法访问
+
+参见 WIKI：[How to handle old images](https://github.com/IvanChou/aliyun-oss-support/wiki/How-to-handle-old-images)
 
 ## 关于不在本地服务器上保留文件
 
