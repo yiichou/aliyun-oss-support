@@ -210,6 +210,19 @@ $d = 'aliyun-oss';
 
 <script>
     jQuery(function ($) {
+        var regFormater = function (r) {
+            var flags = r.match(/\/([igm]{0,3})$/i);
+            var begin = r[0] === '/' ? 0 : -1;
+            var end = r.lastIndexOf('/');
+            var flag = '';
+            if (flags === null) {
+                end = r.length;
+                r = r + '/';
+            } else {
+                flag = flags[1];
+            }
+            return new RegExp(r.substring(begin + 1, end), flag);
+        };
         var region = '<?php echo $options['region'] ?>';
         $('#region option[value='+region+']').attr('selected', 'selected');
 
@@ -251,6 +264,10 @@ $d = 'aliyun-oss';
         $('#load-more-settings').click(function () {
             $('#more-settings').show();
             $(this).remove();
+        });
+
+        $('#exclude').blur(function () {
+            $(this).val(regFormater($(this).val()));
         })
     })
 </script>
