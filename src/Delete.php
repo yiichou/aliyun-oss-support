@@ -13,12 +13,20 @@ class Delete
     {
         $this->oc = $ossClient ? $ossClient : Config::$ossClient;
 
-        add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));
         if (Config::$noLocalSaving) {
             add_filter('wp_update_attachment_metadata', array($this, 'deleteLocalOriginImage'), 60);
+            add_action('delete_attachment', array($this, 'deleteAttachment'), 10);
+        } else {
+            add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));
         }
 
         add_action('oss_delete_file', array($this, 'deleteRemoteFile'), 9);
+    }
+
+    public function deleteAttachment($post_id)
+    {
+        $file = get_attached_file($post_id);
+        $this->deleteRemoteFile($file);
     }
 
     /**
