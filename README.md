@@ -22,7 +22,7 @@
 
 ### 下载
 
-[latest release](https://github.com/IvanChou/aliyun-oss-support/releases/latest)
+[latest release](../../releases/latest)
 
 ### 安装
 
@@ -37,7 +37,7 @@
 - 如果你使用的 ECS 与 OSS 在同一区域，可以开启『**内网/internal**』选项，节约流量
 - 『Bucket 域名/Bucket Host』一项会自动补全，也可以手动设置为你的 **自定义域名** 或 CDN 域名
 
-![screenshot](https://github.com/IvanChou/aliyun-oss-support/blob/master/screenshot.png)
+![screenshot](screenshot.png)
 
 ## 启用 OSS 图片服务
 
@@ -57,10 +57,10 @@
 
 ## 关于不在本地服务器上保留文件
 
-『不在本地服务器上保留文件』是一个看上去炫酷实则没什么用的功能, 没有特殊需求强烈建议不要开启, 理由如下:
+『不在本地服务器上保留文件』建议不要开启, 理由如下:
 
-1. 由于本地文件早早被删掉了, 导致从后台删除图片或附件时, OSS 里面的资源无法被删掉
-2. 如果你同时开启了『图片服务』, 当你想停用这个插件的时候不可避免的会遇到缩略图丢失问题
+1. 如果同时开启『图片服务』, 当你想停用这个插件的时候不可避免的会遇到缩略图丢失问题
+2. 如果没有同时开启『图片服务』, 当你从后台删除图片或附件时, OSS 里面的缩略图无法被删掉
 
 ****
 
@@ -74,7 +74,7 @@
 
 ## 更新日志
 
-https://github.com/IvanChou/aliyun-oss-support/blob/master/CHANGELOG.md
+[CHANGELOG.md](CHANGELOG.md)
 
 ## 插件兼容
 
