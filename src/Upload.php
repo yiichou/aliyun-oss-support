@@ -56,6 +56,9 @@ class Upload
      */
     public function uniqueFilename($filename, $ext, $dir)
     {
+        if (strpos($dir, wp_get_upload_dir()['basedir']) !== 0) {
+            return $filename;
+        }
         $ext = strtolower($ext);
         $object = trim(str_replace(Config::$baseDir, Config::$storePath, $dir), '/') . '/' . $filename;
         $doesExist = $this->oc->doesObjectExist(Config::$bucket, $object);
