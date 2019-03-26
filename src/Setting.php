@@ -100,9 +100,9 @@ class Setting
         $options['keep_settings'] = isset($_POST['keep_settings']);
         isset($_POST['exclude']) && $options['exclude'] = trim(stripslashes($_POST['exclude']));
         unset($options['img_url']);
+        update_option('oss_options', $options);
 
         if (true === Config::checkOssConfig($options)) {
-            update_option('oss_options', $options);
             echo '<div class="updated"><p><strong>'. __('The settings have been saved', 'aliyun-oss') .'.</strong></p></div>';
         }
     }

@@ -19,6 +19,7 @@ class UrlHelper
         add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'), 300);
 
         if (Config::$enableImgService) {
+            require_once ABSPATH . WPINC . '/class-phpmailer.php';
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
         }
     }
@@ -75,9 +76,6 @@ class UrlHelper
             return $data;
         }
 
-        if (!class_exists('\PHPMailer')) {
-            require_once ABSPATH . WPINC . '/class-phpmailer.php';
-        }
         $basename = \PHPMailer::mb_pathinfo($data['file'], PATHINFO_BASENAME);
         $styles = get_intermediate_image_sizes();
         $styles[] = 'full';
