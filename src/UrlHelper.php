@@ -9,9 +9,6 @@ class UrlHelper
 
     public function __construct()
     {
-        if (empty(Config::$staticHost))
-            return;
-
         $this->wpBaseUrl = wp_get_upload_dir()['baseurl'];
         $this->ossBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
 

@@ -26,26 +26,30 @@
 */
 
 define('ALIYUN_OSS_PATH', dirname(__FILE__));
-require(ALIYUN_OSS_PATH.'/autoload.php');
+require(ALIYUN_OSS_PATH . '/autoload.php');
 
 use OSS\WP\Config;
 Config::init(ALIYUN_OSS_PATH);
-new OSS\WP\Setting();
 
-try {
-    Config::$ossClient = new OSS\OssClient(Config::$accessKeyId, Config::$accessKeySecret, Config::$endpoint);
-    new OSS\WP\Upload();
-    new OSS\WP\Delete();
+if (Config::$staticHost) {
     new OSS\WP\UrlHelper();
-} catch (OSS\Core\OssException $e) {
-    register_activation_hook(__FILE__, function () {
-        add_option('oss_options', Config::$originOptions, '', 'yes');
-    });
+}
+if (Config::$ossClient) {
+    new OSS\WP\Upload(Config::$ossClient);
+}
+if (Config::$ossClient && is_admin()) {
+    new OSS\WP\Delete(Config::$ossClient);
 }
 
-require(ALIYUN_OSS_PATH.'/vendor/plugin-update-checker/plugin-update-checker.php');
-Puc_v4_Factory::buildUpdateChecker(
-    'https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss/plugin.json',
-    __FILE__,
-    Config::$pluginPath
-);
+if (is_admin()) {
+    new OSS\WP\Setting();
+
+    if (!class_exists('Puc_v4_Factory', false)) {
+        require(ALIYUN_OSS_PATH . '/vendor/plugin-update-checker/plugin-update-checker.php');
+    }
+    Puc_v4_Factory::buildUpdateChecker(
+        'https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss/plugin.json',
+        __FILE__,
+        Config::$pluginPath
+    );
+}

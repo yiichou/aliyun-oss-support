@@ -2,6 +2,9 @@
 
 namespace OSS\WP;
 
+use OSS\Core\OssException;
+use OSS\OssClient;
+
 class Config
 {
     public static $bucket = "";
@@ -27,19 +30,19 @@ class Config
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
     public static $originOptions = array(
-        'bucket'                => "",
-        'ak'                    => "",
-        'sk'                    => "",
-        'region'                => "oss-cn-hangzhou",
-        'internal'              => false,
-        'path'                  => "",
-        'static_url'            => "",
-        'img_url'               => "",
-        'img_style'             => false,
-        'source_img_protect'    => false,
-        'custom_separator'      => "",
-        'nolocalsaving'         => false,
-        'exclude'               => "",
+        'bucket' => "",
+        'ak' => "",
+        'sk' => "",
+        'region' => "oss-cn-hangzhou",
+        'internal' => false,
+        'path' => "",
+        'static_url' => "",
+        'img_url' => "",
+        'img_style' => false,
+        'source_img_protect' => false,
+        'custom_separator' => "",
+        'nolocalsaving' => false,
+        'exclude' => "",
     );
 
 
@@ -51,9 +54,7 @@ class Config
         self::$bucket = $options['bucket'];
         self::$accessKeyId = $options['ak'];
         self::$accessKeySecret = $options['sk'];
-
-        $suffix = $options['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
-        self::$endpoint = $options['region'].$suffix;
+        self::$endpoint = self::getEndPoint($options['region'], $options['internal']);
 
         if ($options['static_url']) {
             self::$staticHost = is_ssl() ? "https://{$options['static_url']}" : "http://{$options['static_url']}";
@@ -77,7 +78,9 @@ class Config
 
         !empty($options['exclude']) && self::$exclude = $options['exclude'];
 
-        self::$imgStyleProfile = trim(Config::$storePath . '/aliyun-img-styles.txt', '/');
+        self::$imgStyleProfile = trim(self::$storePath . '/aliyun-img-styles.txt', '/');
+
+        self::initOssClient();
     }
 
     public static function monthDir($time)
@@ -90,5 +93,45 @@ class Config
     {
         $wp_upload_dir = wp_upload_dir();
         return $wp_upload_dir['baseurl'];
+    }
+
+    public static function initOssClient()
+    {
+        if (empty(self::$accessKeyId) || empty(self::$accessKeySecret) || empty(self::$endpoint)) {
+            return;
+        }
+
+        if (!is_admin() && empty($_FILES)) {
+            return;
+        }
+
+        try {
+            self::$ossClient = new OssClient(self::$accessKeyId, self::$accessKeySecret, self::$endpoint);
+        } catch (OssException $e) {
+            $html = "<div id='oss-warning' class='error fade'><p>%s: %s</p></div>";
+            echo sprintf($html, __('Aliyun OSS', 'aliyun-oss'), $e->getMessage());
+        }
+    }
+
+    public static function checkOssConfig($options)
+    {
+        $html = "<div id='oss-warning' class='error fade'><p>%s</p></div>";
+        $endPoint = self::getEndPoint($options['region'], $options['internal']);
+        try {
+            $ossClient = new OssClient($options['ak'], $options['sk'], $endPoint);
+            if (!$ossClient->doesBucketExist($options['bucket'])) {
+                echo sprintf($html, __('The bucket you provided does not exist.', 'aliyun-oss'));
+            } else {
+                return true;
+            }
+        } catch (OssException $e) {
+            echo sprintf($html, $e->getErrorMessage() ? $e->getErrorMessage() : $e->getMessage());
+        }
+    }
+
+    private static function getEndPoint($region, $internal)
+    {
+        $suffix = $internal ? '-internal.aliyuncs.com' : '.aliyuncs.com';
+        return $region . $suffix;
     }
 }

@@ -267,7 +267,9 @@ $d = 'aliyun-oss';
         });
 
         $('#exclude').blur(function () {
-            $(this).val(regFormater($(this).val()));
+            if ($(this).val() !== "") {
+                $(this).val(regFormater($(this).val()));
+            }
         })
     })
 </script>

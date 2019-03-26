@@ -48,7 +48,7 @@ class Setting
 
     public function warning()
     {
-        $html = "<div id='oss-warning' class='updated fade'><p>".
+        $html = "<div id='oss-warning' class='notice-info notice fade'><p>".
             __('Aliyun OSS Support is almost ready. You should <a href="%s">Setting</a> it to work.', 'aliyun-oss').
             "</p></div>";
         echo sprintf($html, Config::$settingsUrl);
@@ -100,9 +100,11 @@ class Setting
         $options['keep_settings'] = isset($_POST['keep_settings']);
         isset($_POST['exclude']) && $options['exclude'] = trim(stripslashes($_POST['exclude']));
         unset($options['img_url']);
-        update_option('oss_options', $options);
 
-        echo '<div class="updated"><p><strong>'. __('The settings have been saved', 'aliyun-oss') .'.</strong></p></div>';
+        if (true === Config::checkOssConfig($options)) {
+            update_option('oss_options', $options);
+            echo '<div class="updated"><p><strong>'. __('The settings have been saved', 'aliyun-oss') .'.</strong></p></div>';
+        }
     }
 
     private function updateImageStyleProfile()

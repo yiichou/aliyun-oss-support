@@ -9,9 +9,9 @@ class Delete
 {
     private $oc;
 
-    public function __construct(OssClient $ossClient = null)
+    public function __construct(OssClient $ossClient)
     {
-        $this->oc = $ossClient ? $ossClient : Config::$ossClient;
+        $this->oc = $ossClient;
 
         add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));
         if (Config::$noLocalSaving) {
