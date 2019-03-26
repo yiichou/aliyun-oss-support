@@ -75,7 +75,10 @@ class UrlHelper
             return $data;
         }
 
-        $basename = pathinfo($data['file'], PATHINFO_BASENAME);
+        if (!class_exists('\PHPMailer')) {
+            require_once ABSPATH . WPINC . '/class-phpmailer.php';
+        }
+        $basename = \PHPMailer::mb_pathinfo($data['file'], PATHINFO_BASENAME);
         $styles = get_intermediate_image_sizes();
         $styles[] = 'full';
 
