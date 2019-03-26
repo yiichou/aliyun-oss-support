@@ -117,7 +117,7 @@ class UrlHelper
      * eg. $url = apply_filters('oss_get_image_url', $image_url, $style)
      *
      * @param string $url 图片的 url 或相对路径
-     * @param srting/array $style 图片样式或包含高宽的数组. eg. 'large' or ['width' => 50, 'height' => 50]
+     * @param string/array $style 图片样式或包含高宽的数组. eg. 'large' or ['width' => 50, 'height' => 50]
      * @return string
      */
     public function getOssImgUrl($url, $style)

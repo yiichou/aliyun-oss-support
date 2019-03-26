@@ -15,7 +15,7 @@ class Delete
 
         if (Config::$noLocalSaving) {
             add_filter('wp_update_attachment_metadata', array($this, 'deleteLocalOriginImage'), 60);
-            add_action('delete_attachment', array($this, 'deleteAttachment'), 10);
+            add_action('delete_attachment', array($this, 'deleteRemoteAttachment'), 10);
         } else {
             add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));
         }
@@ -23,14 +23,19 @@ class Delete
         add_action('oss_delete_file', array($this, 'deleteRemoteFile'), 9);
     }
 
-    public function deleteAttachment($post_id)
+    /**
+     * 删除附件时，删除 OSS 上对应的文件
+     *
+     * @param $post_id
+     */
+    public function deleteRemoteAttachment($post_id)
     {
         $file = get_attached_file($post_id);
         $this->deleteRemoteFile($file);
     }
 
     /**
-     * 删除远程服务器上的单个文件
+     * 删除 OSS 上的单个文件
      *
      * @param $file
      * @return mixed
