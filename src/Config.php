@@ -38,6 +38,7 @@ class Config
         'source_img_protect' => false,
         'custom_separator' => "",
         'nolocalsaving' => false,
+        'disable_upload' => false,
         'exclude' => "",
     );
 
