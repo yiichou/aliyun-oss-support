@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
-"POT-Creation-Date: 2019-03-27 03:13+0800\n"
-"PO-Revision-Date: 2019-03-27 03:15+0800\n"
+"POT-Creation-Date: 2019-03-27 15:56+0800\n"
+"PO-Revision-Date: 2019-03-27 15:58+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -21,11 +21,11 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #. Plugin Name of the plugin/theme
-#: src/Config.php:112 src/Setting.php:25 src/Setting.php:26
+#: src/Config.php:107 src/Setting.php:25 src/Setting.php:26
 msgid "Aliyun OSS"
 msgstr "阿里云 OSS"
 
-#: src/Config.php:123
+#: src/Config.php:118
 msgid "The bucket you provided does not exist."
 msgstr "Bucket 不存在，请检查或先创建。"
 
@@ -33,7 +33,7 @@ msgstr "Bucket 不存在，请检查或先创建。"
 msgid "Settings"
 msgstr "设置"
 
-#: src/Setting.php:52
+#: src/Setting.php:55
 #, php-format
 msgid ""
 "Aliyun OSS Support is almost ready. You should <a href=\"%s\">Setting</a> it "
@@ -42,7 +42,7 @@ msgstr ""
 "阿里云 OSS 附件存储插件已启用，请通过 <a href=\"%s\">配置 OSS</a> 来让它工"
 "作。"
 
-#: src/Setting.php:106
+#: src/Setting.php:111
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
@@ -209,7 +209,7 @@ msgid "Image Service"
 msgstr "图片服务"
 
 #: view/setting.php:88 view/setting.php:101 view/setting.php:122
-#: view/setting.php:192
+#: view/setting.php:180 view/setting.php:194 view/setting.php:207
 msgid "Enable"
 msgstr "启用"
 
@@ -257,35 +257,43 @@ msgstr " 关于图片服务可以参考："
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:167
-msgid "More Options"
-msgstr "更多选项"
-
-#: view/setting.php:170
+#: view/setting.php:167 view/setting.php:170
 msgid "Advanced Options"
 msgstr "高级选项"
 
 #: view/setting.php:174 view/setting.php:177
+msgid "Disable pushing"
+msgstr "禁用主动上传"
+
+#: view/setting.php:181
+msgid ""
+"Plugin will stop push files to OSS automatically, \n"
+"                                make sure your Back-to-Origin settings of "
+"OSS is working firstly"
+msgstr ""
+"开启后，插件将不再主动上传文件到 OSS，所以请首先确保 OSS 的回源设置是工作的"
+
+#: view/setting.php:188 view/setting.php:191
 msgid "Clear Files On Server"
 msgstr "清理服务器存储"
 
-#: view/setting.php:180
+#: view/setting.php:195
 msgid "Don't keep files on local server."
 msgstr "不在本地服务器上保留文件"
 
-#: view/setting.php:186 view/setting.php:189
+#: view/setting.php:201 view/setting.php:204
 msgid "keep Settings When Uninstall"
 msgstr "卸载时保留配置"
 
-#: view/setting.php:198
+#: view/setting.php:213
 msgid "Files To Exclude"
 msgstr "需要排除的文件"
 
-#: view/setting.php:201
+#: view/setting.php:216
 msgid "Regular expression only"
 msgstr "仅支持正则表达式"
 
-#: view/setting.php:207
+#: view/setting.php:222
 msgid "Commit"
 msgstr "保存配置"
 
@@ -302,6 +310,9 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "https://yii.im/"
 msgstr ""
+
+#~ msgid "More Options"
+#~ msgstr "更多选项"
 
 #~ msgid "Keep Files"
 #~ msgstr "保留文件"

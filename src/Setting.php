@@ -7,7 +7,7 @@ class Setting
     public function __construct()
     {
         add_action('admin_menu', array($this, 'adminMenu'));
-        add_action('admin_init', array($this, 'redirectToImgStyleProfile'));
+        add_action('admin_init', array($this, 'downloadImgStyleProfile'));
         add_filter('plugin_action_links', array($this, 'pluginActionLink'), 10, 2);
         load_plugin_textdomain('aliyun-oss', false, Config::$pluginPath.'/languages');
 
@@ -46,6 +46,9 @@ class Setting
         return $links;
     }
 
+    /**
+     * Add a admin notice for setting up Aliyun OSS Support
+     */
     public function warning()
     {
         $html = "<div id='oss-warning' class='notice-info notice fade'><p>".
@@ -60,11 +63,12 @@ class Setting
         require __DIR__.'/../view/setting.php';
     }
 
-    public function redirectToImgStyleProfile()
+    public function downloadImgStyleProfile()
     {
-        if (isset($_GET['action']) && $_GET['action'] == 'update-img-style-profile') {
-            $this->updateImageStyleProfile();
-            wp_redirect(Config::$safeStaticHost . '/' . Config::$imgStyleProfile);
+        if (isset($_GET['action']) && $_GET['action'] == 'download-img-style-profile') {
+            header('Content-type: application/txtf');
+            header('Content-Disposition: attachment; filename="aliyun-img-styles.txt"');
+            echo $this->imageStyleProfile();
             exit;
         }
     }
@@ -81,7 +85,8 @@ class Setting
 
         isset($_POST['bucket']) && $options['bucket'] = trim($_POST['bucket']);
         isset($_POST['store_path']) && $options['path'] = trim($_POST['store_path']);
-        $options['nolocalsaving'] = isset($_POST['no_local_saving']);
+        $options['disable_upload'] = isset($_POST['disable_upload']);
+        $options['nolocalsaving'] = empty($options['disable_upload']) && isset($_POST['no_local_saving']);
         if ( !empty($_POST['static_host']) ) {
             $options['static_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['static_host']);
         } elseif ( !empty($options['bucket']) ) {
@@ -107,7 +112,7 @@ class Setting
         }
     }
 
-    private function updateImageStyleProfile()
+    private function imageStyleProfile()
     {
         global $_wp_additional_image_sizes;
         $content = '';
@@ -141,6 +146,6 @@ class Setting
             $content .= "styleName:{$s},styleBody:image/" . join(',', $style) . "/auto-orient,0\n";
         }
         $content .= 'styleName:full,styleBody:image/auto-orient,0';
-        Config::$ossClient->putObject(Config::$bucket, Config::$imgStyleProfile, $content);
+        return $content;
     }
 }

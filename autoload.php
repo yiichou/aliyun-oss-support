@@ -18,14 +18,23 @@ spl_autoload_register(function ($class) {
         'OSS\\WP\\' => '/src/',
         'OSS\\' => '/vendor/aliyun-oss-php-sdk-2.3.0/src/OSS/'
     );
+    $auto_load_files = array(
+        'Puc_v4_Factory' => '/vendor/plugin-update-checker/plugin-update-checker.php'
+    );
 
     foreach ($auto_load_class as $prefix => $base_dir) {
         $len = strlen($prefix);
         if (strncmp($prefix, $class, $len) == 0) {
             $relative_class = substr($class, $len);
-            $file = ALIYUN_OSS_PATH . $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+            $file = ALIYUN_OSS_PATH . $base_dir . str_replace('\\', DIRECTORY_SEPARATOR, $relative_class) . '.php';
             if (file_exists($file))
                 require $file;
+        }
+    }
+
+    foreach ($auto_load_files as $target => $file) {
+        if ($class == $target) {
+            require(ALIYUN_OSS_PATH . $file);
         }
     }
 });

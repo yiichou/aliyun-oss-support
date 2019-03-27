@@ -26,6 +26,7 @@
 */
 
 define('ALIYUN_OSS_PATH', dirname(__FILE__));
+define('ALIYUN_OSS_MATEDATA_URL', 'https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss/plugin.json');
 require(ALIYUN_OSS_PATH . '/autoload.php');
 
 use OSS\WP\Config;
@@ -34,7 +35,7 @@ Config::init(ALIYUN_OSS_PATH);
 if (Config::$staticHost) {
     new OSS\WP\UrlHelper();
 }
-if (Config::$ossClient) {
+if (Config::$ossClient && !Config::$disableUpload) {
     new OSS\WP\Upload(Config::$ossClient);
 }
 if (Config::$ossClient && is_admin()) {
@@ -43,13 +44,5 @@ if (Config::$ossClient && is_admin()) {
 
 if (is_admin()) {
     new OSS\WP\Setting();
-
-    if (!class_exists('Puc_v4_Factory', false)) {
-        require(ALIYUN_OSS_PATH . '/vendor/plugin-update-checker/plugin-update-checker.php');
-    }
-    Puc_v4_Factory::buildUpdateChecker(
-        'https://chou.oss-cn-hangzhou.aliyuncs.com/aliyun-oss/plugin.json',
-        __FILE__,
-        Config::$pluginPath
-    );
+    Puc_v4_Factory::buildUpdateChecker(ALIYUN_OSS_MATEDATA_URL, __FILE__, Config::$pluginPath);
 }

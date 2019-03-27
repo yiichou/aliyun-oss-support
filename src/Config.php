@@ -19,16 +19,12 @@ class Config
     public static $sourceImgProtect = false;
     public static $customSeparator = "?x-oss-process=style%2F";
     public static $noLocalSaving = false;
-
     public static $baseDir = "";
-    public static $imgStyleProfile = "";
-
     public static $exclude = null;
-
     public static $ossClient = null;
-
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
+    public static $disableUpload = false;
     public static $originOptions = array(
         'bucket' => "",
         'ak' => "",
@@ -75,10 +71,9 @@ class Config
         self::$enableImgStyle = self::$enableImgService && $options['img_style'];
         self::$sourceImgProtect = self::$enableImgStyle && $options['source_img_protect'];
         self::$noLocalSaving = $options['nolocalsaving'];
+        isset($options['disable_upload']) && self::$disableUpload = !!$options['disable_upload'];
 
         !empty($options['exclude']) && self::$exclude = $options['exclude'];
-
-        self::$imgStyleProfile = trim(self::$storePath . '/aliyun-img-styles.txt', '/');
 
         self::initOssClient();
     }

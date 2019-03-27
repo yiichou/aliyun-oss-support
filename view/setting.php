@@ -104,7 +104,7 @@ $d = 'aliyun-oss';
                     <p class="description">
                         <?php echo __("Optional, use preset styles instead of dynamic params to deal image.", $d) ?>
                         <span id="export_style_profile" <?php echo $options['img_style'] ? '' : 'style="display: none"' ?>>
-                            => <a href="/wp-admin/options-general.php?page=aliyun-oss&action=update-img-style-profile" target="_blank">
+                            => <a href="/wp-admin/options-general.php?page=aliyun-oss&action=download-img-style-profile" target="_blank">
                                 <?php echo __("Click to export style profile", $d) ?>
                             </a>
                         </span>
@@ -164,12 +164,26 @@ $d = 'aliyun-oss';
         </table>
 
         <p>
-            <a href="#more-settings" id="load-more-settings"><?php echo __('More Options', $d) ?></a>
+            <a href="#more-settings" id="load-more-settings"><?php echo __('Advanced Options', $d) ?></a>
         </p>
         <div style="display: none" id="more-settings">
             <h2 class="title"><?php echo __('Advanced Options', $d) ?></h2>
             <table class="form-table">
                 <tbody>
+                <tr>
+                    <th scope="row"><?php echo __('Disable pushing', $d) ?></th>
+                    <td>
+                        <fieldset>
+                            <legend class="screen-reader-text"><span><?php echo __('Disable pushing', $d) ?></span></legend>
+                            <label for="disable_upload">
+                                <input name="disable_upload" type="checkbox" id="disable_upload"
+                                    <?php echo $options['disable_upload'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
+                                <p class="description"><?php echo __("Plugin will stop push files to OSS automatically, 
+                                make sure your Back-to-Origin settings of OSS is working firstly", $d) ?></p>
+                            </label>
+                        </fieldset>
+                    </td>
+                </tr>
                 <tr>
                     <th scope="row"><?php echo __('Clear Files On Server', $d) ?></th>
                     <td>
@@ -177,7 +191,9 @@ $d = 'aliyun-oss';
                             <legend class="screen-reader-text"><span><?php echo __('Clear Files On Server', $d) ?></span></legend>
                             <label for="no_local_saving">
                                 <input name="no_local_saving" type="checkbox" id="no_local_saving"
-                                    <?php echo $options['nolocalsaving'] ? 'checked' : '' ?>> <?php echo __("Don't keep files on local server.", $d) ?>
+                                    <?php echo $options['nolocalsaving'] ? 'checked' : '' ?>
+                                    <?php echo $options['disable_upload'] ? 'disabled' : '' ?>> <?php echo __('Enable', $d) ?>
+                                <p class="description"><?php echo __("Don't keep files on local server.", $d) ?></p>
                             </label>
                         </fieldset>
                     </td>
@@ -264,6 +280,14 @@ $d = 'aliyun-oss';
         $('#load-more-settings').click(function () {
             $('#more-settings').show();
             $(this).remove();
+        });
+
+        $('#disable_upload').change(function () {
+            if ($(this).prop('checked')) {
+                $('#no_local_saving').prop('checked', false).attr('disabled', true);
+            } else {
+                $('#no_local_saving').attr('disabled', false);
+            }
         });
 
         $('#exclude').blur(function () {
