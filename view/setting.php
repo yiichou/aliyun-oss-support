@@ -297,3 +297,68 @@ $d = 'aliyun-oss';
         })
     })
 </script>
+<style>
+/* colors
+*阿里云鲜橙色 rgb(255,106,0)
+*阿里云蓝色 rgb(0,193,222)
+*阿里云灰色 rgb(55,61,65)
+*阿里云控制台背景色 rgb(242,242,242)
+*阿里云标签背景色 rgb(249,249,249)
+*阿里云灰蓝图标色 rgb(63,96,131)
+*/
+.wrap{
+    width: calc(100% - 30px);
+    max-width: 800px;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei New", STHeiti Light, sans-serif;
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.13);
+}
+.wrap h1{
+    font-size: 2.8125rem;
+    font-weight: bold;
+    color: #fff;
+    background: rgb(255,106,0);
+    line-height: 1;
+    padding: 1rem;
+}
+.wrap h2{
+    font-size: 2.25rem;
+    line-height:1;
+}
+.wrap form{
+    background: rgb(249,249,249);
+    padding:0 1rem ;
+}
+.wrap .form-table th,.wrap .form-table th label{
+    font-size: 1.125rem;
+    color:rgb(55,61,65);
+}
+.wrap .form-table p.description {
+    padding: 0.5rem;
+    background: rgb(242,242,242);
+    border-radius: 5px;
+}
+.wrap .form-table input,.wrap .form-table select {
+    border-radius: 5px;
+}
+.wrap .submit{
+    left: -1rem;
+    position: relative;
+    padding: 2rem 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    background: rgb(242,242,242);
+}
+@media screen and (max-width: 782px){
+    .wrap h1{
+    font-size: 2.25rem; 
+    }
+    .wrap h2{
+    font-size: 1.6875rem; 
+    }
+    .wrap .form-table td select {
+        margin-bottom: 0.5rem;
+    }
+}
+
+
+</style>
