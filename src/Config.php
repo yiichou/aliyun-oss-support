@@ -25,6 +25,11 @@ class Config
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
     public static $disableUpload = false;
+    public static $enableUrlAuth = true;
+    public static $urlAuthMethod = "A";
+    public static $urlAuthPrimaryKey = "";
+    public static $urlAuthAuxKey = "";
+    public static $urlAuthExpTime = 1 ;
     public static $originOptions = array(
         'bucket' => "",
         'ak' => "",
@@ -40,6 +45,11 @@ class Config
         'nolocalsaving' => false,
         'disable_upload' => false,
         'exclude' => "",
+        'urlAuth' => false,
+        'authMethod' => "A",
+        'authPrimaryKey' => "",
+        'authAuxKey' => "",
+        'authExpTime' => 1,
     );
 
 
@@ -75,7 +85,11 @@ class Config
         isset($options['disable_upload']) && self::$disableUpload = !!$options['disable_upload'];
 
         !empty($options['exclude']) && self::$exclude = $options['exclude'];
-
+        self:: $enableUrlAuth =  $options['urlAuth'];
+        self:: $urlAuthMethod =  $options['authMethod'];
+        self:: $urlAuthPrimaryKey =  $options['authPrimaryKey'];
+        self:: $urlAuthAuxKey =  $options['authAuxKey'];
+        self:: $urlAuthExpTime =  $options['authExpTime'] ;
         self::initOssClient();
     }
 

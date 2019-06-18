@@ -105,6 +105,14 @@ class Setting
         $options['keep_settings'] = isset($_POST['keep_settings']);
         isset($_POST['exclude']) && $options['exclude'] = trim(stripslashes($_POST['exclude']));
         unset($options['img_url']);
+        
+        //url鉴权设置
+        $options['urlAuth'] = isset($_POST['urlAuth']);
+        isset($_POST['authMethod']) && $options['authMethod'] = trim($_POST['authMethod']);
+        empty($_POST['authPrimaryKey']) || $options['authPrimaryKey'] = trim($_POST['authPrimaryKey']);
+        empty($_POST['authAuxKey']) || $options['authAuxKey'] = trim($_POST['authAuxKey']);
+        isset($_POST['authExpTime']) && $options['authExpTime'] = (int)$_POST['authExpTime'];
+        
         update_option('oss_options', $options);
 
         if (true === Config::checkOssConfig($options)) {
