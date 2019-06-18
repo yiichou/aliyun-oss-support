@@ -23,7 +23,7 @@ class UrlHelper
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
         }
     }
-    
+   
     /**
      * 添加url鉴权信息
      *
@@ -91,6 +91,7 @@ class UrlHelper
                 $url = $this->aliImageStyle($url, 'full');
             }
         }
+        $url = $this->sign_url($url);
         return $url;
     }
 
@@ -109,6 +110,7 @@ class UrlHelper
                 if (Config::$sourceImgProtect && (false === strstr($sources[$k]['url'], Config::$customSeparator))) {
                     $sources[$k]['url'] = $this->aliImageStyle($sources[$k]['url'], 'full');
                 }
+                $sources[$k]['url'] = $this->sign_url( $sources[$k]['url']);
             }
         }
         return $sources;
@@ -156,7 +158,7 @@ class UrlHelper
         if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host'])) {
             $url = Config::$staticHost . Config::$storePath . '/' . ltrim($uri['path'], '/');
         }
-
+        $url = $this->sign_url($url);        
         return $url;
     }
 
@@ -191,7 +193,7 @@ class UrlHelper
                 $url = $this->aliImageResize($url, $height, $width);
             }
         }
-
+        $url = $this->sign_url($url);
         return $url;
     }
 
