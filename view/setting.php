@@ -163,6 +163,60 @@ $d = 'aliyun-oss';
             </tbody>
         </table>
 
+        <h2 class="title"><?php echo __('Aliyun CDN Authentication', $d) ?></h2>
+        <!--URL Authentication settings-->
+        <table class="form-table">
+            <tbody>
+            <tr>
+                <th scope="row"><?php echo __('Authentication', $d) ?></th>
+                <td>
+                    <fieldset>
+                        <legend class="screen-reader-text"><span><?php echo __('Authentication', $d) ?></span></legend>
+                        <label for="urlAuth">
+                            <input name="urlAuth" type="checkbox" id="urlAuth"
+                                <?php echo $options['urlAuth'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
+                        </label>
+                    </fieldset>
+                    <p class="description"><?php echo __("Enable Url Authentication for Aliyun CDN service, please make sure you've configured CDN URL Authentication Service in Aliyun Console correctly", $d) ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="authMethod"><?php echo __('url Auth Method', $d)?></label></th>
+                <td>
+                    <select name="authMethod" id="authMethod">
+                        <option value="A"><?php echo __('Method A', $d)?></option>
+                        <option value="B"><?php echo __('Method B', $d)?></option>
+                        <option value="C"><?php echo __('Method C', $d)?></option>
+                    </select>
+                    <p class="description"><?php echo __("Select Authentication Medthod, Method A Recommended", $d) ?><br>
+                    <a href="https://help.aliyun.com/document_detail/85117.html" target="" ><?php echo __('Help me choose', $d)?></a>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="authPrimaryKey"></label><?php echo __('url Auth PrimaryKey', $d) ?></th>
+                <td>
+                    <input name="authPrimaryKey" type="text" id="authPrimaryKey" value="" placeholder="<?php echo __("You can't see me", $d) ?> " class="regular-text host">
+                    <p class="description"><?php echo __("Set Authentication Key as you like, please don't use AK or SK", $d) ?></p>                    
+                </td>
+            </tr>
+            <tr style="display:none">
+                <th scope="row"><label for="authAuxKey"></label><?php echo __('url Auth Aux Key', $d) ?></th>
+                <td>
+                    <input name="authAuxKey" type="text" id="authAuxKey" value="<?php echo $options['authAuxKey'] ?>" class="regular-text host">              
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="authExpTime"></label><?php echo __('url Auth Exp Time', $d) ?></th>
+                <td>
+                    <input name="authExpTime" type="number"  min="1" step="1" id="authExpTime" value="<?php echo $options['authExpTime'] ?>" class="regular-text host"> 
+                    <p class="description"><?php echo __("Time of url expiration, set hourly", $d) ?></p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr>
+
         <p>
             <a href="#more-settings" id="load-more-settings"><?php echo __('Advanced Options', $d) ?></a>
         </p>
@@ -276,7 +330,18 @@ $d = 'aliyun-oss';
                 $('#export_style_profile').hide();
             }
         });
-
+        /*CDN Authentication*/
+        $('#urlAuth').change(function () {
+            if ($(this).prop('checked')) {
+                $('#authMethod, #authPrimaryKey, #authAuxKey, #authExpTime').attr('disabled', false);
+            } else {
+                $('#authMethod, #authPrimaryKey, #authAuxKey, #authExpTime').attr('disabled', true);
+            }
+        });
+        /*Authentication Method*/
+        var authMethod = '<?php echo $options['authMethod'] ?>';
+        $('#authMethod option[value='+authMethod+']').attr('selected', 'selected');
+        console.log( authMethod )
         $('#load-more-settings').click(function () {
             $('#more-settings').show();
             $(this).remove();
@@ -297,3 +362,68 @@ $d = 'aliyun-oss';
         })
     })
 </script>
+<style>
+/* colors
+*阿里云鲜橙色 rgb(255,106,0)
+*阿里云蓝色 rgb(0,193,222)
+*阿里云灰色 rgb(55,61,65)
+*阿里云控制台背景色 rgb(242,242,242)
+*阿里云标签背景色 rgb(249,249,249)
+*阿里云灰蓝图标色 rgb(63,96,131)
+*/
+.wrap{
+    width: calc(100% - 30px);
+    max-width: 800px;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei New", STHeiti Light, sans-serif;
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.13);
+}
+.wrap h1{
+    font-size: 2.8125rem;
+    font-weight: bold;
+    color: #fff;
+    background: rgb(255,106,0);
+    line-height: 1;
+    padding: 1rem;
+}
+.wrap h2{
+    font-size: 2.25rem;
+    line-height:1;
+}
+.wrap form{
+    background: rgb(249,249,249);
+    padding:0 1rem ;
+}
+.wrap .form-table th,.wrap .form-table th label{
+    font-size: 1.125rem;
+    color:rgb(55,61,65);
+}
+.wrap .form-table p.description {
+    padding: 0.5rem;
+    background: rgb(242,242,242);
+    border-radius: 5px;
+}
+.wrap .form-table input,.wrap .form-table select {
+    border-radius: 5px;
+}
+.wrap .submit{
+    left: -1rem;
+    position: relative;
+    padding: 2rem 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    background: rgb(242,242,242);
+}
+@media screen and (max-width: 782px){
+    .wrap h1{
+    font-size: 2.25rem; 
+    }
+    .wrap h2{
+    font-size: 1.6875rem; 
+    }
+    .wrap .form-table td select {
+        margin-bottom: 0.5rem;
+    }
+}
+
+
+</style>

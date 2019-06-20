@@ -23,7 +23,58 @@ class UrlHelper
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
         }
     }
+   
+    /**
+     * 添加url鉴权信息
+     *
+     * @param $url
+     * @return $url 返回带签名的url
+     * 
+     * 如果设置中的url签名选项打开且鉴权类型为阿里云url鉴权A、B、C类型，则按对应鉴权类型对url添加签名信息
+     */
 
+    public function sign_url($url)
+    {
+        date_default_timezone_set('PRC');
+        $urlhost=parse_url($url, PHP_URL_SCHEME)."://".parse_url($url, PHP_URL_HOST); 
+        $filename = parse_url($url, PHP_URL_PATH);      
+        $expire_time= Config::$urlAuthExpTime;//set by hours
+        $key=Config::$urlAuthPrimaryKey;
+        if(Config::$enableUrlAuth && Config::$urlAuthMethod=="A"){
+            $time = strtotime("+".$expire_time." hours");
+            $sstring =$filename."-".$time."-0-0-".$key;
+            $md5=md5($sstring);
+            $auth_key="auth_key=".$time."-0-0-".$md5;
+            if(strstr($url,'?')){
+                $url = $url."&".$auth_key;
+            }else{
+                $url = $url."?".$auth_key;
+            }            
+        }
+        if(Config::$enableUrlAuth && Config::$urlAuthMethod=="B"){
+            $time=date("YmdHi",strtotime('+'.$expire_time.'hour'));
+            $sstring=$key.$time.$filename;
+            $md5=md5($sstring);            
+            if(strstr($url,'?')){
+                $url=explode("?",$url);
+                $url=$urlhost."/".$time."/".$md5.$filename."?".$url[1];
+            }else{
+                $url=$urlhost."/".$time."/".$md5.$filename;
+            }
+        } 
+        if(Config::$enableUrlAuth && Config::$urlAuthMethod=="C"){
+            $time=dechex(time()+ $expire_time*3600);
+            $sstring=$key.$filename.$time;
+            $md5=md5($sstring);
+            if(strstr($url,'?')){
+                $url=explode('?',$url);
+                $url=$urlhost."/".$md5."/".$time.$filename."?".$url[1];
+            }else{
+                $url=$urlhost."/".$md5."/".$time.$filename; 
+            }
+        }
+        return $url;  
+    }
     /**
      * 将图片/附件 Url 替换为 OSS Url
      *
@@ -40,6 +91,7 @@ class UrlHelper
                 $url = $this->aliImageStyle($url, 'full');
             }
         }
+        $url = $this->sign_url($url);
         return $url;
     }
 
@@ -58,6 +110,7 @@ class UrlHelper
                 if (Config::$sourceImgProtect && (false === strstr($sources[$k]['url'], Config::$customSeparator))) {
                     $sources[$k]['url'] = $this->aliImageStyle($sources[$k]['url'], 'full');
                 }
+                $sources[$k]['url'] = $this->sign_url( $sources[$k]['url']);
             }
         }
         return $sources;
@@ -105,7 +158,7 @@ class UrlHelper
         if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host'])) {
             $url = Config::$staticHost . Config::$storePath . '/' . ltrim($uri['path'], '/');
         }
-
+        $url = $this->sign_url($url);        
         return $url;
     }
 
@@ -140,7 +193,7 @@ class UrlHelper
                 $url = $this->aliImageResize($url, $height, $width);
             }
         }
-
+        $url = $this->sign_url($url);
         return $url;
     }
 
