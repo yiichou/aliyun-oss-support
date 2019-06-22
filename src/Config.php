@@ -17,7 +17,7 @@ class Config
     public static $enableImgService = false;
     public static $enableImgStyle = false;
     public static $sourceImgProtect = false;
-    public static $customSeparator = "?x-oss-process=style%2F";
+    public static $customSeparator = "?x-oss-process=style/";
     public static $noLocalSaving = false;
     public static $baseDir = "";
     public static $exclude = null;
@@ -30,6 +30,7 @@ class Config
     public static $urlAuthPrimaryKey = "";
     public static $urlAuthAuxKey = "";
     public static $urlAuthExpTime = 1 ;
+    public static $enableUrlAuth_debug = false ;
     public static $originOptions = array(
         'bucket' => "",
         'ak' => "",
@@ -73,7 +74,7 @@ class Config
         }
 
         if (!empty($options['custom_separator'])) {
-            self::$customSeparator = "@{$options['custom_separator']}";
+            self::$customSeparator = "{$options['custom_separator']}";
         }
 
         $wp_upload_dir = wp_upload_dir();

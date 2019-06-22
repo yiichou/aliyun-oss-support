@@ -6,34 +6,35 @@ class UrlHelper
 {
     protected $wpBaseUrl = "";
     protected $ossBaseUrl = "";
-
+    public static $imageMeta = "";
+    /**
+     * 替换图片url
+     * 替换附件url（包括那些不在post中的图片，如文章特色图片）
+     * 替换图片srcset
+     * 替换附件srcset（如果附件为img，如文章特色图片）
+     *
+    */
     public function __construct()
-    {
+    {   require_once ABSPATH . WPINC . '/class-phpmailer.php';
         $this->wpBaseUrl = wp_get_upload_dir()['baseurl'];
         $this->ossBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
-
-        add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
-        add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 9, 2);
-
-        add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 300, 2);
-        add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'), 300);
-
-        if (Config::$enableImgService) {
-            require_once ABSPATH . WPINC . '/class-phpmailer.php';
-            add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
-        }
+        add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 1, 1);
+        add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 1, 2);
+        add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 2, 2);
+        add_filter('wp_get_attachment_metadata', array($this, 'getImageMeta'), 900);
+        add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'),2,2);
+        add_filter('wp_get_attachment_image_srcset', array($this, 'replaceImgSrcsetUrl'),2,2);  
     }
-   
     /**
      * 添加url鉴权信息
      *
-     * @param $url
+     * @param $url 输入单个url
+     * @param $line debug，输入请求签名时相应语句的行号，默认值为空
      * @return $url 返回带签名的url
      * 
      * 如果设置中的url签名选项打开且鉴权类型为阿里云url鉴权A、B、C类型，则按对应鉴权类型对url添加签名信息
      */
-
-    public function sign_url($url)
+    public function sign_url($url,$line)
     {
         date_default_timezone_set('PRC');
         $urlhost=parse_url($url, PHP_URL_SCHEME)."://".parse_url($url, PHP_URL_HOST); 
@@ -69,9 +70,11 @@ class UrlHelper
             if(strstr($url,'?')){
                 $url=explode('?',$url);
                 $url=$urlhost."/".$md5."/".$time.$filename."?".$url[1];
-            }else{
-                $url=$urlhost."/".$md5."/".$time.$filename; 
+            }else{        $url=$urlhost."/".$md5."/".$time.$filename; 
             }
+        }
+        if(Config::$enableUrlAuth_debug){
+            $url=$url."&debug_auth_line=".$line; 
         }
         return $url;  
     }
@@ -86,15 +89,23 @@ class UrlHelper
     {
         if (!$this->is_excluded($url)) {
             $url = str_replace($this->wpBaseUrl, $this->ossBaseUrl, $url);
-
-            if (Config::$sourceImgProtect && wp_attachment_is_image($post_id)) {
-                $url = $this->aliImageStyle($url, 'full');
-            }
+            
         }
-        $url = $this->sign_url($url);
+        if (Config::$sourceImgProtect) {
+            $url = $this->aliImageStyle($url, 'full');
+        }
+        $url = $this->sign_url($url,103);
         return $url;
     }
+    /**
+     * 获取imgmeta 
+     * */
 
+    public function getImageMeta($data)
+    {
+        self::$imageMeta = $data;
+        return $data;
+    }
     /**
      * 将图片 Srcsets Url 替换为 OSS Url
      *
@@ -103,47 +114,49 @@ class UrlHelper
      */
     public function replaceImgSrcsetUrl($sources)
     {
-        foreach ($sources as $k => $source) {
-            if (!$this->is_excluded($source['url'])) {
-                $sources[$k]['url'] = str_replace($this->wpBaseUrl, $this->ossBaseUrl, $source['url']);
-
-                if (Config::$sourceImgProtect && (false === strstr($sources[$k]['url'], Config::$customSeparator))) {
-                    $sources[$k]['url'] = $this->aliImageStyle($sources[$k]['url'], 'full');
+        $imageMeta = self::$imageMeta;
+        $height=$imageMeta['height']<4096 ? $imageMeta['height']: 4096;
+        $width=$imageMeta['width']<4096 ? $imageMeta['width']: 4096;
+        $basename = \PHPMailer::mb_pathinfo($imageMeta['file'], PATHINFO_BASENAME);
+        /**1.直接用ossBaseUrl构建srcset数据，不再使用原wpsrcset
+         * 2.当图片服务打开时对url进行处理*/
+        if (!$this->is_excluded($imageMeta['file'])) {
+            if(Config::$enableImgService){
+                foreach($imageMeta['sizes'] as $size => $info ){
+                    if (Config::$enableImgStyle){
+                        $url=$this->ossBaseUrl.'/'.$this->aliImageStyle($imageMeta['file'], $size);
+                    }else{
+                        $url=$this->ossBaseUrl.'/'.$this->aliImageResize($imageMeta['file'],$width);
+                    }
+                    $url = $this->sign_url($url,139);
+                    $sources[$imageMeta['sizes'][$size]['width']] = array(
+                        'url'=>$url,
+                        'descriptor'=>'w',
+                        'value'=>$imageMeta['sizes'][$size]['width'],
+                        'size'=>$size,
+                    );
                 }
-                $sources[$k]['url'] = $this->sign_url( $sources[$k]['url']);
+                /** 当原图保护打开时，添加一个带full关键字的url到srcset中*/
+                if (Config::$sourceImgProtect){
+                    $url=$this->ossBaseUrl.'/'.$this->aliImageStyle($imageMeta['file'], 'full');
+                    $url = $this->sign_url($url,149);
+                    $sources[$imageMeta['width']]=array(
+                        'url'=>$url,
+                        'descriptor'=>'w',
+                        'value'=>$imageMeta['width'],
+                        'size'=>'full',
+                    );
+                }
+            }else{
+                foreach ($sources as $k => $source) {
+                        $url=str_replace($this->wpBaseUrl, $this->ossBaseUrl, $source['url']);
+                        $url = $this->sign_url($url,161);
+                        $sources[$k]['url'] =$url ;
+                } 
             }
-        }
+        }    
         return $sources;
     }
-
-    /**
-     * 图片服务模式下, 修改图片元数据，以使用 Aliyun 的图片服务
-     *
-     * @param $data
-     * @return mixed
-     */
-    public function replaceImgMeta($data)
-    {
-        if (empty($data['sizes']) || $this->is_excluded($data['file']) ||
-            (wp_debug_backtrace_summary(null, 4, false)[0] == 'wp_delete_attachment')) {
-            return $data;
-        }
-
-        $basename = \PHPMailer::mb_pathinfo($data['file'], PATHINFO_BASENAME);
-        $styles = get_intermediate_image_sizes();
-        $styles[] = 'full';
-
-        foreach ($data['sizes'] as $size => $info) {
-            if (Config::$enableImgStyle && in_array($size, $styles)) {
-                $data['sizes'][$size]['file'] = $this->aliImageStyle($basename, $size);
-            } else {
-                $data['sizes'][$size]['file'] = $this->aliImageResize($basename, $info['height'], $info['width']);
-            }
-        }
-
-        return $data;
-    }
-
     /**
      * 将附件地址替换为 OSS 地址
      * 通过 apply_filters: oss_get_attachment_url 手动调用
@@ -158,7 +171,7 @@ class UrlHelper
         if (empty($uri['host']) || false === strstr(Config::$staticHost, $uri['host'])) {
             $url = Config::$staticHost . Config::$storePath . '/' . ltrim($uri['path'], '/');
         }
-        $url = $this->sign_url($url);        
+        $url = $this->sign_url($url,185);   
         return $url;
     }
 
@@ -175,26 +188,28 @@ class UrlHelper
     {
         $url = $this->getOssUrl($url);
         if (!Config::$enableImgService) {
+            $url = $this->sign_url($url,215);
             return $url;
         }
-
-        if (Config::$enableImgStyle) {
-            $style = (is_string($style) && !empty($style)) ? $style : 'full';
-            $url = $this->aliImageStyle($url, $style);
-        } else {
-            if (is_array($style)) {
-                $height = $style['height'];
-                $width = $style['width'];
-            } elseif (!empty($style)) {
-                $height = get_option($style . '_size_h');
-                $width = get_option($style . '_size_w');
-            }
-            if ($height && $height) {
-                $url = $this->aliImageResize($url, $height, $width);
-            }
+        else{
+            if (Config::$enableImgStyle) {
+                $style = (is_string($style) && !empty($style)) ? $style : 'full';
+                $url = $this->aliImageStyle($url, $style);
+            } else {
+                if (is_array($style)) {
+                    $height = $style['height'];
+                    $width = $style['width'];
+                } elseif (!empty($style)) {
+                    $height = get_option($style . '_size_h');
+                    $width = get_option($style . '_size_w');
+                }
+                if ($height && $height) {
+                    $url = $this->aliImageResize($url, $height, $width);
+                }
+            }        
+            $url = $this->sign_url($url,237);            
+            return $url;
         }
-        $url = $this->sign_url($url);
-        return $url;
     }
 
     protected function is_excluded($url)
@@ -202,9 +217,9 @@ class UrlHelper
         return Config::$exclude && preg_match(Config::$exclude, $url);
     }
 
-    protected function aliImageResize($file, $height, $width)
+    protected function aliImageResize($file, $width)
     {
-        return "{$file}?x-oss-process=image/resize,m_fill,h_{$height},w_{$width}";
+        return "{$file}?x-oss-process=image/resize,m_fill,w_{$width}";
     }
 
     protected function aliImageStyle($file, $style)
@@ -217,4 +232,5 @@ class UrlHelper
             return $file . Config::$customSeparator . $style;
         }
     }
+
 }
