@@ -17,7 +17,7 @@ class Config
     public static $enableImgService = false;
     public static $enableImgStyle = false;
     public static $sourceImgProtect = false;
-    public static $customSeparator = "?x-oss-process=style/";
+    public static $customSeparator = "?x-oss-process=style%2F";
     public static $noLocalSaving = false;
     public static $baseDir = "";
     public static $exclude = null;
@@ -25,7 +25,7 @@ class Config
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
     public static $disableUpload = false;
-    public static $enableUrlAuth = true;
+    public static $enableUrlAuth = false;
     public static $urlAuthMethod = "A";
     public static $urlAuthPrimaryKey = "";
     public static $urlAuthAuxKey = "";
@@ -74,7 +74,7 @@ class Config
         }
 
         if (!empty($options['custom_separator'])) {
-            self::$customSeparator = "{$options['custom_separator']}";
+            self::$customSeparator = "@{$options['custom_separator']}";
         }
 
         $wp_upload_dir = wp_upload_dir();
