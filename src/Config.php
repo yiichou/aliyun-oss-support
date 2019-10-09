@@ -25,11 +25,12 @@ class Config
     public static $pluginPath = "aliyun-oss";
     public static $settingsUrl = "options-general.php?page=aliyun-oss";
     public static $disableUpload = false;
-    public static $enableUrlAuth = true;
+    public static $enableUrlAuth = false;
     public static $urlAuthMethod = "A";
     public static $urlAuthPrimaryKey = "";
     public static $urlAuthAuxKey = "";
     public static $urlAuthExpTime = 1 ;
+    public static $enableUrlAuth_debug = false ;
     public static $originOptions = array(
         'bucket' => "",
         'ak' => "",
