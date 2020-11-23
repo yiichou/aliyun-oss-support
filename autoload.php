@@ -16,7 +16,7 @@ spl_autoload_register(function ($class) {
 
     $auto_load_class = array(
         'OSS\\WP\\' => '/src/',
-        'OSS\\' => '/vendor/aliyuncs/oss-sdk-php/src/OSS'
+        'OSS\\' => '/vendor/aliyuncs/oss-sdk-php/src/OSS/'
     );
     $auto_load_files = array(
         'Puc_v4_Factory' => '/vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php'
