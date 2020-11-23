@@ -9,7 +9,7 @@ $version = $matches[1];
 $zip = new ZipArchive();
 $zip->open("aliyun-oss-{$version}.zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-$packageDirs = ['languages', 'view', 'vendor', 'src'];
+$packageDirs = ['languages', 'view', 'src', 'vendor/aliyuncs', 'vendor/yahnis-elsts'];
 $packageFiles = [
     'aliyun-oss.php',
     'autoload.php',

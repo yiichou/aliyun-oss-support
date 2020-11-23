@@ -86,17 +86,6 @@
 
 [CHANGELOG.md](CHANGELOG.md)
 
-## 插件兼容
-
-由于新增了 Exclude 选项，理论上来说绝大部分插件的兼容问题都可以通过这这个选项来解决
-
-- ~~EvernoteSync~~ Exclude 可解
-- ~~ultimate member~~ Exclude 填写 `/ultimatemember/`
-- ~~BuddyPress~~ 已兼容
-- ~~WP-AutoPost~~ Exclude 可解
-- ~~ARMember~~ Exclude 可解
-- ~~minify~~ Exclude 可解
-
 ## 项目依赖
 
 - https://github.com/aliyun/aliyun-oss-php-sdk
@@ -105,9 +94,11 @@
 ## 贡献代码
 
 1. Fork 这个仓库
-2. Clone 源码并安装到本地 WordPress 中
-3. 完成你的修改并测试
-4. 提交一个 Pull Request
+2. Clone 源码
+3. 执行 `composer install`
+4. 安装到本地 WordPress 中或者 执行 `docker-compose up` 启用一个新实例
+5. 完成你的修改并测试
+6. 提交一个 Pull Request
 
 ## 开源协议
 
