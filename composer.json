@@ -1,0 +1,6 @@
+{
+    "require": {
+        "aliyuncs/oss-sdk-php": "^2.4",
+        "yahnis-elsts/plugin-update-checker": "^4.10"
+    }
+}

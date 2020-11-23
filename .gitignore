@@ -16,3 +16,4 @@ doc/
 .secret
 aliyun-oss-wp.phar
 aliyun-oss*.zip
+vendor/

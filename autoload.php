@@ -16,10 +16,10 @@ spl_autoload_register(function ($class) {
 
     $auto_load_class = array(
         'OSS\\WP\\' => '/src/',
-        'OSS\\' => '/vendor/aliyun-oss-php-sdk-2.3.0/src/OSS/'
+        'OSS\\' => '/vendor/aliyuncs/oss-sdk-php/src/OSS'
     );
     $auto_load_files = array(
-        'Puc_v4_Factory' => '/vendor/plugin-update-checker-4.5.1/plugin-update-checker.php'
+        'Puc_v4_Factory' => '/vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php'
     );
 
     foreach ($auto_load_class as $prefix => $base_dir) {

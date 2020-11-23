@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  wordpress:
+    build:
+      context: .
+    image: wordpress-sqlite:latest
+    ports:
+      - 8964:80
+    volumes:
+      - .:/var/www/html/wp-content/plugins/aliyun-oss
+    
