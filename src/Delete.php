@@ -14,7 +14,7 @@ class Delete
         $this->oc = $ossClient;
 
         if (Config::$noLocalSaving) {
-            add_filter('wp_update_attachment_metadata', array($this, 'deleteLocalOriginImage'), 60);
+            add_filter('wp_generate_attachment_metadata', array($this, 'deleteLocalOriginImage'), 60);
             add_action('delete_attachment', array($this, 'deleteRemoteAttachment'), 10);
         } else {
             add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));

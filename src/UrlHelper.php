@@ -10,6 +10,7 @@ class UrlHelper
     {
         $this->wpBaseUrl = wp_get_upload_dir()['baseurl'];
         $this->ossBaseUrl = rtrim(Config::$staticHost . Config::$storePath, '/');
+        
         add_filter('oss_get_attachment_url', array($this, 'getOssUrl'), 9, 1);
         add_filter('oss_get_image_url', array($this, 'getOssImgUrl'), 9, 2);
         add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 300, 2);
