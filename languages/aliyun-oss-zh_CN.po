@@ -131,76 +131,80 @@ msgid "oss-cn-shenzhen"
 msgstr "华南 1 (深圳)"
 
 #: view/setting.php:32
+msgid "oss-cn-guangzhou"
+msgstr "华南 3 (广州)"
+
+#: view/setting.php:33
 msgid "oss-cn-hongkong"
 msgstr "香港数据中心"
 
-#: view/setting.php:33
+#: view/setting.php:34
 msgid "oss-us-west-1"
 msgstr "美国硅谷数据中心"
 
-#: view/setting.php:34
+#: view/setting.php:35
 msgid "oss-us-east-1"
 msgstr "美国弗吉尼亚数据中心"
 
-#: view/setting.php:35
+#: view/setting.php:36
 msgid "oss-ap-southeast-1"
 msgstr "亚太（新加坡）数据中心"
 
-#: view/setting.php:36
+#: view/setting.php:37
 msgid "oss-ap-southeast-2"
 msgstr "亚太东南 2 （悉尼）"
 
-#: view/setting.php:37
+#: view/setting.php:38
 msgid "oss-ap-southeast-3"
 msgstr "亚太东南 3 （吉隆坡）"
 
-#: view/setting.php:38
+#: view/setting.php:39
 msgid "oss-ap-southeast-5"
 msgstr "亚太东南 5 (雅加达)"
 
-#: view/setting.php:39
+#: view/setting.php:40
 msgid "oss-ap-northeast-1"
 msgstr "亚太东北 1（日本）"
 
-#: view/setting.php:40
+#: view/setting.php:41
 msgid "oss-ap-south-1"
 msgstr "亚太南部 1 （孟买）"
 
-#: view/setting.php:41
+#: view/setting.php:42
 msgid "oss-eu-central-1"
 msgstr "欧洲中部 1（法兰克福）"
 
-#: view/setting.php:42
+#: view/setting.php:43
 msgid "oss-me-east-1"
 msgstr "中东东部 1 （迪拜）"
 
-#: view/setting.php:47
+#: view/setting.php:48
 msgid "internal"
 msgstr "内网"
 
-#: view/setting.php:55
+#: view/setting.php:56
 msgid "Bucket Settings"
 msgstr "Bucket 设置"
 
-#: view/setting.php:63
+#: view/setting.php:64
 msgid "Bucket Host"
 msgstr "Bucket 域名"
 
-#: view/setting.php:66
+#: view/setting.php:67
 msgid ""
 "Your site is working under https, please make sure the host can use https "
 "too."
 msgstr "你的站点启用了 HTTPS，请确保填入的域名也支持 HTTPS 服务。"
 
-#: view/setting.php:70
+#: view/setting.php:71
 msgid "Storage Path"
 msgstr "存储路径"
 
-#: view/setting.php:72
+#: view/setting.php:73
 msgid "Keep this empty if you don't need."
 msgstr "如果你不需要指定 Bucket 的存储位置，请留空。"
 
-#: view/setting.php:78
+#: view/setting.php:79
 msgid "Aliyun Image Service Settings"
 msgstr "阿里云图片服务设置"
 
