@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
 "POT-Creation-Date: 2019-03-27 15:56+0800\n"
-"PO-Revision-Date: 2019-03-27 15:58+0800\n"
+"PO-Revision-Date: 2020-11-24 16:06+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: aliyun-oss.php\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
@@ -127,145 +127,165 @@ msgid "oss-cn-huhehaote"
 msgstr "华北 5 (呼和浩特)"
 
 #: view/setting.php:31
+msgid "oss-cn-wulanchabu"
+msgstr "华北 6（乌兰察布）"
+
+#: view/setting.php:32
 msgid "oss-cn-shenzhen"
 msgstr "华南 1 (深圳)"
 
-#: view/setting.php:32
+#: view/setting.php:33
+msgid "oss-cn-heyuan"
+msgstr "华南 2 (河源)"
+
+#: view/setting.php:34
+msgid "oss-cn-guangzhou"
+msgstr "华南 3 (广州)"
+
+#: view/setting.php:35
+msgid "oss-cn-chengdu"
+msgstr "西南 1 (成都)"
+
+#: view/setting.php:36
 msgid "oss-cn-hongkong"
 msgstr "香港数据中心"
 
-#: view/setting.php:33
+#: view/setting.php:37
 msgid "oss-us-west-1"
 msgstr "美国硅谷数据中心"
 
-#: view/setting.php:34
+#: view/setting.php:38
 msgid "oss-us-east-1"
 msgstr "美国弗吉尼亚数据中心"
 
-#: view/setting.php:35
+#: view/setting.php:39
 msgid "oss-ap-southeast-1"
 msgstr "亚太（新加坡）数据中心"
 
-#: view/setting.php:36
+#: view/setting.php:40
 msgid "oss-ap-southeast-2"
 msgstr "亚太东南 2 （悉尼）"
 
-#: view/setting.php:37
+#: view/setting.php:41
 msgid "oss-ap-southeast-3"
 msgstr "亚太东南 3 （吉隆坡）"
 
-#: view/setting.php:38
+#: view/setting.php:42
 msgid "oss-ap-southeast-5"
 msgstr "亚太东南 5 (雅加达)"
 
-#: view/setting.php:39
+#: view/setting.php:43
 msgid "oss-ap-northeast-1"
 msgstr "亚太东北 1（日本）"
 
-#: view/setting.php:40
+#: view/setting.php:44
 msgid "oss-ap-south-1"
 msgstr "亚太南部 1 （孟买）"
 
-#: view/setting.php:41
+#: view/setting.php:45
 msgid "oss-eu-central-1"
 msgstr "欧洲中部 1（法兰克福）"
 
-#: view/setting.php:42
+#: view/setting.php:46
+msgid "oss-eu-west-1"
+msgstr "英国（伦敦）"
+
+#: view/setting.php:47
 msgid "oss-me-east-1"
 msgstr "中东东部 1 （迪拜）"
 
-#: view/setting.php:47
+#: view/setting.php:50
 msgid "internal"
 msgstr "内网"
 
-#: view/setting.php:55
+#: view/setting.php:60
 msgid "Bucket Settings"
 msgstr "Bucket 设置"
 
-#: view/setting.php:63
+#: view/setting.php:68
 msgid "Bucket Host"
 msgstr "Bucket 域名"
 
-#: view/setting.php:66
+#: view/setting.php:71
 msgid ""
 "Your site is working under https, please make sure the host can use https "
 "too."
 msgstr "你的站点启用了 HTTPS，请确保填入的域名也支持 HTTPS 服务。"
 
-#: view/setting.php:70
+#: view/setting.php:75
 msgid "Storage Path"
 msgstr "存储路径"
 
-#: view/setting.php:72
+#: view/setting.php:77
 msgid "Keep this empty if you don't need."
 msgstr "如果你不需要指定 Bucket 的存储位置，请留空。"
 
-#: view/setting.php:78
+#: view/setting.php:83
 msgid "Aliyun Image Service Settings"
 msgstr "阿里云图片服务设置"
 
-#: view/setting.php:82 view/setting.php:85
+#: view/setting.php:82 view/setting.php:90
 msgid "Image Service"
 msgstr "图片服务"
 
-#: view/setting.php:88 view/setting.php:101 view/setting.php:122
-#: view/setting.php:180 view/setting.php:194 view/setting.php:207
+#: view/setting.php:88 view/setting.php:106 view/setting.php:127
+#: view/setting.php:180 view/setting.php:199 view/setting.php:212
 msgid "Enable"
 msgstr "启用"
 
-#: view/setting.php:91
+#: view/setting.php:96
 msgid ""
 "Use Aliyun Image Service to provide thumbnails, no need to upload thumbnails "
 "to OSS any more."
 msgstr "使用阿里云图片服务来提供不同尺寸的图片，启用后不会再上传缩略图到 OSS"
 
-#: view/setting.php:95 view/setting.php:98
+#: view/setting.php:100 view/setting.php:103
 msgid "Preset Image Style"
 msgstr "图片预设样式"
 
-#: view/setting.php:105
+#: view/setting.php:110
 msgid "Optional, use preset styles instead of dynamic params to deal image."
 msgstr "可选项，使用 OSS 图片预设样式来替代通过参数获取缩略图的方式"
 
-#: view/setting.php:108
+#: view/setting.php:103
 msgid "Click to export style profile"
 msgstr "点击下载图片样式配置文件"
 
-#: view/setting.php:115 view/setting.php:118
+#: view/setting.php:120 view/setting.php:123
 msgid "Source Image Protection"
 msgstr "原图保护"
 
-#: view/setting.php:125
+#: view/setting.php:130
 msgid ""
 "If you have enabled source image protection on Aliyun OSS, don't forget to "
 "enable this."
 msgstr "如果你在 Aliyun OSS 控制台开启了「原图保护」，请记得勾选这项"
 
-#: view/setting.php:129 view/setting.php:132
+#: view/setting.php:134 view/setting.php:137
 msgid "Custom Separator"
 msgstr "自定义分割符"
 
-#: view/setting.php:136
+#: view/setting.php:141
 msgid "Default"
 msgstr ""
 
-#: view/setting.php:156
+#: view/setting.php:161
 msgid "There is a guide about Image Service."
 msgstr " 关于图片服务可以参考："
 
-#: view/setting.php:158
+#: view/setting.php:163
 msgid "How to use Image Service"
 msgstr ""
 
-#: view/setting.php:167 view/setting.php:170
+#: view/setting.php:172 view/setting.php:175
 msgid "Advanced Options"
 msgstr "高级选项"
 
-#: view/setting.php:174 view/setting.php:177
+#: view/setting.php:179 view/setting.php:182
 msgid "Disable pushing"
 msgstr "禁用主动上传"
 
-#: view/setting.php:181
+#: view/setting.php:186
 msgid ""
 "Plugin will stop push files to OSS automatically, \n"
 "                                make sure your Back-to-Origin settings of "
@@ -273,27 +293,27 @@ msgid ""
 msgstr ""
 "开启后，插件将不再主动上传文件到 OSS，所以请首先确保 OSS 的回源设置是工作的"
 
-#: view/setting.php:188 view/setting.php:191
+#: view/setting.php:193 iew/setting.php:196
 msgid "Clear Files On Server"
 msgstr "清理服务器存储"
 
-#: view/setting.php:195
+#: view/setting.php:200
 msgid "Don't keep files on local server."
 msgstr "不在本地服务器上保留文件"
 
-#: view/setting.php:201 view/setting.php:204
+#: view/setting.php:206 view/setting.php:209
 msgid "keep Settings When Uninstall"
 msgstr "卸载时保留配置"
 
-#: view/setting.php:213
+#: view/setting.php:218
 msgid "Files To Exclude"
 msgstr "需要排除的文件"
 
-#: view/setting.php:216
+#: view/setting.php:221
 msgid "Regular expression only"
 msgstr "仅支持正则表达式"
 
-#: view/setting.php:222
+#: view/setting.php:227
 msgid "Commit"
 msgstr "保存配置"
 

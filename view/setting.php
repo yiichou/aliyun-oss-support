@@ -22,13 +22,17 @@ $d = 'aliyun-oss';
                 <th scope="row"><label for="region"><?php echo __('Region', $d).'/'.__('Endpoint', $d) ?></label></th>
                 <td>
                     <select name="region" id="region">
-                        <option value="oss-cn-hangzhou"><?php echo __('oss-cn-hangzhou', $d)?></option>
+                       <option value="oss-cn-hangzhou"><?php echo __('oss-cn-hangzhou', $d)?></option>
                         <option value="oss-cn-shanghai"><?php echo __('oss-cn-shanghai', $d)?></option>
                         <option value="oss-cn-qingdao"><?php echo __('oss-cn-qingdao', $d)?></option>
                         <option value="oss-cn-beijing"><?php echo __('oss-cn-beijing', $d)?></option>
                         <option value="oss-cn-zhangjiakou"><?php echo __('oss-cn-zhangjiakou', $d)?></option>
                         <option value="oss-cn-huhehaote"><?php echo __('oss-cn-huhehaote', $d)?></option>
+                        <option value="oss-cn-wulanchabu"><?php echo __('oss-cn-wulanchabu', $d)?></option>
                         <option value="oss-cn-shenzhen"><?php echo __('oss-cn-shenzhen', $d)?></option>
+                        <option value="oss-cn-heyuan"><?php echo __('oss-cn-heyuan', $d)?></option>
+                        <option value="oss-cn-guangzhou"><?php echo __('oss-cn-guangzhou', $d)?></option>
+                        <option value="oss-cn-chengdu"><?php echo __('oss-cn-chengdu', $d)?></option>
                         <option value="oss-cn-hongkong"><?php echo __('oss-cn-hongkong', $d)?></option>
                         <option value="oss-us-west-1"><?php echo __('oss-us-west-1', $d)?></option>
                         <option value="oss-us-east-1"><?php echo __('oss-us-east-1', $d)?></option>
@@ -39,6 +43,7 @@ $d = 'aliyun-oss';
                         <option value="oss-ap-northeast-1"><?php echo __('oss-ap-northeast-1', $d)?></option>
                         <option value="oss-ap-south-1"><?php echo __('oss-ap-south-1', $d)?></option>
                         <option value="oss-eu-central-1"><?php echo __('oss-eu-central-1', $d)?></option>
+                        <option value="oss-eu-west-1"><?php echo __('oss-eu-west-1', $d)?></option>
                         <option value="oss-me-east-1"><?php echo __('oss-me-east-1', $d)?></option>
                     </select>
 
