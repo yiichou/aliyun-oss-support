@@ -9,4 +9,8 @@ services:
       - 8964:80
     volumes:
       - .:/var/www/html/wp-content/plugins/aliyun-oss
+      - wpdb:/var/www/html/wp-content/database
+
+volumes:
+  wpdb:
     

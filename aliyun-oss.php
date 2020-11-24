@@ -35,10 +35,8 @@ Config::init(ALIYUN_OSS_PATH);
 if (Config::$staticHost) {
     new OSS\WP\UrlHelper();
 }
-if (Config::$ossClient && !Config::$disableUpload) {
-    new OSS\WP\Upload(Config::$ossClient);
-}
-if (Config::$ossClient && is_admin()) {
+if (Config::$ossClient) {
+    Config::$disableUpload || new OSS\WP\Upload(Config::$ossClient);
     new OSS\WP\Delete(Config::$ossClient);
 }
 

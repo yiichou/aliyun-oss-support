@@ -1,6 +1,7 @@
 <?php
 /* =======================
-        打包 zip
+    打包 zip
+    $ php build.php {$version}
 ======================= */
 
 preg_match('/Version:\s(.+)\n/', file_get_contents('aliyun-oss.php'), $matches);
