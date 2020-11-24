@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aliyun OSS Support\n"
 "POT-Creation-Date: 2019-03-27 15:56+0800\n"
-"PO-Revision-Date: 2020-11-24 10:56+0800\n"
+"PO-Revision-Date: 2020-11-24 16:06+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -128,7 +128,7 @@ msgstr "华北 5 (呼和浩特)"
 
 #: view/setting.php:31
 msgid "oss-cn-wulanchabu"
-msgstr "华北6（乌兰察布）"
+msgstr "华北 6（乌兰察布）"
 
 #: view/setting.php:32
 msgid "oss-cn-shenzhen"
