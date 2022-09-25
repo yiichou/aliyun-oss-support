@@ -74,7 +74,7 @@ class Config
         }
 
         if (!empty($options['custom_separator'])) {
-            self::$customSeparator = "@{$options['custom_separator']}";
+            self::$customSeparator = "{$options['custom_separator']}";
         }
 
         $wp_upload_dir = wp_upload_dir();
