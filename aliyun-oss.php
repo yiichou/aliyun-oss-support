@@ -42,5 +42,4 @@ if (Config::$ossClient) {
 
 if (is_admin()) {
     new OSS\WP\Setting();
-    Puc_v4_Factory::buildUpdateChecker(ALIYUN_OSS_MATEDATA_URL, __FILE__, Config::$pluginPath);
 }

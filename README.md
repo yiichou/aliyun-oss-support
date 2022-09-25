@@ -89,8 +89,7 @@
 ## 项目依赖
 
 - https://github.com/aliyun/aliyun-oss-php-sdk
-- https://github.com/YahnisElsts/plugin-update-checker
-
+- 
 ## 贡献代码
 
 1. Fork 这个仓库
