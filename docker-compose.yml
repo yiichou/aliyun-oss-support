@@ -1,16 +1,29 @@
-version: '3'
+version: '3.1'
 
 services:
   wordpress:
-    build:
-      context: .
-    image: wordpress-sqlite:latest
+    image: wordpress:php8.0
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: "define( 'WP_DEBUG_LOG', true );define( 'WP_DEBUG_DISPLAY', false );"
     ports:
-      - 8964:80
+      - 9527:80
     volumes:
       - .:/var/www/html/wp-content/plugins/aliyun-oss
-      - wpdb:/var/www/html/wp-content/database
+  
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - wpdb:/var/lib/mysql
 
 volumes:
   wpdb:
-    
