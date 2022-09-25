@@ -16,7 +16,6 @@ class UrlHelper
         add_filter('wp_get_attachment_url', array($this,'replaceAttachmentUrl'), 300, 2);
         add_filter('wp_calculate_image_srcset', array($this, 'replaceImgSrcsetUrl'), 300);
         if (Config::$enableImgService) {
-            require_once ABSPATH . WPINC . '/class-phpmailer.php';
             add_filter('wp_get_attachment_metadata', array($this, 'replaceImgMeta'), 900);
         }
         add_filter( 'content_edit_pre',array($this,'ClassicUrlEditPre'), 10, 2 );//经典编辑器加载时,如果鉴权打开,则在内容加载时给链接添加鉴权信息     
@@ -126,7 +125,7 @@ class UrlHelper
             (wp_debug_backtrace_summary(null, 4, false)[0] == 'wp_delete_attachment')) {
             return $data;
         }
-        $basename = \PHPMailer::mb_pathinfo($data['file'], PATHINFO_BASENAME);
+        $basename = pathinfo($data['file'], PATHINFO_BASENAME);
         $styles = get_intermediate_image_sizes();
         $styles[] = 'full';
         foreach ($data['sizes'] as $size => $info) {
