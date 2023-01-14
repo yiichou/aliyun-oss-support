@@ -91,7 +91,6 @@ class Config
         self:: $urlAuthPrimaryKey =  $options['authPrimaryKey'];
         self:: $urlAuthAuxKey =  $options['authAuxKey'];
         self:: $urlAuthExpTime =  $options['authExpTime'] ;
-        self::initOssClient();
     }
 
     public static function monthDir($time)

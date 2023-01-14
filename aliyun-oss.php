@@ -31,11 +31,17 @@ require(ALIYUN_OSS_PATH . '/autoload.php');
 
 use OSS\WP\Config;
 
-function init() {
-    Config::init(ALIYUN_OSS_PATH);
+Config::init(ALIYUN_OSS_PATH);
 
-    if (Config::$staticHost) {
-        new OSS\WP\UrlHelper();
+if (Config::$staticHost) {
+    new OSS\WP\UrlHelper();
+}
+
+function init() {
+    Config::initOssClient();
+
+    if (is_admin()) {
+        new OSS\WP\Setting();
     }
 
     if (Config::$ossClient) {
@@ -44,9 +50,6 @@ function init() {
     }
 }
 
-if (is_admin()) {
-    new OSS\WP\Setting();
-}
 
 add_filter('admin_init', 'init');
 add_filter('rest_api_init', 'init', 800);
