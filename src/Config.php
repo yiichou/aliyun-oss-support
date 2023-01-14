@@ -112,13 +112,13 @@ class Config
             return;
         }
 
-        if (!is_admin() && empty($_FILES)) {
+        if (!is_admin() && $_FILES && !current_user_can( 'edit_posts' ) && !defined( 'REST_REQUEST' )) {
             return;
         }
 
         try {
             self::$ossClient = new OssClient(self::$accessKeyId, self::$accessKeySecret, self::$endpoint);
-        } catch (OssException $e) {
+        } catch (\Exception $e) {
             $html = "<div id='oss-warning' class='error fade'><p>%s: %s</p></div>";
             echo sprintf($html, __('Aliyun OSS', 'aliyun-oss'), $e->getMessage());
         }
