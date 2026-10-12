@@ -1,20 +1,25 @@
 <?php
-$options = array_merge(OSS\WP\Config::$originOptions, get_option('oss_options', array()));
+$options = array_merge(OSS\WP\Config::$originOptions, $formOptions ?? get_option('oss_options', array()));
 $d = 'aliyun-oss';
 ?>
 
 <div class="wrap" style="margin: 10px;">
     <h1><?php echo __('Aliyun OSS Settings', $d)?></h1>
+    <?php if ($saveMessages !== ''): ?>
+        <div id="aliyun-oss-save-results" role="status" aria-live="polite">
+            <?php echo $saveMessages; ?>
+        </div>
+    <?php endif; ?>
     <form name="form1" method="post" action="<?php echo wp_nonce_url(OSS\WP\Config::$settingsUrl); ?>">
         <table class="form-table">
             <tbody>
             <tr>
-                <th scope="row"><label for="access_key">AccessKey</label></th>
+                <th scope="row"><label for="access_key"><?php echo __('AccessKey', $d) ?></label></th>
                 <td><input name="access_key" type="text" id="access_key"
-                           value="<?php echo $options['ak'] ?>" class="regular-text"></td>
+                           value="<?php echo esc_attr($options['ak']) ?>" class="regular-text"></td>
             </tr>
             <tr>
-                <th scope="row"><label for="access_key_secret"></label>AccessKeySecret</th>
+                <th scope="row"><label for="access_key_secret"><?php echo __('AccessKeySecret', $d) ?></label></th>
                 <td><input name="access_key_secret" type="text" id="access_key_secret" value=""
                            placeholder="~<?php echo __("You can't see me", $d) ?> ʅ(‾◡◝)" class="regular-text"></td>
             </tr>
@@ -62,18 +67,18 @@ $d = 'aliyun-oss';
             <tbody>
             <tr>
                 <th scope="row"><label for="bucket">Bucket</label></th>
-                <td><input name="bucket" type="text" id="bucket" value="<?php echo $options['bucket'] ?>" class="regular-text"></td>
+                <td><input name="bucket" type="text" id="bucket" value="<?php echo esc_attr($options['bucket']) ?>" class="regular-text"></td>
             </tr>
             <tr>
                 <th scope="row"><label for="static_host"></label><?php echo __('Bucket Host', $d) ?></th>
                 <td>
-                    <input name="static_host" type="text" id="static_host" value="<?php echo $options['static_url'] ?>" class="regular-text host">
+                    <input name="static_host" type="text" id="static_host" value="<?php echo esc_attr($options['static_url']) ?>" class="regular-text host">
                     <?php echo is_ssl()?'<p class="description">'.__('Your site is working under https, please make sure the host can use https too.', $d).'</p>':'' ?>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="store_path"></label><?php echo __('Storage Path', $d) ?></th>
-                <td><input name="store_path" type="text" id="store_path" value="<?php echo $options['path'] ?>" class="regular-text">
+                <td><input name="store_path" type="text" id="store_path" value="<?php echo esc_attr($options['path']) ?>" class="regular-text">
                     <p class="description"><?php echo __("Keep this empty if you don't need.", $d) ?></p></td>
             </tr>
             </tbody>
@@ -213,13 +218,13 @@ $d = 'aliyun-oss';
                 <tr style="display:none">
                     <th scope="row"><label for="authAuxKey"></label><?php echo __('url Auth Aux Key', $d) ?></th>
                     <td>
-                        <input name="authAuxKey" type="text" id="authAuxKey" value="<?php echo $options['authAuxKey'] ?>" class="regular-text host">              
+                        <input name="authAuxKey" type="text" id="authAuxKey" value="<?php echo esc_attr($options['authAuxKey']) ?>" class="regular-text host">
                     </td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="authExpTime"></label><?php echo __('url Auth Exp Time', $d) ?></th>
                     <td>
-                        <input name="authExpTime" type="number"  min="1" step="1" id="authExpTime" value="<?php echo $options['authExpTime'] ?>" class="regular-text host"> 
+                        <input name="authExpTime" type="number"  min="1" step="1" id="authExpTime" value="<?php echo esc_attr($options['authExpTime']) ?>" class="regular-text host">
                         <p class="description"><?php echo __("Time of url expiration, set hourly", $d) ?></p>
                     </td>
                 </tr>
@@ -238,8 +243,7 @@ $d = 'aliyun-oss';
                             <label for="disable_upload">
                                 <input name="disable_upload" type="checkbox" id="disable_upload"
                                     <?php echo $options['disable_upload'] ? 'checked' : '' ?>> <?php echo __('Enable', $d) ?>
-                                <p class="description"><?php echo __("Plugin will stop push files to OSS automatically, 
-                                make sure your Back-to-Origin settings of OSS is working firstly", $d) ?></p>
+                                <p class="description"><?php echo __("Plugin will stop push files to OSS automatically, make sure your Back-to-Origin settings of OSS is working firstly", $d) ?></p>
                             </label>
                         </fieldset>
                     </td>
@@ -273,7 +277,7 @@ $d = 'aliyun-oss';
                 <tr>
                     <th scope="row"><label for="exclude"></label><?php echo __('Files To Exclude', $d) ?></th>
                     <td>
-                        <input name="exclude" type="text" id="exclude" value="<?php echo $options['exclude'] ?>" class="regular-text">
+                        <input name="exclude" type="text" id="exclude" value="<?php echo esc_attr($options['exclude']) ?>" class="regular-text">
                         <p class="description"><?php echo __("Regular expression only", $d) ?></p>
                     </td>
                 </tr>
@@ -299,7 +303,7 @@ $d = 'aliyun-oss';
             }
             return new RegExp(r.substring(begin + 1, end), flag);
         };
-        var region = '<?php echo $options['region'] ?>';
+        var region = <?php echo wp_json_encode($options['region'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         $('#region option[value='+region+']').attr('selected', 'selected');
 
         $('input.host').blur(function () {
@@ -345,7 +349,7 @@ $d = 'aliyun-oss';
             }
         });
         /*Authentication Method*/
-        var authMethod = '<?php echo $options['authMethod'] ?>';
+        var authMethod = <?php echo wp_json_encode($options['authMethod'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         $('#authMethod option[value='+authMethod+']').attr('selected', 'selected');
         console.log( authMethod )
         $('#load-more-settings').click(function () {

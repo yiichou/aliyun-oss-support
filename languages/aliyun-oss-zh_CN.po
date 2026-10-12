@@ -46,6 +46,51 @@ msgstr ""
 msgid "The settings have been saved"
 msgstr "配置已保存"
 
+#: src/Config.php
+msgid "List objects"
+msgstr "列举对象"
+
+#: src/Config.php
+msgid "Upload test object"
+msgstr "上传测试对象"
+
+#: src/Config.php
+msgid "Delete test object"
+msgstr "删除测试对象"
+
+#: src/Config.php
+msgid "Passed"
+msgstr "通过"
+
+#: src/Config.php
+msgid "Failed"
+msgstr "失败"
+
+#: src/Config.php
+msgid "Not verified: upload failed; cleanup request succeeded."
+msgstr "未验证：上传失败，清理请求已成功。"
+
+#: src/Config.php
+msgid "OSS client initialization failed."
+msgstr "OSS 客户端初始化失败。"
+
+#: src/Config.php
+msgid "Upload and delete verification could not be completed."
+msgstr "无法完成上传和删除权限验证。"
+
+#: src/Config.php
+#, php-format
+msgid "Cleanup failed. A test object may remain at oss://%s/%s. Check and remove it manually."
+msgstr "清理失败，测试对象可能残留在 oss://%s/%s。请检查并手动删除。"
+
+#: src/Setting.php
+msgid "Permission verification passed, but the settings could not be saved."
+msgstr "权限验证通过，但配置保存失败。"
+
+#: src/Setting.php
+msgid "Permission verification failed. The settings have not been saved."
+msgstr "权限验证失败，配置未保存。"
+
 #: vendor/plugin-update-checker/Puc/v4p4/Plugin/UpdateChecker.php:395
 msgid "Check for updates"
 msgstr "检查更新"
@@ -267,7 +312,7 @@ msgstr "自定义分割符"
 
 #: view/setting.php:141
 msgid "Default"
-msgstr ""
+msgstr "默认"
 
 #: view/setting.php:161
 msgid "There is a guide about Image Service."
@@ -275,7 +320,7 @@ msgstr " 关于图片服务可以参考："
 
 #: view/setting.php:163
 msgid "How to use Image Service"
-msgstr ""
+msgstr "如何使用图片服务"
 
 #: view/setting.php:172 view/setting.php:175
 msgid "Advanced Options"
@@ -286,10 +331,7 @@ msgid "Disable pushing"
 msgstr "禁用主动上传"
 
 #: view/setting.php:186
-msgid ""
-"Plugin will stop push files to OSS automatically, \n"
-"                                make sure your Back-to-Origin settings of "
-"OSS is working firstly"
+msgid "Plugin will stop push files to OSS automatically, make sure your Back-to-Origin settings of OSS is working firstly"
 msgstr ""
 "开启后，插件将不再主动上传文件到 OSS，所以请首先确保 OSS 的回源设置是工作的"
 
@@ -316,6 +358,70 @@ msgstr "仅支持正则表达式"
 #: view/setting.php:227
 msgid "Commit"
 msgstr "保存配置"
+
+#: view/setting.php
+msgid "AccessKey"
+msgstr "访问密钥 ID（AccessKey）"
+
+#: view/setting.php
+msgid "AccessKeySecret"
+msgstr "访问密钥 Secret（AccessKeySecret）"
+
+#: view/setting.php
+msgid "Aliyun CDN Authentication"
+msgstr "阿里云 CDN 鉴权"
+
+#: view/setting.php
+msgid "Authentication"
+msgstr "URL 鉴权"
+
+#: view/setting.php
+msgid "Enable Url Authentication for Aliyun CDN service, please make sure you've configured CDN URL Authentication Service in Aliyun Console correctly"
+msgstr "启用阿里云 CDN URL 鉴权前，请确保已在阿里云控制台正确配置 CDN URL 鉴权服务。"
+
+#: view/setting.php
+msgid "url Auth Method"
+msgstr "URL 鉴权方式"
+
+#: view/setting.php
+msgid "Method A"
+msgstr "方式 A"
+
+#: view/setting.php
+msgid "Method B"
+msgstr "方式 B"
+
+#: view/setting.php
+msgid "Method C"
+msgstr "方式 C"
+
+#: view/setting.php
+msgid "Select Authentication Medthod, Method A Recommended"
+msgstr "请选择鉴权方式，推荐使用方式 A。"
+
+#: view/setting.php
+msgid "Help me choose"
+msgstr "查看选择指南"
+
+#: view/setting.php
+msgid "url Auth PrimaryKey"
+msgstr "URL 鉴权主密钥"
+
+#: view/setting.php
+msgid "Set Authentication Key as you like, please don't use AK or SK"
+msgstr "请自行设置鉴权密钥，不要使用 AccessKey ID 或 AccessKey Secret。"
+
+#: view/setting.php
+msgid "url Auth Aux Key"
+msgstr "URL 鉴权备用密钥"
+
+#: view/setting.php
+msgid "url Auth Exp Time"
+msgstr "URL 有效期"
+
+#: view/setting.php
+msgid "Time of url expiration, set hourly"
+msgstr "URL 过期时间，单位为小时。"
 
 #. Description of the plugin/theme
 msgid ""

@@ -2,24 +2,24 @@
 
 namespace OSS\WP;
 
-use OSS\OssClient;
 use Exception;
 
 class Delete
 {
     private $oc;
+    private $installerFiles = [];
 
-    public function __construct(OssClient $ossClient)
+    public function __construct($ossClient)
     {
         $this->oc = $ossClient;
 
         if (Config::$noLocalSaving) {
             add_filter('wp_generate_attachment_metadata', array($this, 'deleteLocalOriginImage'), 60);
-            add_action('delete_attachment', array($this, 'deleteRemoteAttachment'), 10);
         } else {
             add_filter('wp_delete_file', array($this, 'deleteRemoteFile'));
         }
 
+        add_action('delete_attachment', array($this, 'deleteRemoteAttachment'), 10);
         add_action('oss_delete_file', array($this, 'deleteRemoteFile'), 9);
     }
 
@@ -30,6 +30,13 @@ class Delete
      */
     public function deleteRemoteAttachment($post_id)
     {
+        if (get_post_meta($post_id, '_wp_attachment_context', true) === 'upgrader') {
+            $this->installerFiles[] = get_attached_file($post_id, true);
+            return;
+        }
+        if (!Config::$noLocalSaving || Config::isInstallerRequest()) {
+            return;
+        }
         $file = get_attached_file($post_id);
         $this->deleteRemoteFile($file);
     }
@@ -42,6 +49,9 @@ class Delete
      */
     public function deleteRemoteFile($file)
     {
+        if (Config::isInstallerRequest() || in_array($file, $this->installerFiles, true)) {
+            return $file;
+        }
         if (false === strpos($file, '@')) {
             $del_file = ltrim(str_replace(Config::$baseDir, Config::$storePath, $file), '/');
             $this->oc->deleteObject(Config::$bucket, $del_file);

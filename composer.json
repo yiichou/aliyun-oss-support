@@ -1,5 +1,10 @@
 {
     "require": {
-        "aliyuncs/oss-sdk-php": "^2.6"
+        "alibabacloud/oss-v2": "0.5.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.0.0"
+        }
     }
 }
