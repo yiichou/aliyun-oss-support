@@ -4,13 +4,20 @@
     $ php build.php {$version}
 ======================= */
 
+chdir(__DIR__);
 preg_match('/Version:\s(.+)\n/', file_get_contents('aliyun-oss.php'), $matches);
-$version = $matches[1];
+$version = trim($matches[1]);
+if (!is_dir('out') && !mkdir('out', 0755, true)) {
+    throw new RuntimeException('Cannot create output directory.');
+}
 
 $zip = new ZipArchive();
-$zip->open("aliyun-oss-{$version}.zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
+$zipPath = "out/aliyun-oss-{$version}.zip";
+if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+    throw new RuntimeException('Cannot create plugin ZIP.');
+}
 
-$packageDirs = ['languages', 'view', 'src', 'vendor/aliyuncs'];
+$packageDirs = ['languages', 'view', 'src', 'vendor'];
 $packageFiles = [
     'aliyun-oss.php',
     'autoload.php',
@@ -28,7 +35,7 @@ foreach ($packageDirs as $dir) {
 
     foreach ($files as $name => $file) {
         if (!$file->isDir()) {
-            $relativePath = str_replace($dirPath, "{$dir}/", $file);
+            $relativePath = $dir . '/' . str_replace('\\', '/', substr($file->getPathname(), strlen($dirPath) + 1));
             $zip->addFile($file, 'aliyun-oss/'.$relativePath);
         }
     }
@@ -39,4 +46,4 @@ foreach ($packageFiles as $file) {
 }
 $zip->close();
 
-echo "Finished aliyun-oss-{$version}.zip\n";
+echo "Finished {$zipPath}\n";

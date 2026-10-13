@@ -40,7 +40,7 @@ class Setting
     public function pluginActionLink($links, $file)
     {
         if ($file == Config::$pluginPath.'/aliyun-oss.php') {
-            array_unshift($links, '<a href="'.Config::$settingsUrl.'">'.__('Settings').'</a>');
+            array_unshift($links, '<a href="'.Config::$settingsUrl.'">'.__('Settings', 'aliyun-oss').'</a>');
         }
 
         return $links;
@@ -59,7 +59,18 @@ class Setting
 
     public function settingsPage()
     {
-        !empty($_POST) && $this->updateSettings();
+        $saveMessages = '';
+        $formOptions = null;
+        if (!empty($_POST)) {
+            check_admin_referer();
+            ob_start();
+            try {
+                $formOptions = $this->updateSettings();
+                $saveMessages = ob_get_contents();
+            } finally {
+                ob_end_clean();
+            }
+        }
         require __DIR__.'/../view/setting.php';
     }
 
@@ -73,7 +84,7 @@ class Setting
         }
     }
 
-    private function updateSettings()
+    private function updateSettings(): array
     {
         $options = get_option('oss_options', array());
 
@@ -90,7 +101,7 @@ class Setting
         if ( !empty($_POST['static_host']) ) {
             $options['static_url'] = preg_replace('/(.*\/\/|)(.+?)(\/.*|)$/', '$2', $_POST['static_host']);
         } elseif ( !empty($options['bucket']) ) {
-            $options['static_url'] = join([$options['bucket'] , $options['region'], 'aliyuncs.com'], '.');
+            $options['static_url'] = implode('.', [$options['bucket'], $options['region'], 'aliyuncs.com']);
         }
 
         $options['img_service'] = isset($_POST['img_service']);
@@ -113,11 +124,22 @@ class Setting
         empty($_POST['authAuxKey']) || $options['authAuxKey'] = trim($_POST['authAuxKey']);
         isset($_POST['authExpTime']) && $options['authExpTime'] = (int)$_POST['authExpTime'];
         
-        update_option('oss_options', $options);
-
-        if (true === Config::checkOssConfig($options)) {
-            echo '<div class="updated"><p><strong>'. __('The settings have been saved', 'aliyun-oss') .'.</strong></p></div>';
+        $saved = false;
+        if (true === Config::checkOssConfig($options, $report)) {
+            if (update_option('oss_options', $options) || get_option('oss_options') === $options) {
+                $saved = true;
+                $summary = __('The settings have been saved', 'aliyun-oss') . '.';
+            } else {
+                $summary = __('Permission verification passed, but the settings could not be saved.', 'aliyun-oss');
+            }
+        } else {
+            $summary = __('Permission verification failed. The settings have not been saved.', 'aliyun-oss');
         }
+        if ($report['warning'] !== '') {
+            $summary .= "\n" . $report['warning'];
+        }
+        Config::renderValidationNotice($saved, $summary, $report['details']);
+        return $options;
     }
 
     private function imageStyleProfile()

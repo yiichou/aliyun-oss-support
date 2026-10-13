@@ -30,11 +30,21 @@
 
 将插件解压上传到 `/wp-content/plugins/` 或者通过 WordPress 插件中心上传安装
 
+### 从旧版升级至 3.6.0
+
+升级前请备份配置，并暂停附件上传和删除。
+
+1. **停用插件，不要删除**，以保留原配置。
+2. 上传新版 ZIP，选择替换当前版本。
+3. 重新启用插件，进入设置页面验证权限。
+
+本版本更换了 OSS SDK，请勿在旧插件启用时直接覆盖升级，以免发生错误。
+
 ### 配置
 
 启用插件 `Aliyun OSS`
 
-进入设置页面 完成相关设置
+使用管理员账号进入「设置 → Aliyun OSS」完成相关设置（`/wp-admin/options-general.php?page=aliyun-oss`，需要 `manage_options` 权限）。
 
 - 如果你使用的 ECS 与 OSS 在同一区域，可以开启『**内网/internal**』选项，节约流量
 - 『Bucket 域名/Bucket Host』一项会自动补全，也可以手动设置为你的 **自定义域名** 或 CDN 域名
@@ -88,8 +98,47 @@
 
 ## 项目依赖
 
-- https://github.com/aliyun/aliyun-oss-php-sdk
-- 
+- `alibabacloud/oss-v2`，通过 `composer.json` 和 `composer.lock` 管理。
+
+## 打包发布
+
+在项目根目录执行：
+
+```powershell
+composer install --no-dev --prefer-dist
+php build.php
+```
+
+安装包输出到 `out/aliyun-oss-<版本号>.zip`，包含插件源码和 `vendor/` 运行依赖。`vendor/` 和 `out/` 不提交到 Git。源码使用 `OSS\WP\OssClientAdapter` 接入 SDK v2，保留后台和 REST 初始化钩子。后台设置钩子在插件加载时注册，确保设置页面在 `admin_menu` 阶段可用。
+
+配置保存同时验证列举、上传和删除权限：`ListObjects` 仅请求存储目录前缀下最多一个对象；随后在 Bucket 根目录上传一个小型测试对象，命名为 `aliyun-oss-permission-test-<UTC时间戳>-<随机串>.txt`，再删除同一个对象。保存反馈合并为页面顶部的一条可关闭消息，默认只显示配置是否保存；三项权限验证结果及错误 trace 放在默认折叠的「查看详情」中。清理失败的残留对象路径始终显示在消息中，需手动检查和删除。配置先验证，全部通过后才保存；验证失败保留原配置，并提示配置未保存。表单保留本次填写的字段以便重试，AccessKey Secret 不回显；打开页面时不显示默认的验证说明。网络故障或缺少任一验证权限也会阻止保存。
+
+上传失败后也会尝试清理同一测试对象，防止上传已完成但响应丢失导致残留；此时不会将清理请求成功当作删除权限验证通过。测试请求可能产生少量 OSS 费用；启用版本控制时，删除操作可能保留历史版本或删除标记。根目录测试需要测试对象的根目录读写授权，无法证明所有存储目录都可写；如果策略只授权插件存储目录，根目录测试会失败。
+
+开启「不在本地服务器上保留文件」时，对象重名检查复用 SDK 的 `isObjectExist()`，通过 `GetObjectMeta`（HEAD 请求）查询元信息，不下载文件；不存在返回 `false`，权限、网络等错误继续抛出。
+
+插件所需权限：
+
+| 功能 | RAM 权限 | 授权资源 |
+|---|---|---|
+| 保存配置时列举验证 | `oss:ListObjects` | `acs:oss:*:*:<bucket>`；如限制 `oss:Prefix`，需允许插件的存储目录前缀 |
+| 上传文件 | `oss:PutObject` | `acs:oss:*:*:<bucket>/<存储目录>/*` |
+| 对象重名检查 | `oss:GetObject` | 同上 |
+| 删除远端附件 | `oss:DeleteObject` | 同上 |
+
+存储目录为空时，对象资源为 `acs:oss:*:*:<bucket>/*`。根目录权限测试还需对 `acs:oss:*:*:<bucket>/aliyun-oss-permission-test-*` 授予 `oss:PutObject` 和 `oss:DeleteObject`。不再需要 `oss:GetBucketInfo` 或完全控制权限。只有读写权限但没有 `oss:DeleteObject` 时，删除测试和远端删除仍会失败。SDK 签名区域与后台选择的区域保持一致。发布前应在 WordPress 中验证配置保存、上传和删除。
+
+SDK 适配器回归测试（模拟 HTTP 响应，不访问 OSS）：
+
+```powershell
+php tests\oss-client-adapter-test.php
+php tests\settings-save-test.php
+php tests\config-validation-test.php
+php tests\upload-filename-test.php
+php tests\translations-test.php
+php tests\installer-cleanup-test.php
+```
+
 ## 贡献代码
 
 1. Fork 这个仓库
@@ -102,4 +151,3 @@
 ## 开源协议
 
 BSD
-

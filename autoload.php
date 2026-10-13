@@ -15,8 +15,7 @@
 spl_autoload_register(function ($class) {
 
     $auto_load_class = array(
-        'OSS\\WP\\' => '/src/',
-        'OSS\\' => '/vendor/aliyuncs/oss-sdk-php/src/OSS/'
+        'OSS\\WP\\' => '/src/'
     );
 
     foreach ($auto_load_class as $prefix => $base_dir) {

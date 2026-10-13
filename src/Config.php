@@ -2,8 +2,8 @@
 
 namespace OSS\WP;
 
-use OSS\Core\OssException;
-use OSS\OssClient;
+use Exception;
+use OSS\WP\OssClientAdapter;
 
 class Config
 {
@@ -11,6 +11,7 @@ class Config
     public static $accessKeyId = "";
     public static $accessKeySecret = "";
     public static $endpoint = "";
+    public static $region = "";
     public static $storePath = "/";
     public static $staticHost = "";
     public static $safeStaticHost = "";
@@ -63,6 +64,7 @@ class Config
         self::$accessKeyId = $options['ak'];
         self::$accessKeySecret = $options['sk'];
         self::$endpoint = self::getEndPoint($options['region'], $options['internal']);
+        self::$region = preg_replace('/^oss-/', '', $options['region']);
 
         if ($options['static_url']) {
             self::$staticHost = is_ssl() ? "https://{$options['static_url']}" : "http://{$options['static_url']}";
@@ -116,27 +118,90 @@ class Config
         }
 
         try {
-            self::$ossClient = new OssClient(self::$accessKeyId, self::$accessKeySecret, self::$endpoint);
+            self::$ossClient = new OssClientAdapter(self::$accessKeyId, self::$accessKeySecret, self::$endpoint, self::$region);
         } catch (\Exception $e) {
             $html = "<div id='oss-warning' class='error fade'><p>%s: %s</p></div>";
             echo sprintf($html, __('Aliyun OSS', 'aliyun-oss'), $e->getMessage());
         }
     }
 
-    public static function checkOssConfig($options)
+    public static function isInstallerRequest(): bool
     {
-        $html = "<div id='oss-warning' class='error fade'><p>%s</p></div>";
+        return isset($_REQUEST['action']) && in_array($_REQUEST['action'], ['upload-plugin', 'upload-theme'], true);
+    }
+
+    public static function checkOssConfig($options, ?array &$report = null)
+    {
+        $report = ['details' => '', 'warning' => ''];
         $endPoint = self::getEndPoint($options['region'], $options['internal']);
         try {
-            $ossClient = new OssClient($options['ak'], $options['sk'], $endPoint);
-            if (!$ossClient->doesBucketExist($options['bucket'])) {
-                echo sprintf($html, __('The bucket you provided does not exist.', 'aliyun-oss'));
-            } else {
-                return true;
-            }
-        } catch (OssException $e) {
-            echo sprintf($html, $e->getErrorMessage() ? $e->getErrorMessage() : $e->getMessage());
+            $region = preg_replace('/^oss-/', '', $options['region']);
+            $ossClient = new OssClientAdapter($options['ak'], $options['sk'], $endPoint, $region);
+        } catch (Exception $e) {
+            $report['details'] = __('OSS client initialization failed.', 'aliyun-oss') . "\n" . $e->getMessage();
+            return false;
         }
+
+        $prefix = trim($options['path'] ?? '', '/');
+        try {
+            $ossClient->validateBucketAccess($options['bucket'], $prefix === '' ? '' : $prefix . '/');
+            $listing = ['status' => 'passed', 'message' => ''];
+        } catch (Exception $e) {
+            $listing = ['status' => 'failed', 'message' => $e->getMessage()];
+        }
+        try {
+            $results = $ossClient->verifyWritePermissions($options['bucket']);
+        } catch (Exception $e) {
+            $report['details'] = __('Upload and delete verification could not be completed.', 'aliyun-oss') . "\n" . $e->getMessage();
+            $listingStatus = $listing['status'] === 'passed' ? __('Passed', 'aliyun-oss') : __('Failed', 'aliyun-oss');
+            $report['details'] .= "\n" . __('List objects', 'aliyun-oss') . ': ' . $listingStatus . "\n" . $listing['message'];
+            return false;
+        }
+
+        $checks = [
+            __('List objects', 'aliyun-oss') => $listing,
+            __('Upload test object', 'aliyun-oss') => $results['upload'],
+            __('Delete test object', 'aliyun-oss') => $results['delete'],
+        ];
+        $success = true;
+        $messages = [];
+        $details = [];
+        foreach ($checks as $label => $result) {
+            $passed = $result['status'] === 'passed';
+            $success = $success && $passed;
+            $status = $passed ? __('Passed', 'aliyun-oss') : __('Failed', 'aliyun-oss');
+            if ($result['status'] === 'skipped') {
+                $status = __('Not verified: upload failed; cleanup request succeeded.', 'aliyun-oss');
+            }
+            $messages[] = $label . ': ' . $status;
+            if ($result['message'] !== '') {
+                $details[] = $label . ":\n" . $result['message'];
+            }
+        }
+        $message = implode(' | ', $messages);
+        if ($results['delete']['status'] === 'failed') {
+            $report['warning'] = sprintf(
+                __('Cleanup failed. A test object may remain at oss://%s/%s. Check and remove it manually.', 'aliyun-oss'),
+                $options['bucket'],
+                $results['object']
+            );
+        }
+        $report['details'] = $message;
+        if ($details) {
+            $report['details'] .= "\n\n" . implode("\n\n", $details);
+        }
+        return $success;
+    }
+
+    public static function renderValidationNotice(bool $success, string $summary, string $details = ''): void
+    {
+        echo '<div class="notice inline is-dismissible '. ($success ? 'notice-success' : 'notice-error') .'"><p>'.
+            nl2br(esc_html($summary)) .'</p>';
+        if ($details !== '') {
+            echo '<details><summary>'. esc_html(__('View details', 'aliyun-oss')) .'</summary><pre style="white-space: pre-wrap; overflow-wrap: anywhere;">'.
+                esc_html($details) .'</pre></details>';
+        }
+        echo '</div>';
     }
 
     private static function getEndPoint($region, $internal)

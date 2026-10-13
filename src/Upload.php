@@ -2,20 +2,18 @@
 
 namespace OSS\WP;
 
-use OSS\Core\OssException;
-use OSS\OssClient;
+use Exception;
 
 class Upload
 {
     private $oc;
+    private $ossHeader = array();
 
-    public function __construct(OssClient $ossClient)
+    public function __construct($ossClient)
     {
         $this->oc = $ossClient;
         $this->ossHeader = array(
-            OssClient::OSS_HEADERS => array(
-                'Cache-Control' => 'max-age=2592000'
-            ),
+            'Cache-Control' => 'max-age=2592000',
         );
 
         add_filter('wp_handle_upload', array($this, 'uploadOriginToOss'), 300);
@@ -55,15 +53,15 @@ class Upload
      */
     public function uploadOriginToOss($upload)
     {
-        if (isset($_REQUEST["action"]) && in_array($_REQUEST["action"], array('upload-plugin', 'upload-theme'))) {
+        if (Config::isInstallerRequest()) {
             return $upload;
         }
 
         $object = ltrim(str_replace(Config::$baseDir, Config::$storePath, $upload['file']), '/');
         try {
             $this->oc->multiuploadFile(Config::$bucket, $object, $upload['file'], $this->ossHeader);
-        } catch (OssException $e) {
-            $upload['error'] = $e->getErrorMessage();
+        } catch (Exception $e) {
+            $upload['error'] = $e->getMessage();
         }
 
         if (Config::$noLocalSaving && false === strpos($upload['type'], 'image')) {
@@ -78,7 +76,7 @@ class Upload
      *
      * @param $file
      * @return mixed
-     * @throws OssException
+    * @throws Exception
      */
     public function uploadImageToOss($file)
     {
@@ -100,7 +98,7 @@ class Upload
      * @param string $file 文件的本地路径
      * @param string [$base_dir] 文件本地存储的基础路径，上传 OSS 时会被去掉，default: Config::$baseDir or ''
      * @param string [$oss_dir] 文件在 OSS 上的 存储目录，default: Config::$storePath
-     * @throws OssException
+    * @throws Exception
      */
     public function uploadFileToOss($file, $base_dir = '', $oss_dir = '')
     {

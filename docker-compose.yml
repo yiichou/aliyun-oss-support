@@ -14,7 +14,7 @@ services:
       - 9527:80
     volumes:
       - .:/var/www/html/wp-content/plugins/aliyun-oss
-  
+
   db:
     image: mysql
     environment:
